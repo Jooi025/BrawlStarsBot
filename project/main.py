@@ -69,7 +69,7 @@ while 1:
         bot.timestamp = time()
         bot.state = BotState.INITIALIZING
         #wait for game to load
-        sleep(10)
+        sleep(7)
         bot.start()
 
     #for DEBUG purposes

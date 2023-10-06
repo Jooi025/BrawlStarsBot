@@ -51,7 +51,7 @@ class Brawlbot:
     IGNORE_RADIUS = 0.5
     movement_screenshot = None
     screenshot = None
-    INITIALIZING_SECONDS = 6
+    INITIALIZING_SECONDS = 9
     results = []
     bushResult = []
     counter = 0
@@ -151,6 +151,17 @@ class Brawlbot:
         with pyautogui.hold(random_move):
             sleep(1)
 
+    def random_movement_attack(self):
+        if self.storm_direction():
+            move_keys = self.storm_direction()
+        else:
+            move_keys = ["w", "a", "s", "d"]
+        random_move = random.choice(move_keys)
+        with pyautogui.hold(random_move):
+            self.attack()
+            sleep(0.5)
+            self.attack()
+            sleep(0.5)
 
     def is_enemy_in_range(self):
         """ 
@@ -305,8 +316,8 @@ class Brawlbot:
                     else:
                         sleep(0.01)
                         print("Attacking enemy")
-                        self.random_movement()
-                        self.attack()
+                        self.random_movement_attack()
+                        
                 else:
                     print("Changing state to search")
                     self.lock.acquire()
