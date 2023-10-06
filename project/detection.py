@@ -1,19 +1,22 @@
 from threading import Thread, Lock
 import torch
 from time import sleep
+import cv2 as cv
 
 
 class Detection:
     # threading properties
     stopped = True
     lock = None
-    rectangles = []
+
     # properties
-    cascade = None
     screenshot = None
     results = None
 
-    def __init__(self,windowSize, model_file_path, classes , threshold , heightScaleFactor):
+    def __init__(self, windowSize, model_file_path, classes , threshold , heightScaleFactor):
+        """
+        Constructor for the Detection class
+        """
         # create a thread lock object
         self.lock = Lock()
         # load the trained model
@@ -21,6 +24,7 @@ class Detection:
         # use gpu for dectection
         self.model.cuda()
         self.model.multi_label = False
+
         self.classes = classes
         self.w = windowSize[0]
         self.h = windowSize[1]
@@ -48,8 +52,8 @@ class Detection:
     def run(self):
         while not self.stopped:
             if not self.screenshot is None:
-                # do object detection
-                tempList= [[],[],[]]
+                # create empty nested list
+                tempList= len(self.classes)*[[]]
                 results = self.model(self.screenshot)
                 self.labels, self.cord = results.xyxyn[0][:, -1].cpu().numpy(), results.xyxyn[0][:, :-1].cpu().numpy()
                 self.n = len(self.labels)
@@ -61,6 +65,7 @@ class Detection:
                         if self.classes[int(self.labels[i])] == "Player":
                             midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
                         if self.classes[int(self.labels[i])] == "Enemy":
+                            #standardised enemy height and their label
                             height = y2 - y1
                             y1 = y1 + (height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
@@ -70,3 +75,15 @@ class Detection:
                 self.results = tempList
                 sleep(0.01)
                 self.lock.release()
+    
+    def annotate(self):
+        bgr = (0, 0, 255)
+        if self.results:
+            for i in range(len(self.results)):
+                    #if the list is not empty
+                    if self.results[i]:
+                        for cord in self.results[i]:
+                            cv.drawMarker(self.screenshot, cord , bgr ,thickness=2,markerType= cv.MARKER_CROSS,
+                                        line_type=cv.LINE_AA, markerSize=50) 
+                            cv.putText(self.screenshot, self.classes[i], cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)
+        return self.screenshot
