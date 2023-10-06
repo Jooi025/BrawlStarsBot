@@ -39,7 +39,7 @@ bot = Brawlbot(windowSize, speed, range)
 wincap.start()
 detector.start()
 screendetect.start()
-# bot.start()
+bot.start()
  
 loop_time = time()
 while 1:
@@ -68,13 +68,16 @@ while 1:
         print("start bot")
         bot.timestamp = time()
         bot.state = BotState.INITIALIZING
-        bot.start()
         #wait for game to load
-        sleep(3)
+        sleep(10)
+        bot.start()
 
     #for DEBUG purposes
     if DEBUG:
-        fps=(1 / (time() - loop_time))
+        try:
+            fps=(1 / (time() - loop_time))
+        except ZeroDivisionError:
+            fps = 0.01
         annotated_image = detector.annotate(fps)
         cv.imshow("Brawl Stars Bot",annotated_image)
         loop_time = time()

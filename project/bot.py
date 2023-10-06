@@ -266,7 +266,7 @@ class Brawlbot:
                     print("Moving to bush")
                     if not self.have_stopped_moving():
                         # wait a short time to allow for the character position to change
-                        sleep(0.500)
+                        sleep(0.05)
                     #if player is stuck
                     else:
                         # cancel moving 
