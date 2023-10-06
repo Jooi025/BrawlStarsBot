@@ -20,7 +20,7 @@ class Detection:
         # create a thread lock object
         self.lock = Lock()
         # load the trained model
-        self.model = torch.hub.load('', 'custom', model_file_path,source="local")
+        self.model = torch.hub.load('yolov5', 'custom', model_file_path,source="local")
         # use gpu for dectection
         self.model.cuda()
 
