@@ -3,15 +3,35 @@ from threading import Thread, Lock
 from time import sleep
 class Detectstate:
     IDLE = 0
+    """
+    When state exit,play and load is finished, state is changed to IDLE so 
+    it doesn't spam the terminal with print.
+    """
     DETECT = 1
+    """
+    Actively check if player is defeated, play again button and loading in.
+    """
     EXIT = 2
+    """
+    When brawler is defeated, exit the match and stop the bot.
+    """
     PLAY = 3
+    """
+    When play again is showed, press it and stop the bot.
+    """
     LOAD = 4 
+    """
+    When loading into the match, start the bot
+    """
 class Screendetect:
+    #RGB value
     defeatedColor = (62,0,0)      
     playColor = (224, 186, 8)
     loadColor = (224,22,22)
     def __init__(self,windowSize) -> None:
+        """
+        Constructor for the Screendectect class
+        """
         self.state = Detectstate.DETECT
         self.lock = Lock()
         self.w = windowSize[0]

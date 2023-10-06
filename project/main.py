@@ -2,10 +2,10 @@ import cv2 as cv
 from time import time,sleep
 from windowcapture import WindowCapture
 from detection import Detection
-from open import draw
 from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
 import pyautogui
+
 
 DEBUG= 1
 # brawler characteristic
@@ -16,8 +16,7 @@ to the midpoint of "circle" divide by the height of window size
 """
 heightScaleFactor = 0.154 
 speed = 2.4 # units: (tiles per second)
-range = 1
-
+range = 1 # 0 for short, 1 for medium and 2 for long range
 
 # initialize the WindowCapture class
 wincap = WindowCapture('Bluestacks App Player')
@@ -28,7 +27,7 @@ windowSize = (wincap.w, wincap.h)
 screendetect = Screendetect(windowSize)
 
 #initialize dectection classes 
-model_file_path = "project/best.engine"
+model_file_path = "BrawlStarsBot/project/best.engine"
 classes = ["Player","Bush","Enemy"]
 threshold = 0.43
 detector=Detection(windowSize, model_file_path, classes,threshold, heightScaleFactor)
@@ -40,14 +39,9 @@ bot = Brawlbot(windowSize, speed, range)
 wincap.start()
 detector.start()
 screendetect.start()
-bot.start()
-
-#for debug
-if DEBUG:
-    print(windowSize)
-    
+# bot.start()
+ 
 loop_time = time()
-results = None
 while 1:
 
     if wincap.screenshot is None:
@@ -57,35 +51,19 @@ while 1:
 
     if bot.state == BotState.INITIALIZING:
         bot.update_results(detector.results)
-
     elif bot.state == BotState.SEARCHING:
         bot.update_results(detector.results)
-
     elif bot.state == BotState.MOVING:
         bot.update_screenshot(wincap.screenshot)
         bot.update_results(detector.results)
-
     elif bot.state == BotState.HIDING:
         bot.update_results(detector.results)
 
-    #for DEBUG purposes
-    if DEBUG:
-        annotated_image = draw(wincap.screenshot,detector.results,classes)
-        cv.drawMarker(annotated_image, (int(wincap.w/2),int((wincap.h/2)+22)), (0,255,0) ,thickness=2,markerType= cv.MARKER_CROSS,
-                                    line_type=cv.LINE_AA, markerSize=50) 
-        cv.imshow("DEBUG", annotated_image)
-    try:
-            fps=(1 / (time() - loop_time))
-            cv.putText(annotated_image,f"FPS:{int(fps)}",(20,wincap.h-20),cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-    except:
-        pass
-    loop_time = time()
 
     if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
         print("stop bot")
         pyautogui.mouseUp(button = "right")
         bot.stop()
-
     if screendetect.state ==  Detectstate.LOAD:
         print("start bot")
         bot.timestamp = time()
@@ -94,7 +72,13 @@ while 1:
         #wait for game to load
         sleep(3)
 
-    
+    #for DEBUG purposes
+    if DEBUG:
+        fps=(1 / (time() - loop_time))
+        annotated_image = detector.annotate(fps)
+        cv.imshow("Brawl Stars Bot",annotated_image)
+        loop_time = time()
+
     # Press q to exit the script                                      
     key = cv.waitKey(1)
     if key == ord('q'):

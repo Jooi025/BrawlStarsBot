@@ -23,7 +23,6 @@ class Detection:
         self.model = torch.hub.load('', 'custom', model_file_path,source="local")
         # use gpu for dectection
         self.model.cuda()
-        self.model.multi_label = False
 
         self.classes = classes
         self.w = windowSize[0]
@@ -76,14 +75,21 @@ class Detection:
                 sleep(0.01)
                 self.lock.release()
     
-    def annotate(self):
-        bgr = (0, 0, 255)
+    def annotate(self,fps):
+        sleep(0.001)
+        red = (0, 0, 255) # bgr
+        green = (0, 255, 0)
         if self.results:
             for i in range(len(self.results)):
                     #if the list is not empty
                     if self.results[i]:
                         for cord in self.results[i]:
-                            cv.drawMarker(self.screenshot, cord , bgr ,thickness=2,markerType= cv.MARKER_CROSS,
+                            cv.drawMarker(self.screenshot, cord , red ,thickness=1,markerType= cv.MARKER_CROSS,
                                         line_type=cv.LINE_AA, markerSize=50) 
-                            cv.putText(self.screenshot, self.classes[i], cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)
+                            cv.putText(self.screenshot, self.classes[i], cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)
+        #draw midpoint crosshair                    
+        cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+22)), green ,thickness=1,markerType= cv.MARKER_CROSS,
+                                    line_type=cv.LINE_AA, markerSize=50) 
+        #display FPS
+        cv.putText(self.screenshot,f"FPS:{int(fps)}",(20,self.h-20),cv.FONT_HERSHEY_SIMPLEX, 1, green, 2)
         return self.screenshot

@@ -1,14 +1,10 @@
 import cv2 as cv
 import numpy as np
-from time import time,sleep
+from time import time
 from windowcapture import WindowCapture
 import torch
 
-
-
-# model = torch.hub.load('ultralytics/yolov5', 'custom', path='C:/Users/josep/Desktop/yolov5 brawl/yolov5/static/best.pt', force_reload=True)
-# model = torch.hub.load('ultralytics/yolov5', 'custom', 'static3/best.onnx')
-model = torch.hub.load('ultralytics/yolov5', 'custom', 'project/best.engine',force_reload=True)
+model = torch.hub.load('ultralytics/yolov5', 'custom', 'BrawlStarsBot/project/best.engine',force_reload=True)
 # initialize the WindowCapture class
 wincap = WindowCapture('Bluestacks App Player')
 #get window dimension
@@ -18,7 +14,7 @@ w,h=wincap.get_dimension()
 classes = ["Player","Bush","Enemy"]
 
 model.cuda()
-model.multi_label = False
+# model.multi_label = False
 
 loop_time = time()
 

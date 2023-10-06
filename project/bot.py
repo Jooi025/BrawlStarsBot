@@ -141,6 +141,7 @@ class Brawlbot:
             moveTime = tileDistance/self.speed
             moveTime = moveTime * self.timeFactor
             return moveTime
+    
     def random_movement(self):
         if self.storm_direction():
             move_keys = self.storm_direction()
@@ -180,8 +181,10 @@ class Brawlbot:
         
     def attack(self):
         if self.counter%4 == 0:
+            # activate "gadget"
             pyautogui.press("f")
             sleep(0.01)
+        # activate "super"
         pyautogui.press("e")
         sleep(0.01)
         pyautogui.press("space")
@@ -279,6 +282,7 @@ class Brawlbot:
                         sleep(0.01)
                     #enemy is in range
                     else:
+                        sleep(0.01)
                         print("Attacking enemy")
                         self.attack()
                 # player successfully travel to the selected bush 
@@ -299,11 +303,13 @@ class Brawlbot:
                         sleep(0.01)
                     #enemy is in range
                     else:
+                        sleep(0.01)
                         print("Attacking enemy")
+                        self.random_movement()
                         self.attack()
                 else:
-                    self.lock.acquire()
                     print("Changing state to search")
+                    self.lock.acquire()
                     self.state = BotState.SEARCHING
                     self.lock.release()
             
