@@ -1,6 +1,8 @@
 # BrawlStarsBot
 Brawl stars bot for farming mastery through solo showdown. 
 
+**NOTE: might need to train your model as the "player" is train for the player name "Deku" for my model.**
+
 Inspired by [OpenCV Object Detection in Games Python Tutorial playlist by "Learn Code By Gaming"](https://www.youtube.com/watch?v=KecMlLUuiE4&list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI) 
 
 Used yolov5 for object dectection, followed ["How To Train YOLOv5 For Recognizing Game Objects In Real-Time" by "Jes Fink-Jensen"](https://betterprogramming.pub/how-to-train-yolov5-for-recognizing-custom-game-objects-in-real-time-9d78369928a8) (might need to sign in to medium), tutorial for how to get started with yolov5.
