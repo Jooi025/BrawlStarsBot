@@ -16,7 +16,7 @@ Bluestacks app player is used to emulate brawl stars onto computer. Bluestacks d
 Modified game control I used:
 ![Alt text](project/control/controlSetup.jpg?raw=true "Example of gamecontrol in Bluestacks")
 
-Game control scheme as shown can be found at the [control folder](https://github.com/Jooi025/BrawlStarsBot/tree/main/project/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5).
+Game control scheme (com.supercell.brawlstars.cfg) as shown can be found at the [control folder](https://github.com/Jooi025/BrawlStarsBot/tree/main/project/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5).
 
 Macro is intergrated into the code to automate when "player" is defeated.
 
