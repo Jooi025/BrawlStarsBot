@@ -30,7 +30,6 @@ class WindowCapture:
             self.hwnd = win32gui.GetDesktopWindow()
         else:
             self.hwnd = win32gui.FindWindow(None, window_name)
-            win32gui.SetForegroundWindow(self.hwnd)
             if not self.hwnd:
                 raise Exception('Window not found: {}'.format(window_name))
 
@@ -51,6 +50,11 @@ class WindowCapture:
         # images into actual screen positions
         self.offset_x = window_rect[0] + self.cropped_x
         self.offset_y = window_rect[1] + self.cropped_y
+    
+    
+    def set_window(self):
+        win32gui.SetForegroundWindow(self.hwnd)
+        
     def get_dimension(self):
         return self.w,self.h
 

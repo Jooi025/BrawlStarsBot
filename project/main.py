@@ -22,6 +22,7 @@ def main():
 
     # initialize the WindowCapture class
     wincap = WindowCapture('Bluestacks App Player')
+
     # get window dimension
     windowSize = (wincap.w, wincap.h)
 
@@ -36,7 +37,8 @@ def main():
 
     #initialize bot class
     bot = Brawlbot(windowSize, speed, range)
-
+    wincap.set_window()
+    
     #start thread
     wincap.start()
     detector.start()
@@ -85,7 +87,7 @@ def main():
 
         # Press q to exit the script                                      
         key = cv.waitKey(1)
-        if key == ord('q'):
+        if key == ord('q') or keyboard.is_pressed('q'):
             #stop all threads
             wincap.stop()
             detector.stop()
