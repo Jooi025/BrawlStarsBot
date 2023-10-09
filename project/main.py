@@ -9,7 +9,7 @@ import os
 import keyboard
 
 def main():
-    debugCounter = 0
+    DEBUG = 1
     # brawler characteristic
     # change the value for different brawlers
     """ 
@@ -25,8 +25,7 @@ def main():
     
     # get window dimension
     windowSize = (wincap.w, wincap.h)
-    # set target window as foreground
-    wincap.set_window()
+    
 
     #initialize screendectect classes 
     screendetect = Screendetect(windowSize)
@@ -39,7 +38,9 @@ def main():
 
     #initialize bot class
     bot = Brawlbot(windowSize, speed, range)
-    
+    # set target window as foreground
+    wincap.set_window()
+
     #start thread
     wincap.start()
     detector.start()
@@ -77,10 +78,7 @@ def main():
             bot.start()
 
         #for DEBUG purposes
-        # to toggle DEBUG press "d"
-        if keyboard.is_pressed('d'):
-            debugCounter += 1 
-        if debugCounter%2 == 0:
+        if DEBUG:
             try:
                 fps=(1 / (time() - loop_time))
             except ZeroDivisionError:
