@@ -95,7 +95,7 @@ class Screendetect:
             
             elif self.state == Detectstate.EXIT:
                 pyautogui.mouseUp(button = "right")
-                sleep(1)
+                sleep(3)
                 pyautogui.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
                 sleep(0.05)
                 self.lock.acquire()
