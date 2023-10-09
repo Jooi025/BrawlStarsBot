@@ -1,8 +1,8 @@
 # BrawlStarsBot
 Brawl stars bot for farming mastery through solo showdown. 
 
-**NOTE: might need to train your own model as the "player" is train for the player name "Deku" for my model.**
-
+**DISCLAIMER: might need to train your own model as the "player" is train for the player name "Deku" for my model.**
+Will try to change this next iteration
 ![Alt text](project/image/player.jpg?raw=true " ")
 
 Inspired by [OpenCV Object Detection in Games Python Tutorial playlist by "Learn Code By Gaming"](https://www.youtube.com/watch?v=KecMlLUuiE4&list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI) 
