@@ -7,31 +7,31 @@ import numpy as np
 import random
 class BotState:
     INITIALIZING = 0
-    # stating the bot
+    # starting the bot
     
     SEARCHING = 1
-    # searching for bush to hide
-
-    # will try to search for the closest bush without enemy presence 
+    """
+    searching for bush to hide
+    will try to search for the closest bush to the midpoint 
+    """
     
     MOVING = 2
-    # move to the selected bush
-    # brawler's tile speed and tile distance is used to calculate the time it takes
-    # will know when "player" is stuck on obstacle (using opencv to calculate the 
-    # similarity of previous screenshot and the current screenshot )
+    """
+    Move to the selected bush.
+    Brawler's tile speed and tile distance is used to calculate the time it takes
+    and it will know when "player" is stuck on obstacle (using opencv to calculate the 
+    similarity of previous screenshot and the current screenshot )
     
-    #if enemy or storm is near the path it will try to search for another bush
+    if enemy or storm is near the path it will try to search for another bush
+    """
     HIDING = 3
-    # when "player" is inside the bush 
+    """
+    when "player" is inside the bush 
+    if enemy is close
+    attack depends on brawler range (short,medium,long) 
+    and distance to enemy (in tiles)
+    """
     
-    # RELOCATE = 4
-    # #if there is a storm or enemy close by
-    
-    # ATTACK = 5
-    # # if enemy is close
-    # # attack depends on brawler range (short,medium,long) 
-    # # and distance to enemy (in tiles)
-
 class Brawlbot:
     # tile constant
     tile_w = 26.75
@@ -128,6 +128,7 @@ class Brawlbot:
                 return []
             else:
                 return [x,y]
+            
     def bot_move(self):
         #get the nearest bush to the player
         if self.bushResult:
@@ -229,7 +230,6 @@ class Brawlbot:
         self.movement_screenshot = self.screenshot.copy()
         return False
     
-
     def update_screenshot(self, screenshot):
         self.lock.acquire()
         self.screenshot = screenshot
@@ -316,8 +316,7 @@ class Brawlbot:
                     else:
                         sleep(0.01)
                         print("Attacking enemy")
-                        self.random_movement_attack()
-                        
+                        self.random_movement_attack()     
                 else:
                     print("Changing state to search")
                     self.lock.acquire()
