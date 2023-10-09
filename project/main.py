@@ -9,7 +9,7 @@ import os
 import keyboard
 
 def main():
-    DEBUG= 1
+    debugCounter = 0
     # brawler characteristic
     # change the value for different brawlers
     """ 
@@ -22,9 +22,11 @@ def main():
 
     # initialize the WindowCapture class
     wincap = WindowCapture('Bluestacks App Player')
-
+    
     # get window dimension
     windowSize = (wincap.w, wincap.h)
+    # set target window as foreground
+    wincap.set_window()
 
     #initialize screendectect classes 
     screendetect = Screendetect(windowSize)
@@ -37,7 +39,6 @@ def main():
 
     #initialize bot class
     bot = Brawlbot(windowSize, speed, range)
-    wincap.set_window()
     
     #start thread
     wincap.start()
@@ -76,7 +77,10 @@ def main():
             bot.start()
 
         #for DEBUG purposes
-        if DEBUG:
+        # to toggle DEBUG press "d"
+        if keyboard.is_pressed('d'):
+            debugCounter += 1 
+        if debugCounter%2 == 0:
             try:
                 fps=(1 / (time() - loop_time))
             except ZeroDivisionError:
