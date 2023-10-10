@@ -4,7 +4,7 @@ from time import time
 from windowcapture import WindowCapture
 import torch
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', 'BrawlStarsBot/project/best.engine',force_reload=True)
+model = torch.hub.load('ultralytics/yolov5', 'custom', 'BrawlStarsBot/best.engine',force_reload=True)
 # initialize the WindowCapture class
 wincap = WindowCapture('Bluestacks App Player')
 #get window dimension
