@@ -101,8 +101,8 @@ def main():
 
 while True:
     print("1. Start Bot")
-    print("2. Set timer")
-    print("3. Cancel timer")
+    print("2. Set shutdown timer")
+    print("3. Cancel shutdown timer")
     print("4. Exit")
     user_input = input("Select: ")
     print("")
@@ -113,7 +113,7 @@ while True:
             hour = int(input("How many hour before shutdown? "))
             second = 3600 * hour
             os.system(f'cmd /c "shutdown -s -t {second}"')
-            print(f"Shuting down in {hour}hour")
+            print(f"Shuting down in {hour} hour")
         except ValueError:
             print("Please enter a valid input!")
 
