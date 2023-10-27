@@ -1,5 +1,9 @@
 # BrawlStarsBot
 Brawl stars bot for farming mastery through solo showdown. 
+## Requirement
+* [Bluestacks 5 or 10](https://www.bluestacks.com/download.html) to run brawl star
+* Nvidia graphics card (will try to change this to include cpu and non nvidia gpus next iteration)
+* Pytorch, tensorRT and [yoloV5  required libraries ](https://github.com/ultralytics/yolov5/blob/master/requirements.txt)
 
 ## Info
 
