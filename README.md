@@ -8,7 +8,7 @@ Used yolov5 for object detection, followed ["How To Train YOLOv5 For Recognizing
 
 ****Demo of the bot:****
 
-[![Watch the video](https://i.ytimg.com/vi/kp5izpAKA-Y/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARgZIF0ofzAP&rs=AOn4CLDLrezfKBU2L-UIAQopux8OV5i3pA)](https://www.youtube.com/watch?v=kp5izpAKA-Y)
+[![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/image/youtube_thumbnail.jpg)](https://www.youtube.com/watch?v=kp5izpAKA-Y)
 
 Bluestacks app player is used to emulate brawl stars onto computer. Bluestacks default game control is modified. Bot works well with tanky brawlers and on maps with little obstacle (wall,bush,fence,etc) and lot of bush.
 A recomended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
