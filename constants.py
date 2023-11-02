@@ -4,7 +4,12 @@ class Constants:
     speed = 2.4 # units: (tiles per second)
     range = 1 # 0 for short, 1 for medium and 2 for long range
     
-    # Do not change these
+    #! Do not change these
+    # Windowcapture contants
     window_name = 'Bluestacks App Player'
-    model_file_path = "BrawlStarsBot/model/best.onnx"
+    
+    # Detector contants
+    model_file_path = "model/best.onnx"
+    threshold = 0.5
+    classes = ["Player","Bush","Enemy"]
     heightScaleFactor = 0.154 

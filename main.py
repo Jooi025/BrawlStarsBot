@@ -20,9 +20,7 @@ def main():
     screendetect = Screendetect(windowSize)
 
     #initialize dectection classes 
-    classes = ["Player","Bush","Enemy"]
-    threshold = 0.34
-    detector=Detection(windowSize, Constants.model_file_path, classes, threshold, Constants.heightScaleFactor)
+    detector=Detection(windowSize, Constants.model_file_path, Constants.classes, Constants.threshold, Constants.heightScaleFactor)
 
     #initialize bot class
     bot = Brawlbot(windowSize, Constants.speed, Constants.range)
