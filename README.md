@@ -32,9 +32,10 @@ Modified game control :
 
 move and resize the movement joystick as showned and ****select the locked movement control****
 
- 3. Change the speed and range in "Contants.py" to the brawler's speed and range
- 4. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
- 5. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
+ 3. Run "detection_test.py" to check if object detection is working
+ 4. Change the speed and range in "Contants.py" to the brawler's speed and range
+ 5. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
+ 6. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
 
 
 
