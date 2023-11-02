@@ -3,7 +3,6 @@ import torch
 from time import sleep
 import cv2 as cv
 
-
 class Detection:
     # threading properties
     stopped = True
@@ -22,8 +21,10 @@ class Detection:
         # load the trained model
         self.model = torch.hub.load("ultralytics/yolov5", 'custom', model_file_path)
         
-        # use gpu for dectection
+        # use gpu for detection
         # self.model.cuda()
+
+        #us cpu for detection 
         self.model.cpu()
 
         self.classes = classes

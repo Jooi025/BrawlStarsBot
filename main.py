@@ -21,7 +21,7 @@ def main():
 
     #initialize dectection classes 
     classes = ["Player","Bush","Enemy"]
-    threshold = 0.43
+    threshold = 0.34
     detector=Detection(windowSize, Constants.model_file_path, classes, threshold, Constants.heightScaleFactor)
 
     #initialize bot class
