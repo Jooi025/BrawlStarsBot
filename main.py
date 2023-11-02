@@ -30,8 +30,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    # screendetect.start()
-    # bot.start()
+    screendetect.start()
+    bot.start()
     
     loop_time = time()
     while True:
