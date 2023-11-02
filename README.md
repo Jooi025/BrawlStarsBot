@@ -1,5 +1,5 @@
 # BrawlStarsBot
-Brawl stars bot for farming mastery through solo showdown. Bot will find bushes and hide, its also attacks enemy if they are within the range. Macro is intergrated into the code to automate when defeated, it will queue up for another match. Noted that you could lose trophy while using the bot. However, if you pick the right brawler and on the right map you could gain trophies.
+Brawl stars bot for farming mastery through solo showdown. Bot will find bushes and hide, its also attacks enemy if they are within the range. Macro is intergrated into the code to automate when defeated, it will queue up for another match. Noted that you could lose trophy while using the bot. However, if you pick the right brawler and on the right map you could gain trophies. Bot works well with name tag around four characters.
 
 ## Info
 Inspired by [OpenCV Object Detection in Games Python Tutorial playlist by "Learn Code By Gaming"](https://www.youtube.com/watch?v=KecMlLUuiE4&list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI).
