@@ -29,7 +29,9 @@ pip install -r requirements.txt
 Game control scheme (com.supercell.brawlstars.cfg) as shown can be found at the [bluestacks game control](https://github.com/Jooi025/BrawlStarsBot/tree/main/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5). 
 
 Modified game control :
+
 ![Alt text](control/controlSetup.jpg?raw=true "Example of gamecontrol in Bluestacks")
+
 move and resize the movement joystick as showned and ****select the locked movement control****
 
  3. Change the speed and range in "Contants.py" to the brawler's speed and range
