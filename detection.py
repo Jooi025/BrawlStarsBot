@@ -21,8 +21,10 @@ class Detection:
         self.lock = Lock()
         # load the trained model
         self.model = torch.hub.load("ultralytics/yolov5", 'custom', model_file_path)
+        
         # use gpu for dectection
-        self.model.cuda()
+        # self.model.cuda()
+        self.model.cpu()
 
         self.classes = classes
         self.w = windowSize[0]

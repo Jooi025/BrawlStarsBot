@@ -31,7 +31,7 @@ def main():
     screendetect = Screendetect(windowSize)
 
     #initialize dectection classes 
-    model_file_path = "BrawlStarsBot/best.engine"
+    model_file_path = "BrawlStarsBot/model/best.onnx"
     classes = ["Player","Bush","Enemy"]
     threshold = 0.43
     detector=Detection(windowSize, model_file_path, classes,threshold, heightScaleFactor)
@@ -44,8 +44,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    screendetect.start()
-    bot.start()
+    # screendetect.start()
+    # bot.start()
     
     loop_time = time()
     while 1:
