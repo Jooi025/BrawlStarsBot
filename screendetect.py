@@ -1,28 +1,25 @@
 import pyautogui
 from threading import Thread, Lock
 from time import sleep
+
+"""
+IDLE: When state exit,play and load is finished, state is changed to IDLE so 
+it doesn't spam the terminal with print.
+
+DETECT: Actively check if player is defeated, play again button and loading in.
+
+EXIT: When brawler is defeated, exit the match and stop the bot.
+
+PLAY: When play again is showed, press it and stop the bot.
+
+LOAD: When loading into the match, start the bot
+"""
 class Detectstate:
     IDLE = 0
-    """
-    When state exit,play and load is finished, state is changed to IDLE so 
-    it doesn't spam the terminal with print.
-    """
     DETECT = 1
-    """
-    Actively check if player is defeated, play again button and loading in.
-    """
     EXIT = 2
-    """
-    When brawler is defeated, exit the match and stop the bot.
-    """
     PLAY = 3
-    """
-    When play again is showed, press it and stop the bot.
-    """
     LOAD = 4 
-    """
-    When loading into the match, start the bot
-    """
 class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)      
@@ -48,7 +45,6 @@ class Screendetect:
 
     def stop(self):
         self.stopped = True
-
 
     def run(self):
         while not self.stopped:
@@ -78,8 +74,9 @@ class Screendetect:
                         self.lock.release()
                 except:
                     pass
-
+                        
             elif self.state == Detectstate.PLAY:
+                # click the play button 
                 sleep(0.05)
                 pyautogui.click(x = self.playButton[0], y = self.playButton[1],button="left")
                 sleep(0.05)
@@ -94,16 +91,12 @@ class Screendetect:
                 self.lock.release()
             
             elif self.state == Detectstate.EXIT:
+                # release right click 
                 pyautogui.mouseUp(button = "right")
                 sleep(5)
+                # click the exit button 
                 pyautogui.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
                 self.lock.release()
-
-
-
-
-
-        

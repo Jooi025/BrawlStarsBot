@@ -6,38 +6,26 @@ from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
 import pyautogui
 import os
-import keyboard
+from constants import Constants
 
 def main():
     DEBUG = 1
-    # brawler characteristic
-    # change the value for different brawlers
-    """ 
-    heightScaleFactor is the pixel distance from midpoint of nametag 
-    to the midpoint of "circle" divide by the height of window size
-    """
-    heightScaleFactor = 0.154 
-    speed = 2.4 # units: (tiles per second)
-    range = 1 # 0 for short, 1 for medium and 2 for long range
-
-    # initialize the WindowCapture class
-    wincap = WindowCapture('Bluestacks App Player')
     
+    # initialize the WindowCapture class
+    wincap = WindowCapture(Constants.window_name)
     # get window dimension
     windowSize = (wincap.w, wincap.h)
     
-
     #initialize screendectect classes 
     screendetect = Screendetect(windowSize)
 
     #initialize dectection classes 
-    model_file_path = "BrawlStarsBot/model/best.onnx"
     classes = ["Player","Bush","Enemy"]
     threshold = 0.43
-    detector=Detection(windowSize, model_file_path, classes,threshold, heightScaleFactor)
+    detector=Detection(windowSize, Constants.model_file_path, classes, threshold, Constants.heightScaleFactor)
 
     #initialize bot class
-    bot = Brawlbot(windowSize, speed, range)
+    bot = Brawlbot(windowSize, Constants.speed, Constants.range)
     # set target window as foreground
     wincap.set_window()
 
@@ -48,12 +36,14 @@ def main():
     # bot.start()
     
     loop_time = time()
-    while 1:
+    while True:
         if wincap.screenshot is None:
             continue
-
+        
+        # update screenshot to detector 
         detector.update(wincap.screenshot)
 
+        # check bot stae
         if bot.state == BotState.INITIALIZING:
             bot.update_results(detector.results)
         elif bot.state == BotState.SEARCHING:
@@ -64,7 +54,7 @@ def main():
         elif bot.state == BotState.HIDING:
             bot.update_results(detector.results)
 
-
+        # check screendetect state
         if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
             print("stop bot")
             pyautogui.mouseUp(button = "right")
@@ -77,7 +67,7 @@ def main():
             sleep(7)
             bot.start()
 
-        #for DEBUG purposes
+        # display annotated window with FPS
         if DEBUG:
             try:
                 fps=(1 / (time() - loop_time))
@@ -89,7 +79,7 @@ def main():
 
         # Press q to exit the script                                      
         key = cv.waitKey(1)
-        if key == ord('q') or keyboard.is_pressed('q'):
+        if key == ord('q'):
             #stop all threads
             wincap.stop()
             detector.stop()
@@ -106,8 +96,12 @@ while True:
     print("4. Exit")
     user_input = input("Select: ")
     print("")
+
+    # run the bot
     if user_input == "1":
         main()
+
+    # use cmd to start a shutdown timer 
     elif user_input == "2":
         try:
             hour = int(input("How many hour before shutdown? "))
@@ -117,10 +111,12 @@ while True:
         except ValueError:
             print("Please enter a valid input!")
 
+    # use cmd to cancel shutdown timer
     elif user_input == "3":
         os.system('cmd /c "shutdown -a"')
         print("Shutdown timer cancelled")
 
+    # exit
     elif user_input =="4":
         print("Exitting")
         break

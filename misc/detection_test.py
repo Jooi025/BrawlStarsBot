@@ -1,20 +1,17 @@
 import cv2 as cv
-import numpy as np
 from time import time
 from windowcapture import WindowCapture
 import torch
+from constants import Constants
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', 'BrawlStarsBot/model/best.onnx',force_reload=True)
+model = torch.hub.load('ultralytics/yolov5', 'custom', Constants.model_file_path,force_reload=True)
 # initialize the WindowCapture class
-wincap = WindowCapture('Bluestacks App Player')
+wincap = WindowCapture(Constants.window_name)
 #get window dimension
 w,h=wincap.get_dimension()
 
 #object detection
 classes = ["Player","Bush","Enemy"]
-
-# model.cuda()
-# model.multi_label = False
 
 loop_time = time()
 
