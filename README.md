@@ -22,12 +22,20 @@ git clone https://github.com/Jooi025/BrawlStarsBot.git
 cd BrawlStarsBot
 pip install -r requirements.txt
 ```
-2. Import bluestacks game control and modify brawl stars control
+2. Import bluestacks game control and modify brawl stars control in training ground
 
-Modified game control I used:
+
+
+Game control scheme (com.supercell.brawlstars.cfg) as shown can be found at the [bluestacks game control](https://github.com/Jooi025/BrawlStarsBot/tree/main/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5). 
+
+Modified game control :
 ![Alt text](control/controlSetup.jpg?raw=true "Example of gamecontrol in Bluestacks")
+move and resize the movement joystick as showned and ****select the locked movement control****
 
-Game control scheme (com.supercell.brawlstars.cfg) as shown can be found at the [bluestacks game control](https://github.com/Jooi025/BrawlStarsBot/tree/main/project/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5). 
+ 3. Change the speed and range in "Contants.py" to the brawler's speed and range
+ 4. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
+ 5. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
+
 
 
 
