@@ -9,7 +9,7 @@ Used yolov5 for object detection, followed ["How To Train YOLOv5 For Recognizing
 ****Demo of the bot: https://youtu.be/kp5izpAKA-Y****
 
 Bluestacks app player is used to emulate brawl stars onto computer. Bluestacks default game control is modified. Bot works well with tanky brawlers and on maps with little obstacle (wall,bush,fence,etc) and lot of bush.
-One of the recomended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
+A recomended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
 
 ## Requirement
 * [Bluestacks 5](https://www.bluestacks.com/download.html) to run brawl star
@@ -23,8 +23,6 @@ cd BrawlStarsBot
 pip install -r requirements.txt
 ```
 2. Import bluestacks game control and modify brawl stars control in training ground
-
-
 
 Game control scheme (com.supercell.brawlstars.cfg) as shown can be found at the [bluestacks game control](https://github.com/Jooi025/BrawlStarsBot/tree/main/control), you would need to import com.supercell.brawlstars.cfg to the control editor of Bluestacks [(tutorial on how to import game control)](https://support.bluestacks.com/hc/en-us/articles/360056129291-How-to-import-your-game-controls-from-BlueStacks-4-and-use-them-in-BlueStacks-5). 
 
