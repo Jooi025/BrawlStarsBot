@@ -39,6 +39,14 @@ move and resize the movement joystick as showned and ****select the locked movem
  5. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
  6. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
 
+ ## Improvement to be made
+ - [ ] bot can attack power cube boxes and collect them
+ - [ ] improve detection on enemy (less false detect)
+ - [ ] change player detection
+ - [ ] improve storm direction function 
+ - [ ] improve the screendetect of "defeated"
+ - [ ] fix spam printing of "stop bot" 
+
 
 
 
