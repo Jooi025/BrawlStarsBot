@@ -6,7 +6,9 @@ Inspired by [OpenCV Object Detection in Games Python Tutorial playlist by "Learn
 Used yolov5 for object detection, followed ["How To Train YOLOv5 For Recognizing Game Objects In Real-Time" by "Jes Fink-Jensen"](https://betterprogramming.pub/how-to-train-yolov5-for-recognizing-custom-game-objects-in-real-time-9d78369928a8) (might need to sign in to medium), tutorial for how to get started with yolov5.
 
 
-****Demo of the bot: https://youtu.be/kp5izpAKA-Y****
+****Demo of the bot:****
+
+[![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/image/youtube_thumbnail.jpg)](https://www.youtube.com/watch?v=kp5izpAKA-Y)
 
 Bluestacks app player is used to emulate brawl stars onto computer. Bluestacks default game control is modified. Bot works well with tanky brawlers and on maps with little obstacle (wall,bush,fence,etc) and lot of bush.
 A recomended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
