@@ -4,12 +4,22 @@ class Constants:
     speed = 2.4 # units: (tiles per second)
     range = 1 # 0 for short, 1 for medium and 2 for long range
     
+    #! Change this to True if you have Nvidia graphics card and TensorRT installed
+    gpu = False
+
     #! Do not change these
     # Windowcapture contants
     window_name = 'Bluestacks App Player'
     
     # Detector contants
-    model_file_path = "model/best.onnx"
     threshold = 0.5
     classes = ["Player","Bush","Enemy"]
     heightScaleFactor = 0.154 
+    
+    if gpu:
+        # load TensorRT interface
+        model_file_path = "model/best.engine"
+    else:
+        # load ONNX interface
+        model_file_path = "model/best.onnx"
+    
