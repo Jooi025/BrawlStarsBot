@@ -2,7 +2,7 @@ from threading import Thread, Lock
 import torch
 from time import sleep
 import cv2 as cv
-
+from constants import Constants
 class Detection:
     # threading properties
     stopped = True
@@ -21,12 +21,13 @@ class Detection:
         # load the trained model
         self.model = torch.hub.load("ultralytics/yolov5", 'custom', model_file_path)
         
-        # use gpu for detection
-        # self.model.cuda()
-
-        #us cpu for detection 
-        self.model.cpu()
-
+        if Constants.gpu:
+            # use gpu for detection
+            self.model.cuda()
+        else:
+            #us cpu for detection 
+            self.model.cpu()
+            
         self.classes = classes
         self.w = windowSize[0]
         self.h = windowSize[1]

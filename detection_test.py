@@ -5,6 +5,10 @@ import torch
 from constants import Constants
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', Constants.model_file_path,force_reload=True)
+if Constants.gpu:
+    # use gpu for detection
+    model.cuda()
+
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
@@ -12,14 +16,12 @@ w,h=wincap.get_dimension()
 
 #object detection
 classes = Constants.classes
-
 loop_time = time()
 
 while(True):
-
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
-    
+
     results = model(screenshot)
     labels, cord = results.xyxyn[0][:, -1].cpu().numpy(), results.xyxyn[0][:, :-1].cpu().numpy()
 	
