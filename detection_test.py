@@ -8,12 +8,12 @@ model = torch.hub.load('ultralytics/yolov5', 'custom', Constants.model_file_path
 if Constants.gpu:
     # use gpu for detection
     model.cuda()
-
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
 w,h=wincap.get_dimension()
 
+print(w,h)
 #object detection
 classes = Constants.classes
 loop_time = time()
@@ -29,7 +29,19 @@ while(True):
     bgr = (0, 255,0)
     for i in range(n):
         row = cord[i]
-        if row[4] >= Constants.threshold:
+        # player class
+        if labels[i] == 0:
+            threshold = Constants.player_threshold
+        # bush class
+        elif labels[i] == 1:
+            threshold = Constants.bush_threshold
+        # enemy class
+        elif labels[i] == 2:
+            threshold = Constants.enemy_threshold
+        # cube box class
+        elif labels[i] == 3:
+            threshold = Constants.cubebox_threshold
+        if row[4] >= threshold:
             x1, y1, x2, y2 = int(row[0] * w), int(row[1] * h), int(row[2] * w), int(row[3] * h)
             cv.rectangle(screenshot, (x1, y1), (x2, y2), bgr, 2)
             cv.putText(screenshot, classes[int(labels[i])], (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)

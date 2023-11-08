@@ -9,17 +9,24 @@ class Constants:
 
     #! Do not change these
     # Windowcapture contants
-    window_name = 'Bluestacks App Player'
-    
-    # Detector contants
-    threshold = 0.5
-    classes = ["Player","Bush","Enemy"]
+    window_name = "Bluestacks App Player"
+    # Detector constants
+    player_threshold = 0.35
+    bush_threshold = 0.35
+    player_threshold = 0.35
+    enemy_threshold = 0.6
+    cubebox_threshold = 0.55
+    classes = ["Player","Bush","Enemy","Cubebox"]
     heightScaleFactor = 0.154 
     
-    if gpu:
+    if gpu is None:
+        # load pytorch interface
+        model_file_path = "new_model/best.pt"
+
+    elif gpu:
         # load TensorRT interface
-        model_file_path = "model/best.engine"
+        model_file_path = "new_model/best.engine"
     else:
         # load ONNX interface
-        model_file_path = "model/best.onnx"
+        model_file_path = "new_model/best.onnx"
     

@@ -3,6 +3,7 @@ import torch
 from time import sleep
 import cv2 as cv
 from constants import Constants
+
 class Detection:
     # threading properties
     stopped = True
@@ -12,7 +13,7 @@ class Detection:
     screenshot = None
     results = None
 
-    def __init__(self, windowSize, model_file_path, classes , threshold , heightScaleFactor):
+    def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
         """
         Constructor for the Detection class
         """
@@ -27,11 +28,10 @@ class Detection:
         else:
             #us cpu for detection 
             self.model.cpu()
-            
+
         self.classes = classes
         self.w = windowSize[0]
         self.h = windowSize[1]
-        self.threshold = threshold
         self.height = heightScaleFactor * self.h
     
     def find_midpoint(self,x1,y1,x2,y2):
@@ -61,8 +61,20 @@ class Detection:
                 self.labels, self.cord = results.xyxyn[0][:, -1].cpu().numpy(), results.xyxyn[0][:, :-1].cpu().numpy()
                 self.n = len(self.labels)
                 for i in range(self.n):
+                    # player class
+                    if self.labels[i] == 0:
+                        threshold = Constants.player_threshold
+                    # bush class
+                    elif self.labels[i] == 1:
+                        threshold = Constants.bush_threshold
+                    # enemy class
+                    elif self.labels[i] == 2:
+                        threshold = Constants.enemy_threshold
+                    # cube box class
+                    elif self.labels[i] == 3:
+                        threshold = Constants.cubebox_threshold
                     row = self.cord[i]
-                    if row[4] >= self.threshold:
+                    if row[4] >= threshold:
                         x1, y1, x2, y2 = int(row[0] * self.w), int(row[1] * self.h), int(row[2] * self.w), int(row[3] * self.h)
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
                         if self.classes[int(self.labels[i])] == "Player":
@@ -81,6 +93,7 @@ class Detection:
     
     def annotate(self,fps):
         sleep(0.001)
+        thickness = 2
         red = (0, 0, 255) # bgr
         green = (0, 255, 0)
         if self.results:
@@ -88,12 +101,17 @@ class Detection:
                     #if the list is not empty
                     if self.results[i]:
                         for cord in self.results[i]:
-                            cv.drawMarker(self.screenshot, cord , red ,thickness=1,markerType= cv.MARKER_CROSS,
-                                        line_type=cv.LINE_AA, markerSize=50) 
-                            cv.putText(self.screenshot, self.classes[i], cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)
+                            cv.drawMarker(self.screenshot, cord,
+                                           red ,thickness=thickness,
+                                           markerType= cv.MARKER_CROSS,
+                                           line_type=cv.LINE_AA, markerSize=50) 
+                            cv.putText(self.screenshot, self.classes[i], 
+                                       cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)
         #draw midpoint crosshair                    
-        cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+22)), green ,thickness=1,markerType= cv.MARKER_CROSS,
-                                    line_type=cv.LINE_AA, markerSize=50) 
+        cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+22)),
+                        green ,thickness=thickness,markerType= cv.MARKER_CROSS,
+                        line_type=cv.LINE_AA, markerSize=50) 
         #display FPS
-        cv.putText(self.screenshot,f"FPS:{int(fps)}",(20,self.h-20),cv.FONT_HERSHEY_SIMPLEX, 1, green, 2)
+        cv.putText(self.screenshot,f"FPS:{int(fps)}",(20,self.h-20),
+                   cv.FONT_HERSHEY_SIMPLEX, 1, green, 2)
         return self.screenshot

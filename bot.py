@@ -5,6 +5,8 @@ from math import *
 import pyautogui
 import numpy as np
 import random
+
+
 class BotState:
     INITIALIZING = 0
     # starting the bot

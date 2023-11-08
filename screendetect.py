@@ -20,6 +20,7 @@ class Detectstate:
     EXIT = 2
     PLAY = 3
     LOAD = 4 
+    
 class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)      
@@ -70,7 +71,6 @@ class Screendetect:
                         print("Exit")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
-                        print("change state to exit")
                         self.lock.release()
                 except:
                     pass

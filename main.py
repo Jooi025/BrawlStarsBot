@@ -20,7 +20,7 @@ def main():
     screendetect = Screendetect(windowSize)
 
     #initialize dectection classes 
-    detector=Detection(windowSize, Constants.model_file_path, Constants.classes, Constants.threshold, Constants.heightScaleFactor)
+    detector=Detection(windowSize, Constants.model_file_path, Constants.classes, Constants.heightScaleFactor)
 
     #initialize bot class
     bot = Brawlbot(windowSize, Constants.speed, Constants.range)
@@ -30,8 +30,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    screendetect.start()
-    bot.start()
+    # screendetect.start()
+    # bot.start()
     
     loop_time = time()
     while True:
