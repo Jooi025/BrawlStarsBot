@@ -95,7 +95,8 @@ def main():
             bot.stop()
             cv.destroyAllWindows()
             break
-    print('Done.')
+    print('Cursor not on bluestacks.')
+    print("Exiting bot")
 
 while True:
     print("1. Start Bot")
