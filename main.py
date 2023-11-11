@@ -1,61 +1,71 @@
 import cv2 as cv
 from time import time,sleep
 from windowcapture import WindowCapture
-from detection import Detection
 from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
+from detection import annotate,detection
 import pyautogui
 import os
 from constants import Constants
+import torch
 
 def main():
     DEBUG = 1
-    
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
     # get window dimension
     windowSize = (wincap.w, wincap.h)
-    
+
     #initialize screendectect classes 
     screendetect = Screendetect(windowSize)
 
-    #initialize dectection classes 
-    detector=Detection(windowSize, Constants.model_file_path, Constants.classes, Constants.heightScaleFactor)
-
     #initialize bot class
     bot = Brawlbot(windowSize, Constants.speed, Constants.range)
+    
     # set target window as foreground
+    sleep(0.5)
     wincap.set_window()
 
+    model = torch.hub.load("ultralytics/yolov5", 'custom', Constants.model_file_path)
+    if Constants.gpu:
+        # use gpu for detection
+        model.cuda()
+    else:
+        #us cpu for detection 
+        model.cpu()
+    
     #start thread
     wincap.start()
-    detector.start()
     screendetect.start()
     bot.start()
     
     loop_time = time()
+    classes = Constants.classes
     while True:
-        if wincap.screenshot is None:
-            continue
-        
-        # update screenshot to detector 
-        detector.update(wincap.screenshot)
+        screenshot = wincap.screenshot
 
-        # check bot stae
+        if screenshot is None:
+            continue
+
+        screenshot,detection_cord = detection(model,classes,screenshot,windowSize)     
+
+        # check bot state
         if bot.state == BotState.INITIALIZING:
-            bot.update_results(detector.results)
+            bot.update_results(detection_cord)
         elif bot.state == BotState.SEARCHING:
-            bot.update_results(detector.results)
+            bot.update_results(detection_cord)
         elif bot.state == BotState.MOVING:
-            bot.update_screenshot(wincap.screenshot)
-            bot.update_results(detector.results)
+            bot.update_screenshot(screenshot)
+            bot.update_results(detection_cord)
         elif bot.state == BotState.HIDING:
-            bot.update_results(detector.results)
+            bot.update_results(detection_cord)
+        elif bot.state == BotState.ATTACKING:
+            bot.update_results(detection_cord)
 
         # check screendetect state
         if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
-            print("stop bot")
-            pyautogui.mouseUp(button = "right")
+            print("stop")
+            pyautogui.mouseUp(button = Constants.movement_key)
             bot.stop()
         if screendetect.state ==  Detectstate.LOAD:
             print("start bot")
@@ -70,17 +80,17 @@ def main():
             try:
                 fps=(1 / (time() - loop_time))
             except ZeroDivisionError:
-                fps = 0.01
-            annotated_image = detector.annotate(fps)
-            cv.imshow("Brawl Stars Bot",annotated_image)
+                fps = 30
+            screenshot = annotate(windowSize,screenshot,fps)
+            cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
 
         # Press q to exit the script                                      
         key = cv.waitKey(1)
-        if key == ord('q'):
+        x_pos,y_pos = pyautogui.position()
+        if key == ord('q') or (x_pos>windowSize[0] or y_pos>windowSize[1]):
             #stop all threads
             wincap.stop()
-            detector.stop()
             screendetect.stop()
             bot.stop()
             cv.destroyAllWindows()

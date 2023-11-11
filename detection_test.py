@@ -13,7 +13,6 @@ wincap = WindowCapture(Constants.window_name)
 #get window dimension
 w,h=wincap.get_dimension()
 
-print(w,h)
 #object detection
 classes = Constants.classes
 loop_time = time()
@@ -48,6 +47,9 @@ while(True):
 
     # debug the loop rate
     fps=(1 / (time() - loop_time))
+    cv.drawMarker(screenshot, (int(w/2),int((h/2)+22)),
+                        bgr ,thickness=2,markerType= cv.MARKER_CROSS,
+                        line_type=cv.LINE_AA, markerSize=50) 
     cv.putText(screenshot,f"FPS:{int(fps)}",(20,h-20),cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
     cv.imshow("YOLOv5", screenshot)
     loop_time = time()

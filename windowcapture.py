@@ -1,7 +1,6 @@
 import numpy as np
 import win32gui, win32ui, win32con
 from threading import Thread, Lock
-from time import sleep
 
 
 class WindowCapture:
@@ -53,7 +52,8 @@ class WindowCapture:
     
     
     def set_window(self):
-        win32gui.SetForegroundWindow(self.hwnd)
+        if self.hwnd:
+            win32gui.SetForegroundWindow(self.hwnd)
         
     def get_dimension(self):
         return self.w,self.h
@@ -124,7 +124,6 @@ class WindowCapture:
         self.stopped = True
 
     def run(self):
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             # get an updated image of the game
             screenshot = self.get_screenshot()

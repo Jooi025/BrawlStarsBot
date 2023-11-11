@@ -1,6 +1,7 @@
 import pyautogui
 from threading import Thread, Lock
 from time import sleep
+from constants import Constants
 
 """
 IDLE: When state exit,play and load is finished, state is changed to IDLE so 
@@ -92,7 +93,7 @@ class Screendetect:
             
             elif self.state == Detectstate.EXIT:
                 # release right click 
-                pyautogui.mouseUp(button = "right")
+                pyautogui.mouseUp(button = Constants.movement_key)
                 sleep(5)
                 # click the exit button 
                 pyautogui.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
