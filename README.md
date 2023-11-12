@@ -35,15 +35,16 @@ Modified game control :
 move and resize the movement joystick as showned and ****select the locked movement control****
 
  3. Run "detection_test.py" to check if object detection is working
- 4. Change the speed and range in "Contants.py" to the brawler's speed and range
- 5. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
- 6. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
+ 4. Change the speed and range in "Contants.py" to the brawler's [speed and range](https://pixelcrux.com/Brawl_Stars/Brawlers/). Also change sharpCorner (True if the map have a lot of walls,otherwise False) and centerOrder ( True if brawler spawn in the middle of the map, otherwise False).
+     
+ 6. Position bluestacks in the top left corner and run "main.py", as showned in the demo.
+ 7. Select "start bot" (enter 1) after loading in the match. **Do not start bot on the loading screen**
 
  ## Improvement to be made
  - [ ] bot can attack power cube boxes and collect them
- - [ ] improve detection on enemy (less false detect)
+ - [x] improve detection on enemy (less false detect)
  - [ ] change player detection
- - [ ] improve storm direction function 
+ - [x] improve storm direction function 
  - [ ] improve the screendetect of "defeated"
  - [ ] fix spam printing of "stop bot" 
 
