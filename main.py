@@ -46,9 +46,7 @@ def main():
 
         if screenshot is None:
             continue
-
         screenshot,detection_cord = detection(model,classes,screenshot,windowSize)     
-
         # check bot state
         if bot.state == BotState.INITIALIZING:
             bot.update_results(detection_cord)
@@ -95,8 +93,7 @@ def main():
             bot.stop()
             cv.destroyAllWindows()
             break
-    print('Cursor not on bluestacks.')
-    print("Exiting bot")
+    print('Cursor not on bluestacks, exiting bot')
 
 while True:
     print("1. Start Bot")

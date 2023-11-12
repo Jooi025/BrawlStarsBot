@@ -42,15 +42,9 @@ class Brawlbot:
     # Bluestacks border 
     border = 22
     # Map with sharp corners 
-    sharpCorner = False
+    sharpCorner = Constants.sharpCorner
     # Either go to the closest bush to the player or to the center 
-    centerOrder = True
-    
-    timeFactor = 1
-    if sharpCorner:
-        # time to move increase by 5% if maps have sharps corner
-        timeFactor = 1.05
-
+    centerOrder = Constants.centerOrder
     MOVEMENT_STOPPED_THRESHOLD = 0.95
     HIDINGTIME = 10
     IGNORE_RADIUS = 0.5
@@ -62,6 +56,10 @@ class Brawlbot:
     counter = 0
     direction = ["top","bottom","right","left"]
     current_bush = None
+    timeFactor = 1
+    if sharpCorner:
+        # time to move increase by 5% if maps have sharps corner
+        timeFactor = 1.05
 
     def __init__(self,windowSize,speed,range) -> None:
         self.lock = Lock()
@@ -79,32 +77,35 @@ class Brawlbot:
         self.state = BotState.INITIALIZING
     
     def guess_storm_direction(self):
-        if self.results[0]:
-            border_size = 1.5
-            x_border = (self.window_w/self.tile_w)*border_size
-            y_border = (self.window_h/self.tile_h)*border_size
-            # coordinate of the middle of the screen
-            p0 = self.centre_window
-            # coordinate of the player
-            p1 = self.results[0][0]
-            # get the difference between centre and the player 
-            xDiff , yDiff = tuple(np.subtract(p1, p0))
-            # asign x and y direction
-            x_direction = ""
-            y_direction =  ""
-            # player is on the right 
-            if xDiff>x_border:
-                x_direction = self.direction[2]
-            # player is on the left
-            elif xDiff<-x_border:
-                x_direction = self.direction[3]
-            # player is on the bottom 
-            if yDiff>y_border:
-                y_direction = self.direction[1]
-            # player is on the top 
-            elif yDiff<-y_border:
-                y_direction = self.direction[0]
-            return [x_direction,y_direction]
+        # asign x and y direction
+        x_direction = ""
+        y_direction =  ""
+        if self.results:
+            if self.results[0]:
+                border_size = 1.5
+                x_border = (self.window_w/self.tile_w)*border_size
+                y_border = (self.window_h/self.tile_h)*border_size
+                # coordinate of the middle of the screen
+                p0 = self.centre_window
+                # coordinate of the player
+                p1 = self.results[0][0]
+                # get the difference between centre and the player 
+                xDiff , yDiff = tuple(np.subtract(p1, p0))
+                # player is on the right 
+                if xDiff>x_border:
+                    x_direction = self.direction[2]
+                # player is on the left
+                elif xDiff<-x_border:
+                    x_direction = self.direction[3]
+                # player is on the bottom 
+                if yDiff>y_border:
+                    y_direction = self.direction[1]
+                # player is on the top 
+                elif yDiff<-y_border:
+                    y_direction = self.direction[0]
+                return [x_direction,y_direction]
+            else:
+                return 2*[""]
         else:
             return 2*[""]
         
@@ -177,8 +178,6 @@ class Brawlbot:
             unfilteredResults.sort(key=tile_distance)
             return unfilteredResults
 
-    #return sqrt(((pos[0] - player_pos[0])/(self.window_w/self.tile_w))**2 + ((pos[1] - player_pos[1])/(self.window_h/self.tile_h))**2) 
-    #return (sqrt((pos[0] - player_pos[0])**2 + (pos[1] - player_pos[1])**2)/self.tileSize)
     def tile_distance(self,player_pos,pos):
         return sqrt(((pos[0] - player_pos[0])/(self.window_w/self.tile_w))**2 + ((pos[1] - player_pos[1])/(self.window_h/self.tile_h))**2)
     
@@ -193,24 +192,24 @@ class Brawlbot:
     def storm_movement_key(self):
         x = ""
         y = ""
-        if self.results[0]:
-            direction = self.guess_storm_direction()
-    
-            if direction[0] == self.direction[2]:
-                x = "a"
-            # player is on the left
-            elif direction[0] == self.direction[3]:
-                x = "d" 
-            # player is on the bottom 
-            if direction[1] == self.direction[1]:
-                y = "w"
-            # player is on the top 
-            elif direction[1] == self.direction[0]:
-                y = "s"
-            if direction == ["",""]:
-                return []
-            else:
-                return [x,y]
+        if self.results:
+            if self.results[0]:
+                direction = self.guess_storm_direction()
+                if direction[0] == self.direction[2]:
+                    x = "a"
+                # player is on the left
+                elif direction[0] == self.direction[3]:
+                    x = "d" 
+                # player is on the bottom 
+                if direction[1] == self.direction[1]:
+                    y = "w"
+                # player is on the top 
+                elif direction[1] == self.direction[0]:
+                    y = "s"
+        if [x,y] == ["",""]:
+            return []
+        else:
+            return [x,y]
             
     def move_to_bush(self):
         #get the nearest bush to the player
@@ -243,54 +242,55 @@ class Brawlbot:
             sleep(1)
     
     def get_enemy_direction(self):
-        if self.results[0]:
-            player_pos = self.results[0][0]
-        # if player position in result is empty 
-        # assume that player is in the middle of the screen
-        else:
-            player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
-        
         # asign x and y direction
         x_direction = ""
         y_direction = ""
 
-        if self.results[2]:
-            p1 = player_pos
-            p0 = self.enemyResults[0]
-            xDiff , yDiff = tuple(np.subtract(p1, p0))
-            # enemy is on the right 
-            if xDiff>0:
-                x_direction = self.direction[2]
-            # enemy is on the left
-            elif xDiff<0:
-                x_direction = self.direction[3]
-            # enemy is on the bottom 
-            if yDiff>0:
-                y_direction = self.direction[1]
-            # enemy is on the top 
-            elif yDiff<0:
-                y_direction = self.direction[0]
+        if self.results:
+            if self.results[0]:
+                player_pos = self.results[0][0]
+            # if player position in result is empty 
+            # assume that player is in the middle of the screen
+            else:
+                player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+            
+            if self.results[2]:
+                p1 = player_pos
+                p0 = self.enemyResults[0]
+                xDiff , yDiff = tuple(np.subtract(p1, p0))
+                # enemy is on the right 
+                if xDiff>0:
+                    x_direction = self.direction[2]
+                # enemy is on the left
+                elif xDiff<0:
+                    x_direction = self.direction[3]
+                # enemy is on the bottom 
+                if yDiff>0:
+                    y_direction = self.direction[1]
+                # enemy is on the top 
+                elif yDiff<0:
+                    y_direction = self.direction[0]
         
         return [x_direction,y_direction]
    
     def enemy_movement_key(self):
         x = ""
         y = ""
-
-        if self.results[0]:        
-            direction = self.get_enemy_direction()
-            if direction[0] == self.direction[2]:
-                x = "d"
-            elif direction[0] == self.direction[3]:
-                x = "a" 
-            if direction[1] == self.direction[1]:
-                y = "s"
-            elif direction[1] == self.direction[0]:
-                y = "w"
-            if direction == ["",""]:
-                return []
-            else:
-                return [x,y]
+        if self.results:
+            if self.results[0]:        
+                direction = self.get_enemy_direction()
+                if direction[0] == self.direction[2]:
+                    x = "d"
+                elif direction[0] == self.direction[3]:
+                    x = "a" 
+                if direction[1] == self.direction[1]:
+                    y = "s"
+                elif direction[1] == self.direction[0]:
+                    y = "w"
+        if [x,y] == ["",""]:
+            return []
+        else:
+            return [x,y]
         
     def enemy_random_movement(self):
         if self.enemy_movement_key():
@@ -308,34 +308,37 @@ class Brawlbot:
         """ 
         return boolen, notified bot if enemy is close to player
         """
-        if self.results[0]:
-            player_pos = self.results[0][0]
-        # if player position in result is empty 
-        # assume that player is in the middle of the screen
+        if self.results:
+            # player coordinate
+            if self.results[0]:
+                player_pos = self.results[0][0]
+            # if player position in result is empty 
+            # assume that player is in the middle of the screen
+            else:
+                player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+            # enemy coordinate
+            if self.results[2]:
+                enemyResults = self.targets_ordered_by_distance(self.results,2)
+                self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
+                if self.enemyResults:
+                    enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
+                    if self.range == 0:
+                        attackRange = 3.5
+                    elif self.range == 1:
+                        attackRange = 5.5
+                    elif self.range == 2:
+                        attackRange = 8.5
+                    gadgetRange = 0.8*attackRange
+                    if enemyDistance > gadgetRange and enemyDistance <= attackRange:
+                        return True
+                    elif enemyDistance <= gadgetRange:
+                        self.gadget()
+                        return True
+                    else:
+                        return False
         else:
-            player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
-
-        if self.results[2]:
-            enemyResults = self.targets_ordered_by_distance(self.results,2)
-            self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
-            if self.enemyResults:
-                enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
-                if self.range == 0:
-                    attackRange = 3 
-                elif self.range == 1:
-                    attackRange = 5
-                elif self.range == 2:
-                    attackRange = 9
-                
-                gadgetRange = 0.8*attackRange
-                if enemyDistance > gadgetRange and enemyDistance <= attackRange:
-                    return True
-                elif enemyDistance <= gadgetRange:
-                    self.gadget()
-                    return True
-                else:
-                    return False
-
+            return False
+        
     def update_results(self,results):
         self.lock.acquire()
         self.results = results
@@ -459,7 +462,7 @@ class Brawlbot:
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
                     pass
-                    print("attacking")
+                    print("attacking enemy")
                     self.enemy_random_movement()
                 else:
                     self.lock.acquire()
