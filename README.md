@@ -17,8 +17,8 @@ A recomended map to run the bot on is island invasion, using short/medium range 
 * [Bluestacks 5](https://www.bluestacks.com/download.html) to run brawl star
 * Python>= 3.8.0 installed
 
-## How to run the bot?
-1. Clone repo and install the required library
+## How to install and run the bot?
+1. Clone repository and install the required library
 ```
 git clone https://github.com/Jooi025/BrawlStarsBot.git
 cd BrawlStarsBot

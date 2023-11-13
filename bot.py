@@ -241,6 +241,12 @@ class Brawlbot:
         with pyautogui.hold(random_move):
             sleep(1)
     
+    def random_movement(self):
+        move_keys = ["w", "a", "s", "d"]
+        random_move = random.choice(move_keys)
+        with pyautogui.hold(random_move):
+            sleep(1)
+
     def get_enemy_direction(self):
         # asign x and y direction
         x_direction = ""
@@ -425,7 +431,7 @@ class Brawlbot:
                     else:
                         # cancel moving 
                         pyautogui.mouseUp(button = Constants.movement_key)
-                        self.storm_random_movement()
+                        self.random_movement()
                         self.lock.acquire()
                         # and search for bush again
                         self.state = BotState.SEARCHING

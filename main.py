@@ -46,7 +46,7 @@ def main():
 
         if screenshot is None:
             continue
-        screenshot,detection_cord = detection(model,classes,screenshot,windowSize)     
+        screenshot,detection_cord = detection(model,classes,screenshot,windowSize)
         # check bot state
         if bot.state == BotState.INITIALIZING:
             bot.update_results(detection_cord)
@@ -83,7 +83,7 @@ def main():
             cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
 
-        # Press q to exit the script                                      
+        # Press q to exit the script
         key = cv.waitKey(1)
         x_pos,y_pos = pyautogui.position()
         if key == ord('q') or (x_pos>windowSize[0] or y_pos>windowSize[1]):
@@ -107,7 +107,7 @@ while True:
     if user_input == "1":
         main()
 
-    # use cmd to start a shutdown timer 
+    # use cmd to start a shutdown timer
     elif user_input == "2":
         try:
             hour = int(input("How many hour before shutdown? "))
