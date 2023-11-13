@@ -1,4 +1,4 @@
-import pyautogui
+import pydirectinput as py
 from threading import Thread, Lock
 from time import sleep
 from constants import Constants
@@ -57,18 +57,18 @@ class Screendetect:
             elif self.state == Detectstate.DETECT:
                 sleep(0.01)
                 try:
-                    if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
+                    if py.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
                         print("Play again ")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
+                    elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
                         print("Load in")
                         self.lock.acquire()
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
+                    elif py.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
                         print("Exit")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
@@ -79,7 +79,7 @@ class Screendetect:
             elif self.state == Detectstate.PLAY:
                 # click the play button 
                 sleep(0.05)
-                pyautogui.click(x = self.playButton[0], y = self.playButton[1],button="left")
+                py.click(x = self.playButton[0], y = self.playButton[1],button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
@@ -93,10 +93,10 @@ class Screendetect:
             
             elif self.state == Detectstate.EXIT:
                 # release right click 
-                pyautogui.mouseUp(button = Constants.movement_key)
+                py.mouseUp(button = Constants.movement_key)
                 sleep(5)
                 # click the exit button 
-                pyautogui.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
+                py.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE

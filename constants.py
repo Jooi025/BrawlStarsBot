@@ -7,14 +7,16 @@ class Constants:
     #! Change this to suit the current map 
     # map's characteristic 
     # if map have a lot of walls make sharpCorner True otherwise False
-    sharpCorner = False
+    sharpCorner = True
     # if brawler spawn in the middle of the map make centerOrder False other True
-    centerOrder = False
+    centerOrder = True
     
     #! Change this to True if you have Nvidia graphics card and TensorRT installed
     gpu = False
 
     #! Do not change these
+    # Main contants
+    DEBUG = 0
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants
@@ -24,7 +26,7 @@ class Constants:
     enemy_threshold = 0.55
     cubebox_threshold = 0.55
     classes = ["Player","Bush","Enemy","Cubebox"]
-    heightScaleFactor = 0.154 
+    heightScaleFactor = 0.154
     if gpu is None:
         # load pytorch interface
         model_file_path = "new_model/best.pt"

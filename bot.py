@@ -2,7 +2,7 @@ import cv2 as cv
 from time import time,sleep
 from threading import Thread, Lock
 from math import *
-import pyautogui
+import pydirectinput as py
 import numpy as np
 import random
 from constants import Constants
@@ -221,16 +221,21 @@ class Brawlbot:
             else:
                 player_pos = self.results[0][0]
             tileDistance = self.tile_distance(player_pos,(x,y))
-            pyautogui.mouseDown(button=Constants.movement_key,x = x, y = y)
+            py.mouseDown(button=Constants.movement_key,x = x, y = y)
             moveTime = tileDistance/self.speed
             moveTime = moveTime * self.timeFactor
             return moveTime
     
     def attack(self):
-        pyautogui.press("e")
+        py.press("e")
 
     def gadget(self):
-        pyautogui.press("f")
+        py.press("f")
+
+    def hold_movement_key(self,key,time):
+        py.keyDown(key)
+        sleep(time)
+        py.keyUp(key)
 
     def storm_random_movement(self):
         if self.storm_movement_key():
@@ -238,14 +243,12 @@ class Brawlbot:
         else:
             move_keys = ["w", "a", "s", "d"]
         random_move = random.choice(move_keys)
-        with pyautogui.hold(random_move):
-            sleep(1)
+        self.hold_movement_key(random_move,1)
     
     def random_movement(self):
         move_keys = ["w", "a", "s", "d"]
         random_move = random.choice(move_keys)
-        with pyautogui.hold(random_move):
-            sleep(1)
+        self.hold_movement_key(random_move,1)
 
     def get_enemy_direction(self):
         # asign x and y direction
@@ -304,11 +307,12 @@ class Brawlbot:
         else:
             move_keys = ["w", "a", "s", "d"]
         random_move = random.choice(move_keys)
-        with pyautogui.hold(random_move):
-            self.attack()
-            sleep(0.5)
-            self.attack()
-            sleep(0.5)
+        py.keyDown(random_move)
+        self.attack()
+        sleep(0.5)
+        self.attack()
+        sleep(0.5)
+        py.keyUp(random_move)
 
     def is_enemy_in_range(self):
         """ 
@@ -430,7 +434,7 @@ class Brawlbot:
                     #if player is stuck
                     else:
                         # cancel moving 
-                        pyautogui.mouseUp(button = Constants.movement_key)
+                        py.mouseUp(button = Constants.movement_key)
                         self.random_movement()
                         self.lock.acquire()
                         # and search for bush again
@@ -444,7 +448,7 @@ class Brawlbot:
 
                 # player successfully travel to the selected bush 
                 else:
-                    pyautogui.mouseUp(button = Constants.movement_key)
+                    py.mouseUp(button = Constants.movement_key)
                     self.lock.acquire()
                     # change state to hiding
                     print("Hiding")

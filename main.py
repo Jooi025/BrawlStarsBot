@@ -4,19 +4,19 @@ from windowcapture import WindowCapture
 from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
 from detection import annotate,detection
-import pyautogui
+import pydirectinput as py
 import os
 from constants import Constants
 import torch
 
 def main():
-    DEBUG = 1
+    DEBUG = Constants.DEBUG
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
     # get window dimension
     windowSize = (wincap.w, wincap.h)
 
-    #initialize screendectect classes 
+    #initialize screendectect classes
     screendetect = Screendetect(windowSize)
 
     #initialize bot class
@@ -31,7 +31,7 @@ def main():
         # use gpu for detection
         model.cuda()
     else:
-        #us cpu for detection 
+        #us cpu for detection
         model.cpu()
     
     #start thread
@@ -63,7 +63,7 @@ def main():
         # check screendetect state
         if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
             print("stop")
-            pyautogui.mouseUp(button = Constants.movement_key)
+            py.mouseUp(button = Constants.movement_key)
             bot.stop()
         if screendetect.state ==  Detectstate.LOAD:
             print("start bot")
@@ -85,7 +85,7 @@ def main():
 
         # Press q to exit the script
         key = cv.waitKey(1)
-        x_pos,y_pos = pyautogui.position()
+        x_pos,y_pos = py.position()
         if key == ord('q') or (x_pos>windowSize[0] or y_pos>windowSize[1]):
             #stop all threads
             wincap.stop()
@@ -93,38 +93,41 @@ def main():
             bot.stop()
             cv.destroyAllWindows()
             break
-    print('Cursor not on bluestacks, exiting bot')
+    print('Cursor currently not on bluestacks, exiting bot')
 
-while True:
-    print("1. Start Bot")
-    print("2. Set shutdown timer")
-    print("3. Cancel shutdown timer")
-    print("4. Exit")
-    user_input = input("Select: ")
-    print("")
+if __name__ == "__main__":
+    while True:
+        print("")
+        print("Make sure bluestacks is on the top left corner of the screen.")
+        print("Start bot after loading into the match.")
+        print("1. Start Bot")
+        print("2. Set shutdown timer")
+        print("3. Cancel shutdown timer")
+        print("4. Exit")
+        user_input = input("Select: ").lower()
+        print("")
 
-    # run the bot
-    if user_input == "1":
-        main()
+        # run the bot
+        if user_input == "1" or user_input == "start bot":
+            main()
 
-    # use cmd to start a shutdown timer
-    elif user_input == "2":
-        try:
-            hour = int(input("How many hour before shutdown? "))
-            second = 3600 * hour
-            os.system(f'cmd /c "shutdown -s -t {second}"')
-            print(f"Shuting down in {hour} hour")
-        except ValueError:
-            print("Please enter a valid input!")
+        # use cmd to start a shutdown timer
+        elif user_input == "2" or user_input == "set shutdown timer":
+            print("Set Shutdown Timer")
+            try:
+                hour = int(input("How many hour before shutdown? "))
+                second = 3600 * hour
+                os.system(f'cmd /c "shutdown -s -t {second}"')
+                print(f"Shuting down in {hour} hour")
+            except ValueError:
+                print("Please enter a valid input!")
 
-    # use cmd to cancel shutdown timer
-    elif user_input == "3":
-        os.system('cmd /c "shutdown -a"')
-        print("Shutdown timer cancelled")
+        # use cmd to cancel shutdown timer
+        elif user_input == "3" or user_input == "cancel shutdown timer":
+            os.system('cmd /c "shutdown -a"')
+            print("Shutdown timer cancelled")
 
-    # exit
-    elif user_input =="4":
-        print("Exitting")
-        break
-
-    print("")
+        # exit
+        elif user_input =="4" or "exit":
+            print("Exitting")
+            break
