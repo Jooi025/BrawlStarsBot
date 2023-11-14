@@ -1,5 +1,5 @@
 import numpy as np
-import win32gui, win32ui, win32con
+import win32gui, win32ui, win32con,win32com.client
 from threading import Thread, Lock
 
 
@@ -53,6 +53,8 @@ class WindowCapture:
     
     def set_window(self):
         if self.hwnd:
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shell.SendKeys('%')
             win32gui.SetForegroundWindow(self.hwnd)
         
     def get_dimension(self):
