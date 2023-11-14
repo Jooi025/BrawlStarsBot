@@ -1,4 +1,5 @@
 import pydirectinput as py
+import pyautogui
 from threading import Thread, Lock
 from time import sleep
 from constants import Constants
@@ -57,18 +58,18 @@ class Screendetect:
             elif self.state == Detectstate.DETECT:
                 sleep(0.01)
                 try:
-                    if py.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
+                    if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
                         print("Play again ")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
+                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
                         print("Load in")
                         self.lock.acquire()
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
-                    elif py.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
+                    elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
                         print("Exit")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT

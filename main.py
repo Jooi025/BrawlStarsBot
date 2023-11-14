@@ -9,8 +9,19 @@ import os
 from constants import Constants
 import torch
 
+# https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def main():
-    DEBUG = Constants.DEBUG
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
     # get window dimension
@@ -74,11 +85,8 @@ def main():
             bot.start()
 
         # display annotated window with FPS
-        if DEBUG:
-            try:
-                fps=(1 / (time() - loop_time))
-            except ZeroDivisionError:
-                fps = 30
+        if Constants.DEBUG:
+            fps=(1 / (time() - loop_time))
             screenshot = annotate(windowSize,screenshot,fps)
             cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
@@ -86,8 +94,9 @@ def main():
         # Press q to exit the script
         key = cv.waitKey(1)
         x_pos,y_pos = py.position()
-        if key == ord('q') or (x_pos>windowSize[0] or y_pos>windowSize[1]):
+        if key == ord('q') or (x_pos>windowSize[0] and y_pos>windowSize[1]):
             #stop all threads
+            py.mouseUp(button = Constants.movement_key)
             wincap.stop()
             screendetect.stop()
             bot.stop()
@@ -98,8 +107,10 @@ def main():
 if __name__ == "__main__":
     while True:
         print("")
-        print("Make sure bluestacks is on the top left corner of the screen.")
+        print(bcolors.HEADER + bcolors.UNDERLINE + "Make sure bluestacks is on the top left corner of the screen.")
         print("Start bot after loading into the match.")
+        print("To exit bot hover cursor to the bottom right corner out of bluestacks." + bcolors.ENDC)
+        print("")
         print("1. Start Bot")
         print("2. Set shutdown timer")
         print("3. Cancel shutdown timer")
@@ -128,6 +139,6 @@ if __name__ == "__main__":
             print("Shutdown timer cancelled")
 
         # exit
-        elif user_input =="4" or "exit":
+        elif user_input =="4" or user_input == "exit":
             print("Exitting")
             break
