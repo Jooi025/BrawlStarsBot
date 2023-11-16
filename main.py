@@ -52,7 +52,7 @@ def main():
     #start thread
     wincap.start()
     screendetect.start()
-    # bot.start()
+    bot.start()
     
     loop_time = time()
     classes = Constants.classes

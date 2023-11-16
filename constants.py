@@ -16,7 +16,7 @@ class Constants:
 
     #! Do not change these
     # Main contants
-    DEBUG = 1
+    DEBUG = 0
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants
@@ -36,7 +36,7 @@ class Constants:
     else:
         # load ONNX interface
         model_file_path = "new_model/best.onnx"
-    #bot constant 
+    #bot constant
     movement_key = "middle"
     
     
