@@ -27,7 +27,6 @@ def main():
     # get window dimension
     windowSize = wincap.get_dimension()
 
-    print(wincap.topleft)
     #initialize screendectect classes
     screendetect = Screendetect(windowSize,wincap.topleft)
 
@@ -37,6 +36,9 @@ def main():
     # set target window as foreground
     sleep(0.5)
     wincap.set_window()
+
+    middle_of_window = (int(wincap.w/2+wincap.offset_x),int(wincap.h/2+wincap.offset_y))
+    py.moveTo(middle_of_window[0],middle_of_window[1])
 
     model = torch.hub.load("ultralytics/yolov5", 'custom', Constants.model_file_path)
     
@@ -106,6 +108,11 @@ def main():
             cv.destroyAllWindows()
             break
     print('Cursor currently not on bluestacks, exiting bot')
+    py.mouseUp(button = Constants.movement_key)
+    wincap.stop()
+    screendetect.stop()
+    bot.stop()
+    cv.destroyAllWindows()
 
 if __name__ == "__main__":
     while True:

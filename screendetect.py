@@ -53,66 +53,55 @@ class Screendetect:
 
     def run(self):
         while not self.stopped:
-
-            if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=20):
-                print("Play again ")
-            elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=20):
-                print("Load in")
-            elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
-                print("Exit")
-
-            # except:
-            #     print("error")
-
-
-            # if self.state == Detectstate.IDLE:
-            #     sleep(3)
-            #     self.state = Detectstate.DETECT
+            if self.state == Detectstate.IDLE:
+                sleep(3)
+                self.state = Detectstate.DETECT
             
-            # elif self.state == Detectstate.DETECT:
-            #     sleep(0.01)
-            #     try:
-            #         if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
-            #             print("Play again ")
-            #             self.lock.acquire()
-            #             self.state = Detectstate.PLAY
-            #             self.lock.release()
-            #         elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
-            #             print("Load in")
-            #             self.lock.acquire()
-            #             sleep(3)
-            #             self.state = Detectstate.LOAD
-            #             self.lock.release()
-            #         elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
-            #             print("Exit")
-            #             self.lock.acquire()
-            #             self.state = Detectstate.EXIT
-            #             self.lock.release()
-            #     except:
-            #         pass
+            elif self.state == Detectstate.DETECT:
+                sleep(0.01)
+                # using try because there
+                try:
+                    if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
+                        print("Play again ")
+                        self.lock.acquire()
+                        self.state = Detectstate.PLAY
+                        self.lock.release()
+                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
+                        print("Load in")
+                        self.lock.acquire()
+                        sleep(3)
+                        self.state = Detectstate.LOAD
+                        self.lock.release()
+                    elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
+                        print("Exit")
+                        self.lock.acquire()
+                        self.state = Detectstate.EXIT
+                        self.lock.release()
+                except:
+                    pass
                         
-            # elif self.state == Detectstate.PLAY:
-            #     # click the play button 
-            #     sleep(0.05)
-            #     py.click(x = self.playButton[0], y = self.playButton[1],button="left")
-            #     sleep(0.05)
-            #     self.lock.acquire()
-            #     self.state = Detectstate.IDLE
-            #     self.lock.release()
+            elif self.state == Detectstate.PLAY:
+                # click the play button 
+                sleep(0.05)
+                py.click(x = self.playButton[0], y = self.playButton[1],button="left")
+                sleep(0.05)
+                self.lock.acquire()
+                self.state = Detectstate.IDLE
+                self.lock.release()
             
-            # elif self.state == Detectstate.LOAD:
-            #     sleep(0.1)
-            #     self.lock.acquire()
-            #     self.state = Detectstate.IDLE
-            #     self.lock.release()
+            elif self.state == Detectstate.LOAD:
+                sleep(0.1)
+                self.lock.acquire()
+                self.state = Detectstate.IDLE
+                self.lock.release()
             
-            # elif self.state == Detectstate.EXIT:
-            #     # release right click 
-            #     py.mouseUp(button = Constants.movement_key)
-            #     sleep(5)
-            #     # click the exit button 
-            #     py.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
-            #     sleep(0.05)
-            #     self.lock.acquire()
-            #     self.state = Detectstate.IDLE
-            #     self.lock.release()
+            elif self.state == Detectstate.EXIT:
+                # release right click 
+                py.mouseUp(button = Constants.movement_key)
+                sleep(5)
+                # click the exit button 
+                py.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
+                sleep(0.05)
+                self.lock.acquire()
+                self.state = Detectstate.IDLE
+                self.lock.release()
