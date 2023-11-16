@@ -37,13 +37,12 @@ class BotState:
     
 class Brawlbot:
     # In game tile width and height ratio with respect aspect ratio
-    tile_w = 26.75
-    tile_h = 18.61
-    # Bluestacks border 
-    border = 22
-    # Map with sharp corners 
+    tile_w = 26.20
+    tile_h = 17.72
+    midpoint_offset = 22
+    # Map with sharp corners
     sharpCorner = Constants.sharpCorner
-    # Either go to the closest bush to the player or to the center 
+    # Either go to the closest bush to the player or to the center
     centerOrder = Constants.centerOrder
     MOVEMENT_STOPPED_THRESHOLD = 0.95
     HIDINGTIME = 10
@@ -61,7 +60,7 @@ class Brawlbot:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
 
-    def __init__(self,windowSize,speed,range) -> None:
+    def __init__(self,windowSize,offset_x,offset_y,speed,range) -> None:
         self.lock = Lock()
         # "brawler" chracteristic
         self.speed = speed
@@ -69,13 +68,27 @@ class Brawlbot:
         self.timestamp = time()
         self.window_w = windowSize[0]
         self.window_h = windowSize[1]
-        self.centre_window = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+        self.center_window = (self.window_w / 2, int((self.window_h / 2)+ self.midpoint_offset))
 
         # tile size of the game
         # depended on the dimension of the game
         self.tileSize = round((round(self.window_w/self.tile_w)+round(self.window_h/self.tile_h))/2)
         self.state = BotState.INITIALIZING
+        
+        # offset
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+
+    # translate a pixel position on a screenshot image to a pixel position on the screen.
+    # pos = (x, y)
+    # WARNING: if you move the window being captured after execution is started, this will
+    # return incorrect coordinates, because the window position is only calculated in
+    # the __init__ constructor.
+    def get_screen_position(self, pos):
+        return (pos[0] + self.offset_x, pos[1] + self.offset_y)
     
+    # storm method
+
     def guess_storm_direction(self):
         # asign x and y direction
         x_direction = ""
@@ -86,21 +99,21 @@ class Brawlbot:
                 x_border = (self.window_w/self.tile_w)*border_size
                 y_border = (self.window_h/self.tile_h)*border_size
                 # coordinate of the middle of the screen
-                p0 = self.centre_window
+                p0 = self.center_window
                 # coordinate of the player
                 p1 = self.results[0][0]
-                # get the difference between centre and the player 
+                # get the difference between centre and the player
                 xDiff , yDiff = tuple(np.subtract(p1, p0))
-                # player is on the right 
+                # player is on the right
                 if xDiff>x_border:
                     x_direction = self.direction[2]
                 # player is on the left
                 elif xDiff<-x_border:
                     x_direction = self.direction[3]
-                # player is on the bottom 
+                # player is on the bottom
                 if yDiff>y_border:
                     y_direction = self.direction[1]
-                # player is on the top 
+                # player is on the top
                 elif yDiff<-y_border:
                     y_direction = self.direction[0]
                 return [x_direction,y_direction]
@@ -108,14 +121,36 @@ class Brawlbot:
                 return 2*[""]
         else:
             return 2*[""]
-        
+    
+    def storm_movement_key(self):
+        x = ""
+        y = ""
+        if self.results:
+            if self.results[0]:
+                direction = self.guess_storm_direction()
+                if direction[0] == self.direction[2]:
+                    x = "a"
+                # player is on the left
+                elif direction[0] == self.direction[3]:
+                    x = "d"
+                # player is on the bottom
+                if direction[1] == self.direction[1]:
+                    y = "w"
+                # player is on the top
+                elif direction[1] == self.direction[0]:
+                    y = "s"
+        if [x,y] == ["",""]:
+            return []
+        else:
+            return [x,y]
+
     def get_quadrant_bush(self):
         length = 0
         direction = self.guess_storm_direction()
         for i in range(len(direction)):
             if len(direction[i]) > 0:
                 length += 1
-                index = i     
+                index = i
         if length == 0:
             return False
         elif length == 1:
@@ -123,7 +158,7 @@ class Brawlbot:
             # top
             if single_direction == self.direction[0]:
                 return [[0,3],[2,3]]
-            # bottom 
+            # bottom
             elif single_direction == self.direction[1]:
                 return [[0,3],[0,1]]
             # right
@@ -136,22 +171,24 @@ class Brawlbot:
             # top right
             if direction == [self.direction[0],self.direction[2]]:
                 return [[0,2],[1,3]]
-            # top left 
+            # top left
             elif direction == [self.direction[0],self.direction[3]]:
                 return [[1,3],[1,3]]
-            # bottom right 
+            # bottom right
             elif direction == [self.direction[1],self.direction[2]]:
                 return [[0,2],[0,2]]
             # bottom left
             elif direction == [self.direction[1],self.direction[3]]:
                 return [[1,3],[0,2]]
         
+    # bush method
+
     def targets_ordered_by_distance(self, results, index):
         # our character is always in the center of the screen
-        # if player position in result is empty 
+        # if player position in result is empty
         # assume that player is in the middle of the screen
         if not(results[0]) or self.centerOrder :
-            player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+            player_pos = self.center_window
         else:
             player_pos = results[0][0]
         # searched "python order points by distance from point"
@@ -189,43 +226,23 @@ class Brawlbot:
         else:
             return False
         
-    def storm_movement_key(self):
-        x = ""
-        y = ""
-        if self.results:
-            if self.results[0]:
-                direction = self.guess_storm_direction()
-                if direction[0] == self.direction[2]:
-                    x = "a"
-                # player is on the left
-                elif direction[0] == self.direction[3]:
-                    x = "d" 
-                # player is on the bottom 
-                if direction[1] == self.direction[1]:
-                    y = "w"
-                # player is on the top 
-                elif direction[1] == self.direction[0]:
-                    y = "s"
-        if [x,y] == ["",""]:
-            return []
-        else:
-            return [x,y]
-            
+
     def move_to_bush(self):
         #get the nearest bush to the player
         if self.bushResult:
             x,y = self.bushResult[0]
-            self.current_bush = (x,y)
             if not(self.results[0]) or self.centerOrder:
-                player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+                player_pos = self.center_window
             else:
                 player_pos = self.results[0][0]
             tileDistance = self.tile_distance(player_pos,(x,y))
-            py.mouseDown(button=Constants.movement_key,x = x, y = y)
+            x,y = self.get_screen_position((x,y))
+            py.mouseDown(button=Constants.movement_key,x=x, y=y)
             moveTime = tileDistance/self.speed
             moveTime = moveTime * self.timeFactor
             return moveTime
     
+    # enemy and attack method
     def attack(self):
         py.press("e")
 
@@ -258,40 +275,40 @@ class Brawlbot:
         if self.results:
             if self.results[0]:
                 player_pos = self.results[0][0]
-            # if player position in result is empty 
+            # if player position in result is empty
             # assume that player is in the middle of the screen
             else:
-                player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+                player_pos = self.center_window
             
             if self.results[2]:
                 p1 = player_pos
                 p0 = self.enemyResults[0]
                 xDiff , yDiff = tuple(np.subtract(p1, p0))
-                # enemy is on the right 
+                # enemy is on the right
                 if xDiff>0:
                     x_direction = self.direction[2]
                 # enemy is on the left
                 elif xDiff<0:
                     x_direction = self.direction[3]
-                # enemy is on the bottom 
+                # enemy is on the bottom
                 if yDiff>0:
                     y_direction = self.direction[1]
-                # enemy is on the top 
+                # enemy is on the top
                 elif yDiff<0:
                     y_direction = self.direction[0]
         
         return [x_direction,y_direction]
-   
+    
     def enemy_movement_key(self):
         x = ""
         y = ""
         if self.results:
-            if self.results[0]:        
+            if self.results[0]:
                 direction = self.get_enemy_direction()
                 if direction[0] == self.direction[2]:
                     x = "d"
                 elif direction[0] == self.direction[3]:
-                    x = "a" 
+                    x = "a"
                 if direction[1] == self.direction[1]:
                     y = "s"
                 elif direction[1] == self.direction[0]:
@@ -325,7 +342,7 @@ class Brawlbot:
             # if player position in result is empty 
             # assume that player is in the middle of the screen
             else:
-                player_pos = (self.window_w / 2, int((self.window_h / 2)+ self.border))
+                player_pos = self.center_window
             # enemy coordinate
             if self.results[2]:
                 enemyResults = self.targets_ordered_by_distance(self.results,2)
@@ -348,13 +365,14 @@ class Brawlbot:
                         return False
         else:
             return False
-        
+
+
     def update_results(self,results):
         self.lock.acquire()
         self.results = results
         self.lock.release()
 
-    def have_stopped_moving(self):  
+    def have_stopped_moving(self):
         # if we haven't stored a screenshot to compare to, do that first
         if self.movement_screenshot is None:
             self.movement_screenshot = self.screenshot.copy()

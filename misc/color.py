@@ -1,16 +1,16 @@
-import pyautogui 
+import pyautogui
 from time import sleep
 from windowcapture import WindowCapture
 import keyboard
 
-find_colour = False
+find_colour = True
 wincap = WindowCapture("Bluestacks App Player")
 windowSize = (wincap.w, wincap.h)
 print(windowSize)
 
 if find_colour:
     print("Press enter to get scale factor and RGB value\n")
-    count = 0
+    count = 1
     while 1:
         if keyboard.is_pressed('enter'):
             x,y = pyautogui.position()
@@ -29,5 +29,3 @@ else:
         sleep(0.1)
         
 
-
-                

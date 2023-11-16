@@ -25,19 +25,21 @@ def main():
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
     # get window dimension
-    windowSize = (wincap.w, wincap.h)
+    windowSize = wincap.get_dimension()
 
+    print(wincap.topleft)
     #initialize screendectect classes
-    screendetect = Screendetect(windowSize)
+    screendetect = Screendetect(windowSize,wincap.topleft)
 
     #initialize bot class
-    bot = Brawlbot(windowSize, Constants.speed, Constants.range)
+    bot = Brawlbot(windowSize, wincap.offset_x, wincap.offset_y, Constants.speed, Constants.range)
     
     # set target window as foreground
     sleep(0.5)
     wincap.set_window()
 
     model = torch.hub.load("ultralytics/yolov5", 'custom', Constants.model_file_path)
+    
     if Constants.gpu:
         # use gpu for detection
         model.cuda()
@@ -48,7 +50,7 @@ def main():
     #start thread
     wincap.start()
     screendetect.start()
-    bot.start()
+    # bot.start()
     
     loop_time = time()
     classes = Constants.classes
@@ -93,8 +95,9 @@ def main():
 
         # Press q to exit the script
         key = cv.waitKey(1)
-        x_pos,y_pos = py.position()
-        if key == ord('q') or (x_pos>windowSize[0] and y_pos>windowSize[1]):
+        x_mouse_pos, y_mouse_pos = py.position()
+        #or (x_mouse_pos>windowSize[0] and y_mouse_pos>windowSize[1])
+        if key == ord('q') :
             #stop all threads
             py.mouseUp(button = Constants.movement_key)
             wincap.stop()
