@@ -21,6 +21,13 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def stop(wincap,screendetect,bot):
+    py.mouseUp(button = Constants.movement_key)
+    wincap.stop()
+    screendetect.stop()
+    bot.stop()
+    cv.destroyAllWindows()
+
 def main():
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
@@ -28,7 +35,7 @@ def main():
     windowSize = wincap.get_dimension()
 
     #initialize screendectect classes
-    screendetect = Screendetect(windowSize,wincap.topleft)
+    screendetect = Screendetect(windowSize,(wincap.offset_x,wincap.offset_y))
 
     #initialize bot class
     bot = Brawlbot(windowSize, wincap.offset_x, wincap.offset_y, Constants.speed, Constants.range)
@@ -54,7 +61,6 @@ def main():
     screendetect.start()
     # bot.start()
     
-    print(screendetect.loadButton)
     loop_time = time()
     classes = Constants.classes
     while True:
@@ -78,7 +84,6 @@ def main():
 
         # check screendetect state
         if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
-            print("stop")
             py.mouseUp(button = Constants.movement_key)
             bot.stop()
         if screendetect.state ==  Detectstate.LOAD:
@@ -102,18 +107,10 @@ def main():
         #or (x_mouse_pos>windowSize[0] and y_mouse_pos>windowSize[1])
         if key == ord('q') :
             #stop all threads
-            py.mouseUp(button = Constants.movement_key)
-            wincap.stop()
-            screendetect.stop()
-            bot.stop()
-            cv.destroyAllWindows()
+            stop(wincap,screendetect,bot)
             break
     print('Cursor currently not on bluestacks, exiting bot')
-    py.mouseUp(button = Constants.movement_key)
-    wincap.stop()
-    screendetect.stop()
-    bot.stop()
-    cv.destroyAllWindows()
+    stop(wincap,screendetect,bot)
 
 if __name__ == "__main__":
     while True:

@@ -31,7 +31,7 @@ class Screendetect:
     loadColor = (224,22,22)
     defeated_xScale = 0.9677
     defeated_yScale = 0.2285
-    def __init__(self,windowSize,topleft) -> None:
+    def __init__(self,windowSize,offset) -> None:
         """
         Constructor for the Screendectect class
         """
@@ -39,12 +39,12 @@ class Screendetect:
         self.lock = Lock()
         self.w = windowSize[0]
         self.h = windowSize[1]
-        self.left = topleft[0]
-        self.top = topleft[1]
-        self.defeated = (round(self.w*self.defeated_xScale)+self.left, round(self.h*self.defeated_yScale)+self.top)
-        self.playButton = (round(self.w*0.5929)+self.left,round(self.h*0.9574)+self.top)
-        self.exitButton = (round(self.w*0.4969)+self.left,round(self.h*0.96)+self.top)
-        self.loadButton = (round(self.w*0.02347)+self.left,round(self.h*0.1199)+self.top)
+        self.offset_x = offset[0]
+        self.offset_y = offset[1]
+        self.defeated = (round(self.w*0.9683)+self.offset_x, round(self.h*0.1969)+self.offset_y)
+        self.playButton = (round(self.w*0.5903)+self.offset_x,round(self.h*0.9197)+self.offset_y)
+        self.exitButton = (round(self.w*0.493)+self.offset_x,round(self.h*0.9187)+self.offset_y)
+        self.loadButton = (round(self.w*0.014)+self.offset_x,round(self.h*0.0631)+self.offset_y)
     
     def start(self):
         self.stopped = False
@@ -84,7 +84,7 @@ class Screendetect:
                     pass
                         
             elif self.state == Detectstate.PLAY:
-                # click the play button 
+                # click the play button
                 sleep(0.05)
                 py.click(x = self.playButton[0], y = self.playButton[1],button="left")
                 sleep(0.05)
