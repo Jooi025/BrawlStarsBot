@@ -460,7 +460,6 @@ class Brawlbot:
                 moveTime = self.move_to_bush()
                 # when player is moving check if player is stuck 
                 if time() < self.timestamp + moveTime:
-                    print("Moving to bush")
                     if not self.have_stopped_moving():
                         # wait a short time to allow for the character position to change
                         sleep(0.15)
@@ -482,9 +481,10 @@ class Brawlbot:
                 # player successfully travel to the selected bush 
                 else:
                     py.mouseUp(button = Constants.movement_key)
+                    print("Hiding")
+                    
                     self.lock.acquire()
                     # change state to hiding
-                    print("Hiding")
                     self.timestamp = time()
                     self.state = BotState.HIDING
                     self.lock.release()

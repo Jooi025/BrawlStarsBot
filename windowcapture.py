@@ -29,7 +29,7 @@ class WindowCapture:
         root = tkinter.Tk()
         dpi = root.winfo_fpixels('1i')
         deafault_dpi = 96
-        scaling = dpi/deafault_dpi
+        self.scaling = dpi/deafault_dpi
         # close tkinter
         root.destroy()
         # create a thread lock object
@@ -48,12 +48,18 @@ class WindowCapture:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
         
-        # top left coordinate of the window
-        self.topleft = (window_rect[0], window_rect[1])
+        # top left and bottom right coordinate of the window
+        self.left = window_rect[0]
+        self.top = window_rect[1]
+        self.right = window_rect[2]
+        self.bottom = window_rect[3]
+        
+        # screen resolution
+        self.screen_resolution = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
         # account for the window border and titlebar and cut them off
-        self.border_pixels = int(1*scaling)
-        self.titlebar_pixels = int(33*scaling)
+        self.border_pixels = int(1*self.scaling)
+        self.titlebar_pixels = int(33*self.scaling)
         self.w = self.w - (self.border_pixels * 2)
         self.h = self.h - self.titlebar_pixels - self.border_pixels
         self.cropped_x = self.border_pixels

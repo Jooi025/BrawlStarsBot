@@ -65,18 +65,18 @@ class Screendetect:
                 # using try because there
                 try:
                     if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
-                        print("Play again ")
+                        print("Playing again")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
                     elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
-                        print("Load in")
+                        print("Loading in")
                         self.lock.acquire()
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
                     elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
-                        print("Exit")
+                        print("Exiting match")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
                         self.lock.release()

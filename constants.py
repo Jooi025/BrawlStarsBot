@@ -1,11 +1,11 @@
 class Constants:
     #! Change the speed and range for the brawler you are using
     # go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find brawler's speed 
-    speed = 2.57 # units: (tiles per second)
-    range = 0 # 0 for short, 1 for medium and 2 for long range
+    speed = 2.4 # units: (tiles per second)
+    range = 1 # 0 for short, 1 for medium and 2 for long range
     
-    #! Change this to suit the current map 
-    # map's characteristic 
+    #! Change this to suit the current map
+    # map's characteristic
     # if map have a lot of walls make sharpCorner True otherwise False
     sharpCorner = False
     # if brawler spawn in the middle of the map make centerOrder False other True
@@ -16,7 +16,7 @@ class Constants:
 
     #! Do not change these
     # Main contants
-    DEBUG = True
+    DEBUG = False
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants

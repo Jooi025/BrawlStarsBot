@@ -59,8 +59,10 @@ def main():
     #start thread
     wincap.start()
     screendetect.start()
-    # bot.start()
+    bot.start()
     
+    print(f"Resolution: {wincap.screen_resolution}")
+    print(f"Scaling: {wincap.scaling*100}%")
     loop_time = time()
     classes = Constants.classes
     while True:
@@ -86,37 +88,40 @@ def main():
         if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
             py.mouseUp(button = Constants.movement_key)
             bot.stop()
-        if screendetect.state ==  Detectstate.LOAD:
-            print("start bot")
+        elif screendetect.state ==  Detectstate.LOAD:
+            print("restarting bot")
+            # reset timestamp and state
             bot.timestamp = time()
             bot.state = BotState.INITIALIZING
             #wait for game to load
             sleep(7)
-            # bot.start()
+            bot.start()
 
         # display annotated window with FPS
         if Constants.DEBUG:
-            fps=(1 / (time() - loop_time))
+            fps = (1 / (time() - loop_time))
             screenshot = annotate(windowSize,screenshot,fps)
             cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
 
         # Press q to exit the script
         key = cv.waitKey(1)
-        x_mouse_pos, y_mouse_pos = py.position()
-        #or (x_mouse_pos>windowSize[0] and y_mouse_pos>windowSize[1])
-        if key == ord('q') :
+        x_mouse, y_mouse = py.position()
+        if (key == ord('q') or
+            (x_mouse > 0 and x_mouse < wincap.left and y_mouse > 0 and y_mouse < wincap.top)
+            or ( x_mouse > wincap.right and x_mouse < wincap.screen_resolution[0]
+                and y_mouse > wincap.bottom and y_mouse < wincap.screen_resolution[1])):
             #stop all threads
             stop(wincap,screendetect,bot)
             break
-    print('Cursor currently not on bluestacks, exiting bot')
+    print(bcolors.WARNING +'Cursor currently not on Bluestacks, exiting bot...' +bcolors.ENDC)
     stop(wincap,screendetect,bot)
 
 if __name__ == "__main__":
     while True:
         print("")
         print(bcolors.HEADER + bcolors.UNDERLINE + "Start bot after loading into the match.")
-        print("To exit bot hover cursor to the bottom right corner out of bluestacks." + bcolors.ENDC)
+        print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
         print("")
         print("1. Start Bot")
         print("2. Set shutdown timer")
