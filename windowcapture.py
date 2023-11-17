@@ -52,12 +52,12 @@ class WindowCapture:
         self.topleft = (window_rect[0], window_rect[1])
 
         # account for the window border and titlebar and cut them off
-        border_pixels = int(1*scaling)
-        titlebar_pixels = int(33*scaling)
-        self.w = self.w - (border_pixels * 2)
-        self.h = self.h - titlebar_pixels - border_pixels
-        self.cropped_x = border_pixels
-        self.cropped_y = titlebar_pixels
+        self.border_pixels = int(1*scaling)
+        self.titlebar_pixels = int(33*scaling)
+        self.w = self.w - (self.border_pixels * 2)
+        self.h = self.h - self.titlebar_pixels - self.border_pixels
+        self.cropped_x = self.border_pixels
+        self.cropped_y = self.titlebar_pixels
 
         # set the cropped coordinates offset so we can translate screenshot
         # images into actual screen positions
