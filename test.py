@@ -3,23 +3,23 @@ import ctypes
 # import win32api
 # PROCESS_PER_MONITOR_DPI_AWARE = 2
 # MDT_EFFECTIVE_DPI = 0
-user32 = ctypes.windll.user32
-user32.SetProcessDPIAware()
-from ctypes import windll
+# user32 = ctypes.windll.user32
+# user32.SetProcessDPIAware()
+# from ctypes import windll
 
-def get_ppi():
-    LOGPIXELSX = 88
-    LOGPIXELSY = 90
-    user32 = windll.user32
-    user32.SetProcessDPIAware()
-    dc = user32.GetDC(0) 
-    pix_per_inch = windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX)
-    print("Horizontal DPI is", windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX))
-    print("Vertical DPI is", windll.gdi32.GetDeviceCaps(dc, LOGPIXELSY))
-    user32.ReleaseDC(0, dc)
-    return pix_per_inch
+# def get_ppi():
+#     LOGPIXELSX = 88
+#     LOGPIXELSY = 90
+#     user32 = windll.user32
+#     user32.SetProcessDPIAware()
+#     dc = user32.GetDC(0) 
+#     pix_per_inch = windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX)
+#     print("Horizontal DPI is", windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX))
+#     print("Vertical DPI is", windll.gdi32.GetDeviceCaps(dc, LOGPIXELSY))
+#     user32.ReleaseDC(0, dc)
+#     return pix_per_inch
 
-get_ppi()
+# get_ppi()
 
 # def print_dpi():
 #     shcore = ctypes.windll.shcore

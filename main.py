@@ -54,7 +54,7 @@ def main():
     screendetect.start()
     # bot.start()
     
-    print(screendetect.defeated)
+    print(screendetect.loadButton)
     loop_time = time()
     classes = Constants.classes
     while True:
