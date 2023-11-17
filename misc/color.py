@@ -9,14 +9,14 @@ windowSize = (wincap.w, wincap.h)
 print(windowSize)
 
 if find_colour:
-    print("Press enter to get scale factor and RGB value\n")
+    print("Press q to get scale factor and RGB value\n")
     count = 1
     while 1:
-        if keyboard.is_pressed('enter'):
+        if keyboard.is_pressed('q'):
             x,y = pyautogui.position()
             print(count)
             print("xScaleFactor: ",round(x/wincap.w,4))
-            print("yScaleFactor: ",round(y/wincap.w,4))
+            print("yScaleFactor: ",round(y/wincap.h,4))
             print("RGB: ",pyautogui.pixel(x,y))
             print("")
             count+=1

@@ -51,9 +51,10 @@ def main():
     
     #start thread
     wincap.start()
-    # screendetect.start()
+    screendetect.start()
     # bot.start()
     
+    print(screendetect.defeated)
     loop_time = time()
     classes = Constants.classes
     while True:
@@ -86,17 +87,12 @@ def main():
             bot.state = BotState.INITIALIZING
             #wait for game to load
             sleep(7)
-            bot.start()
+            # bot.start()
 
         # display annotated window with FPS
         if Constants.DEBUG:
             fps=(1 / (time() - loop_time))
             screenshot = annotate(windowSize,screenshot,fps)
-            thickness = 2
-            color = (255,0,0)
-            cv.drawMarker(screenshot, screendetect.defeated,
-                color ,thickness=thickness,markerType= cv.MARKER_CROSS,
-                line_type=cv.LINE_AA, markerSize=50)
             cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
 

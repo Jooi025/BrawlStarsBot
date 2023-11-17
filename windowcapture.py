@@ -2,6 +2,7 @@ import numpy as np
 import win32gui, win32ui, win32con,win32com.client
 from threading import Thread, Lock
 from ctypes import windll
+import tkinter
 
 class WindowCapture:
 
@@ -24,6 +25,13 @@ class WindowCapture:
         # https://stackoverflow.com/a/45911849
         user32 = windll.user32
         user32.SetProcessDPIAware()
+        # get DPI
+        root = tkinter.Tk()
+        dpi = root.winfo_fpixels('1i')
+        deafault_dpi = 96
+        scaling = dpi/deafault_dpi
+        # close tkinter
+        root.destroy()
         # create a thread lock object
         self.lock = Lock()
         # find the handle for the window we want to capture.
@@ -44,8 +52,8 @@ class WindowCapture:
         self.topleft = (window_rect[0], window_rect[1])
 
         # account for the window border and titlebar and cut them off
-        border_pixels = 1
-        titlebar_pixels = 33
+        border_pixels = int(1*scaling)
+        titlebar_pixels = int(33*scaling)
         self.w = self.w - (border_pixels * 2)
         self.h = self.h - titlebar_pixels - border_pixels
         self.cropped_x = border_pixels

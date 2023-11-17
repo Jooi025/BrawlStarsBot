@@ -3,6 +3,7 @@ import pyautogui
 from threading import Thread, Lock
 from time import sleep
 from constants import Constants
+from math import floor
 
 """
 IDLE: When state exit,play and load is finished, state is changed to IDLE so 
@@ -28,6 +29,8 @@ class Screendetect:
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
     loadColor = (224,22,22)
+    defeated_xScale = 0.9677
+    defeated_yScale = 0.2285
     def __init__(self,windowSize,topleft) -> None:
         """
         Constructor for the Screendectect class
@@ -38,7 +41,7 @@ class Screendetect:
         self.h = windowSize[1]
         self.left = topleft[0]
         self.top = topleft[1]
-        self.defeated = (round(self.w*0.9782)+self.left, round(self.h*0.1991)+self.top)
+        self.defeated = (round(self.w*self.defeated_xScale)+self.left, round(self.h*self.defeated_yScale)+self.top)
         self.playButton = (round(self.w*0.5929)+self.left,round(self.h*0.9574)+self.top)
         self.exitButton = (round(self.w*0.4969)+self.left,round(self.h*0.96)+self.top)
         self.loadButton = (round(self.w*0.02347)+self.left,round(self.h*0.1199)+self.top)
