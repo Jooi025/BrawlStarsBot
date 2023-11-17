@@ -56,6 +56,8 @@ class Brawlbot:
     direction = ["top","bottom","right","left"]
     current_bush = None
     timeFactor = 1
+    last_player_pos = None
+    last_closest_enemy = None
     if sharpCorner:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
@@ -78,6 +80,13 @@ class Brawlbot:
         # offset
         self.offset_x = offset_x
         self.offset_y = offset_y
+
+        if self.range == 0:
+            self.attackRange = 3.5
+        elif self.range == 1:
+            self.attackRange = 5.5
+        elif self.range == 2:
+            self.attackRange = 8.5
 
     # translate a pixel position on a screenshot image to a pixel position on the screen.
     # pos = (x, y)
@@ -332,14 +341,14 @@ class Brawlbot:
         py.keyUp(random_move)
 
     def is_enemy_in_range(self):
-        """ 
+        """
         return boolen, notified bot if enemy is close to player
         """
         if self.results:
             # player coordinate
             if self.results[0]:
                 player_pos = self.results[0][0]
-            # if player position in result is empty 
+            # if player position in result is empty
             # assume that player is in the middle of the screen
             else:
                 player_pos = self.center_window
@@ -349,23 +358,38 @@ class Brawlbot:
                 self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
                 if self.enemyResults:
                     enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
-                    if self.range == 0:
-                        attackRange = 3.5
-                    elif self.range == 1:
-                        attackRange = 5.5
-                    elif self.range == 2:
-                        attackRange = 8.5
-                    gadgetRange = 0.8*attackRange
-                    if enemyDistance > gadgetRange and enemyDistance <= attackRange:
+                    # ranges in tiles
+                    gadgetRange = 0.8*self.attackRange
+                    if enemyDistance > gadgetRange and enemyDistance <= self.attackRange:
                         return True
                     elif enemyDistance <= gadgetRange:
                         self.gadget()
                         return True
-                    else:
-                        return False
-        else:
-            return False
+        return False
 
+    # TODO
+    def alert(self):
+        # player coordinate
+        if self.results[0]:
+            player_pos = self.results[0][0]
+        # if player position in result is empty
+        # assume that player is in the middle of the screen
+        else:
+            player_pos = self.center_window
+        # enemy coordinate
+        if self.results[2]:
+            enemyResults = self.targets_ordered_by_distance(self.results,2)
+            self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
+            if self.enemyResults:
+                enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
+        alertRange = 10
+        if enemyDistance > self.attackRange and enemyDistance <= alertRange:
+            if self.last_closest_enemy is None:
+                self.last_closest_enemy = enemyDistance
+            else:
+                if self.last_closest_enemy < enemyDistance:
+                    pass
+                self.last_closest_enemy = enemyDistance
 
     def update_results(self,results):
         self.lock.acquire()
@@ -373,29 +397,18 @@ class Brawlbot:
         self.lock.release()
 
     def have_stopped_moving(self):
-        # if we haven't stored a screenshot to compare to, do that first
-        if self.movement_screenshot is None:
-            self.movement_screenshot = self.screenshot.copy()
-            return False
-
-        # compare the old screenshot to the new screenshot
-        result = cv.matchTemplate(self.screenshot, self.movement_screenshot, cv.TM_CCOEFF_NORMED)
-        # we only care about the value when the two screenshots are laid perfectly over one 
-        # another, so the needle position is (0, 0). since both images are the same size, this
-        # should be the only result that exists anyway
-        similarity = result[0][0]
-        print('Movement detection similarity: {}'.format(similarity))
-
-        if similarity >= self.MOVEMENT_STOPPED_THRESHOLD:
-            # pictures look similar, so we've probably stopped moving
-            print('Movement detected stop')
-            return True
-
-        # looks like we're still moving.
-        # use this new screenshot to compare to the next one
-        self.movement_screenshot = self.screenshot.copy()
+        if self.results:
+            if self.results[0]:
+                player_pos = self.results[0][0]
+                if self.last_player_pos is None:
+                    self.last_player_pos = player_pos
+                else:
+                    if self.last_player_pos == player_pos:
+                        print("have stopped moving or stuck")
+                        return True
+                    self.last_player_pos = player_pos
         return False
-    
+        
     def update_screenshot(self, screenshot):
         self.lock.acquire()
         self.screenshot = screenshot
@@ -408,6 +421,8 @@ class Brawlbot:
 
     def stop(self):
         self.stopped = True
+        # reset last player position
+        self.last_player_pos = None
 
     def run(self):
         while not self.stopped:

@@ -51,8 +51,8 @@ def main():
     
     #start thread
     wincap.start()
-    screendetect.start()
-    bot.start()
+    # screendetect.start()
+    # bot.start()
     
     loop_time = time()
     classes = Constants.classes
@@ -92,6 +92,11 @@ def main():
         if Constants.DEBUG:
             fps=(1 / (time() - loop_time))
             screenshot = annotate(windowSize,screenshot,fps)
+            thickness = 2
+            color = (255,0,0)
+            cv.drawMarker(screenshot, screendetect.defeated,
+                color ,thickness=thickness,markerType= cv.MARKER_CROSS,
+                line_type=cv.LINE_AA, markerSize=50)
             cv.imshow("Brawl Stars Bot",screenshot)
             loop_time = time()
 
@@ -117,8 +122,7 @@ def main():
 if __name__ == "__main__":
     while True:
         print("")
-        print(bcolors.HEADER + bcolors.UNDERLINE + "Make sure bluestacks is on the top left corner of the screen.")
-        print("Start bot after loading into the match.")
+        print(bcolors.HEADER + bcolors.UNDERLINE + "Start bot after loading into the match.")
         print("To exit bot hover cursor to the bottom right corner out of bluestacks." + bcolors.ENDC)
         print("")
         print("1. Start Bot")

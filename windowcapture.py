@@ -1,7 +1,7 @@
 import numpy as np
 import win32gui, win32ui, win32con,win32com.client
 from threading import Thread, Lock
-
+from ctypes import windll
 
 class WindowCapture:
 
@@ -20,9 +20,12 @@ class WindowCapture:
 
     # constructor
     def __init__(self, window_name=None):
+        # Make program aware of DPI scaling
+        # https://stackoverflow.com/a/45911849
+        user32 = windll.user32
+        user32.SetProcessDPIAware()
         # create a thread lock object
         self.lock = Lock()
-
         # find the handle for the window we want to capture.
         # if no window name is given, capture the entire screen
         if window_name is None:
