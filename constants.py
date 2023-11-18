@@ -16,7 +16,7 @@ class Constants:
 
     #! Do not change these
     # Main contants
-    DEBUG = False
+    DEBUG = True
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants
