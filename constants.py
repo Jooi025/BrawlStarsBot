@@ -35,7 +35,7 @@ class Constants:
         model_file_path = "new_model/best.engine"
     else:
         # load ONNX interface
-        model_file_path = "new_model/best.onnx"
+        model_file_path = "new_yolov5_model\\yolov5.pt"
     #bot constant
     movement_key = "middle"
     

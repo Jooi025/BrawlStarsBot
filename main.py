@@ -47,7 +47,7 @@ def main():
     # move cursor to the middle of bluestacks
     middle_of_window = (int(wincap.w/2+wincap.offset_x),int(wincap.h/2+wincap.offset_y))
     py.moveTo(middle_of_window[0],middle_of_window[1])
- 
+
     #start thread
     wincap.start()
     detector.start()
