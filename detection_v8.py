@@ -26,13 +26,6 @@ class Detection:
         self.h = windowSize[1]
         self.height = heightScaleFactor * self.h
 
-        if Constants.gpu is None:
-            self.half = False
-        elif Constants.gpu:
-            self.half = False
-        else:
-            self.half = True
-
     def find_midpoint(self,x1,y1,x2,y2):
         #x2 > x1
         #y2 > y1
@@ -101,7 +94,8 @@ class Detection:
                 thickness = 3
                 # create empty nested list
                 tempList = len(self.classes)*[[]]
-                results = self.model.predict(self.screenshot,imgsz=(384,640),half=self.half, verbose=False)
+                results = self.model.predict(self.screenshot, imgsz=Constants.imgsz,
+                                             half=Constants.half, verbose=False)
                 result = results[0]
                 for box in result.boxes:
                     x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]

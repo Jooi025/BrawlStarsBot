@@ -4,8 +4,7 @@ from windowcapture import WindowCapture
 from constants import Constants
 from ultralytics import YOLO
 
-model_file_path = "yolov8_model\\yolov8_openvino_model"
-model = YOLO(model_file_path,task="detect")
+model = YOLO(Constants.model_file_path,task="detect")
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
@@ -18,7 +17,8 @@ bgr = (0,255,0)
 while(True):
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
-    results = model.predict(screenshot,imgsz=(384,640),half=True, verbose=False,device="cpu")
+    results = model.predict(screenshot, imgsz=Constants.imgsz,
+                            half=Constants.half, verbose=False)
     result = results[0]
     for box in result.boxes:
         x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
@@ -35,6 +35,8 @@ while(True):
         # cube box class
         elif class_id == 3:
             threshold = Constants.cubebox_threshold
+
+        threshold = 0.45
         if prob >= threshold:
             cv.rectangle(screenshot, (x1, y1), (x2, y2), bgr, 2)
             cv.putText(screenshot, f"{result.names[class_id]}: {prob}", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)

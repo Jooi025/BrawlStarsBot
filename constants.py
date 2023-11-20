@@ -12,7 +12,7 @@ class Constants:
     centerOrder = True
     
     #! Change this to True if you have Nvidia graphics card and TensorRT installed
-    gpu = False
+    gpu = True
 
     #! Do not change these
     # Main contants
@@ -31,14 +31,17 @@ class Constants:
     if gpu is None:
         # load pytorch interface
         model_file_path = "yolov8_model/yolov8.pt"
+        half = False
+        imgsz = (384,640)
     elif gpu:
         # load TensorRT interface
         model_file_path = "yolov8_model/yolov8.engine"
+        half = False
+        imgsz = 640
     else:
         # load ONNX interface
         model_file_path = "yolov8_model/yolov8_openvino_model"
+        half = True
+        imgsz = (384,640)
     #bot constant
     movement_key = "middle"
-    
-    
-    
