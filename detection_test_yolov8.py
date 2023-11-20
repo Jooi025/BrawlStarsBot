@@ -4,7 +4,7 @@ from windowcapture import WindowCapture
 from constants import Constants
 from ultralytics import YOLO
 
-model = YOLO("yolov8_model\\yolov8.engine",task="detect")
+model = YOLO("BrawlStarsBot\\yolov5_model\\best.pt",task="detect")
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
@@ -14,7 +14,6 @@ w, h=wincap.get_dimension()
 classes = Constants.classes
 loop_time = time()
 bgr = (0,255,0)
-
 while(True):
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
@@ -35,6 +34,8 @@ while(True):
         # cube box class
         elif class_id == 3:
             threshold = Constants.cubebox_threshold
+
+        threshold = 0.45
         if prob >= threshold:
             cv.rectangle(screenshot, (x1, y1), (x2, y2), bgr, 2)
             cv.putText(screenshot, f"{result.names[class_id]}: {prob}", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)

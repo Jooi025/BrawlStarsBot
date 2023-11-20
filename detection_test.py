@@ -5,7 +5,7 @@ import torch
 from constants import Constants
 
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', "yolov5_model/best_pruned.onnx",force_reload=True)
+model = torch.hub.load('ultralytics/yolov5', 'custom', "yolov5_model/yolov5.pt",force_reload=True)
 if Constants.gpu:
     # use gpu for detection
     model.cuda()
