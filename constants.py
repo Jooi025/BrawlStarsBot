@@ -27,15 +27,16 @@ class Constants:
     cubebox_threshold = 0.55
     classes = ["Player","Bush","Enemy","Cubebox"]
     heightScaleFactor = 0.154
+    # interface
     if gpu is None:
         # load pytorch interface
-        model_file_path = "new_model/best.pt"
+        model_file_path = "yolov8_model/yolov8.pt"
     elif gpu:
         # load TensorRT interface
-        model_file_path = "new_model/best.engine"
+        model_file_path = "yolov8_model/yolov8.engine"
     else:
         # load ONNX interface
-        model_file_path = "new_yolov5_model\\yolov5.pt"
+        model_file_path = "yolov8_model/yolov8_openvino_model"
     #bot constant
     movement_key = "middle"
     

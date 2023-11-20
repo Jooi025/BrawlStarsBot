@@ -3,7 +3,7 @@ from time import time,sleep
 from windowcapture import WindowCapture
 from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
-from detection import Detection
+from detection_v8 import Detection
 import pydirectinput as py
 import os
 from constants import Constants
@@ -51,8 +51,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    screendetect.start()
-    bot.start()
+    # screendetect.start()
+    # bot.start()
     
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Scaling: {wincap.scaling*100}%")

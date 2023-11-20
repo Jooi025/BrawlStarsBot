@@ -35,8 +35,6 @@ while(True):
         # cube box class
         elif class_id == 3:
             threshold = Constants.cubebox_threshold
-
-        threshold = 0.45
         if prob >= threshold:
             cv.rectangle(screenshot, (x1, y1), (x2, y2), bgr, 2)
             cv.putText(screenshot, f"{result.names[class_id]}: {prob}", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)
