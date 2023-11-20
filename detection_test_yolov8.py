@@ -4,7 +4,7 @@ from windowcapture import WindowCapture
 from constants import Constants
 from ultralytics import YOLO
 
-model = YOLO("yolov8_model\\yolov8.pt",task="detect")
+model = YOLO("yolov8_model\\yolov8.engine",task="detect")
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
