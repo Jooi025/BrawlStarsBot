@@ -1,0 +1,16 @@
+description: Ultralytics YOLOv8 model trained on C:\Users\josep\Desktop\yolov8\dataset\train_data\data.yaml
+author: Ultralytics
+license: AGPL-3.0 https://ultralytics.com/license
+date: '2023-11-21T01:16:06.179119'
+version: 8.0.184
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 640
+- 640
+names:
+  0: Player
+  1: Bush
+  2: Enemy
+  3: Cubebox

@@ -4,7 +4,8 @@ from windowcapture import WindowCapture
 from constants import Constants
 from ultralytics import YOLO
 
-model = YOLO("BrawlStarsBot\\yolov5_model\\best.pt",task="detect")
+model_file_path = "yolov8_model\\yolov8_openvino_model"
+model = YOLO(model_file_path,task="detect")
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
 #get window dimension
@@ -17,7 +18,7 @@ bgr = (0,255,0)
 while(True):
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
-    results = model.predict(screenshot, verbose=False)
+    results = model.predict(screenshot,imgsz=(384,640),half=True, verbose=False,device="cpu")
     result = results[0]
     for box in result.boxes:
         x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
