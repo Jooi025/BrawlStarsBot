@@ -41,9 +41,9 @@ class Screendetect:
         self.offset_x = offset[0]
         self.offset_y = offset[1]
         self.defeated = (round(self.w*0.9683)+self.offset_x, round(self.h*0.1969)+self.offset_y)
-        self.playButton = (round(self.w*0.5903)+self.offset_x,round(self.h*0.9197)+self.offset_y)
-        self.exitButton = (round(self.w*0.493)+self.offset_x,round(self.h*0.9187)+self.offset_y)
-        self.loadButton = (round(self.w*0.0855)+self.offset_x,round(self.h*0.1306)+self.offset_y)
+        self.playButton = (round(self.w*0.5903)+self.offset_x, round(self.h*0.9197)+self.offset_y)
+        self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
+        self.loadButton = (round(self.w*0.0855)+self.offset_x, round(self.h*0.1306)+self.offset_y)
     
     def start(self):
         self.stopped = False
@@ -69,7 +69,7 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=15):
+                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=20):
                         print("Loading in")
                         self.lock.acquire()
                         sleep(3)
