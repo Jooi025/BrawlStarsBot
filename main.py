@@ -93,6 +93,12 @@ def main():
         # display annotated window with FPS
         if Constants.DEBUG:
             detector.annotate(bot.border_size,bot.tile_w,bot.tile_h)
+            # make a black solid rectangle at the bottom left corner
+            cv.rectangle(detector.screenshot, (0, int(windowSize[1]-30)), (int(windowSize[0]/7), windowSize[1]), (0, 0, 0), -1)
+            # FPS(D|S): D- detector fps, S- Screenshot/wincap fps
+            cv.putText(detector.screenshot,
+                       f"FPS(D|S):{int(detector.fps)}| {int(wincap.fps)}",(10,windowSize[1]-10),
+                       cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
             cv.imshow("Brawl Stars Bot",detector.screenshot)
 
         # Press q to exit the script

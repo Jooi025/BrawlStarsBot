@@ -3,7 +3,7 @@ import win32gui, win32ui, win32con,win32com.client
 from threading import Thread, Lock
 from ctypes import windll
 import tkinter
-from time import sleep
+from time import time
 
 class WindowCapture:
 
@@ -19,6 +19,7 @@ class WindowCapture:
     cropped_y = 0
     offset_x = 0
     offset_y = 0
+    fps = 0
 
     # constructor
     def __init__(self, window_name=None):
@@ -131,6 +132,7 @@ class WindowCapture:
 
     def start(self):
         self.stopped = False
+        self.loop_time = time()
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -140,11 +142,11 @@ class WindowCapture:
 
     def run(self):
         while not self.stopped:
-            # take 60 screenshot per second
-            sleep(0.016)
             # get an updated image of the game
             screenshot = self.get_screenshot()
             # lock the thread while updating the results
             self.lock.acquire()
             self.screenshot = screenshot
             self.lock.release()
+            self.fps = (1 / (time() - self.loop_time))
+            self.loop_time = time()

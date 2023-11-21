@@ -1,5 +1,5 @@
 from threading import Thread, Lock
-from time import sleep
+from time import time
 import cv2 as cv
 from constants import Constants
 from ultralytics import YOLO
@@ -12,6 +12,7 @@ class Detection:
     # properties
     screenshot = None
     results = None
+    fps = 0
 
     def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
         """
@@ -80,6 +81,7 @@ class Detection:
 
     def start(self):
         self.stopped = False
+        self.loop_time = time()
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -124,3 +126,5 @@ class Detection:
                 self.lock.acquire()
                 self.results = tempList
                 self.lock.release()
+                self.fps = (1 / (time() - self.loop_time))
+                self.loop_time = time()
