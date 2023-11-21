@@ -49,7 +49,7 @@ class Brawlbot:
     IGNORE_RADIUS = 0.5
     movement_screenshot = None
     screenshot = None
-    INITIALIZING_SECONDS = 9
+    INITIALIZING_SECONDS = 2
     results = []
     bushResult = []
     counter = 0
@@ -59,6 +59,7 @@ class Brawlbot:
     last_player_pos = None
     last_closest_enemy = None
     border_size = 1
+    stopped = True
     if sharpCorner:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
@@ -335,9 +336,9 @@ class Brawlbot:
         random_move = random.choice(move_keys)
         py.keyDown(random_move)
         self.attack()
-        sleep(0.5)
+        sleep(0.25)
         self.attack()
-        sleep(0.5)
+        sleep(0.25)
         py.keyUp(random_move)
 
     def is_enemy_in_range(self):
@@ -361,9 +362,11 @@ class Brawlbot:
                     # ranges in tiles
                     gadgetRange = 0.8*self.attackRange
                     if enemyDistance > gadgetRange and enemyDistance <= self.attackRange:
+                        self.attack()
                         return True
                     elif enemyDistance <= gadgetRange:
                         self.gadget()
+                        self.attack()
                         return True
         return False
 
@@ -505,7 +508,6 @@ class Brawlbot:
             
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
-                    pass
                     print("attacking enemy")
                     self.enemy_random_movement()
                 else:

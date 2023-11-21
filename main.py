@@ -52,7 +52,6 @@ def main():
     wincap.start()
     detector.start()
     screendetect.start()
-    bot.start()
     
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Window Size: {windowSize}")
@@ -84,11 +83,11 @@ def main():
         elif screendetect.state ==  Detectstate.LOAD:
             if bot.stopped:
                 print("restarting bot")
+                #wait for game to load
+                sleep(2)
                 # reset timestamp and state
                 bot.timestamp = time()
-                bot.state = BotState.SEARCHING
-                #wait for game to load
-                sleep(4)
+                bot.state = BotState.INITIALIZING
                 bot.start()
 
         # display annotated window with FPS
@@ -114,7 +113,8 @@ def main():
 if __name__ == "__main__":
     while True:
         print("")
-        print(bcolors.HEADER + bcolors.UNDERLINE + "Start bot after loading into the match.")
+        print(bcolors.HEADER + bcolors.UNDERLINE + 
+              "Start bot at the brawl stars menu and select solo showdown and click PLAY.")
         print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
         print("1. Start Bot")
         print("2. Set shutdown timer")
