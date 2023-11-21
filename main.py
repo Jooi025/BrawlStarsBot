@@ -28,6 +28,31 @@ def stop_all_thread(wincap,screendetect,bot,detector):
     bot.stop()
     cv.destroyAllWindows()
 
+def annotate_fps(screenshot,windowSize,detector_avg_fps,wincap_avg_fps):
+    scale = (windowSize[0]+windowSize[1])/(1145+644)
+    # make a black solid rectangle at the bottom left corner
+    rect_w = int(180*scale)
+    rect_h = int(60*scale)
+    cv.rectangle(screenshot,(0,windowSize[1]),
+                    (rect_w, windowSize[1] - rect_h), (0, 0, 0), -1)
+    # FPS text
+    fontScale = 0.7*scale
+    spacing = int(10*scale)
+    thickness = 1
+    cv.putText(screenshot,text=f"Detect: {int(detector_avg_fps)}",
+                org=(0+spacing,windowSize[1]-spacing-int(30*scale)),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=fontScale,
+                color=(255,255,255),thickness=thickness)
+    cv.putText(screenshot,text=f"FPS",
+                org=(0+spacing+int(scale*140),windowSize[1]-spacing-int(30*scale)),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=0.5*fontScale,
+                color=(255,255,255),thickness=thickness)
+    cv.putText(screenshot,text=f"Wincap: {int(wincap_avg_fps)}",
+                org=(0+spacing,windowSize[1]-spacing),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=fontScale,
+                color=(255,255,255),thickness=thickness)
+    cv.putText(screenshot,text=f"FPS",
+                org=(0+spacing+int(scale*140),windowSize[1]-spacing),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=0.5*fontScale,
+                color=(255,255,255),thickness=thickness)
+    return screenshot
+
 def main():
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
@@ -51,10 +76,11 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    screendetect.start()
-    bot.start()
+    # screendetect.start()
+    # bot.start()
     
     print(f"Resolution: {wincap.screen_resolution}")
+    print(f"Window Size: {windowSize}")
     print(f"Scaling: {wincap.scaling*100}%")
 
     while True:
@@ -93,13 +119,8 @@ def main():
         # display annotated window with FPS
         if Constants.DEBUG:
             detector.annotate(bot.border_size,bot.tile_w,bot.tile_h)
-            # make a black solid rectangle at the bottom left corner
-            cv.rectangle(detector.screenshot, (0, int(windowSize[1]-30)), (int(windowSize[0]/7), windowSize[1]), (0, 0, 0), -1)
-            # FPS(D|S): D- detector fps, S- Screenshot/wincap fps
-            cv.putText(detector.screenshot,
-                       f"FPS(D|S):{int(detector.fps)}| {int(wincap.fps)}",(10,windowSize[1]-10),
-                       cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
-            cv.imshow("Brawl Stars Bot",detector.screenshot)
+            annotated_screenshot = annotate_fps(detector.screenshot,windowSize,detector.avg_fps,wincap.avg_fps)
+            cv.imshow("Brawl Stars Bot",annotated_screenshot)
 
         # Press q to exit the script
         key = cv.waitKey(1)

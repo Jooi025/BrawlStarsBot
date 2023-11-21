@@ -20,6 +20,7 @@ class WindowCapture:
     offset_x = 0
     offset_y = 0
     fps = 0
+    avg_fps = 0
 
     # constructor
     def __init__(self, window_name=None):
@@ -133,6 +134,7 @@ class WindowCapture:
     def start(self):
         self.stopped = False
         self.loop_time = time()
+        self.count = 0
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -148,5 +150,11 @@ class WindowCapture:
             self.lock.acquire()
             self.screenshot = screenshot
             self.lock.release()
+            
             self.fps = (1 / (time() - self.loop_time))
             self.loop_time = time()
+            self.count += 1
+            if self.count == 1:
+                self.avg_fps = self.fps
+            else:
+                self.avg_fps = (self.avg_fps*self.count+self.fps)/(self.count + 1)

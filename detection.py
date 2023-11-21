@@ -13,6 +13,7 @@ class Detection:
     screenshot = None
     results = None
     fps = 0
+    avg_fps = 0
 
     def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
         """
@@ -82,6 +83,7 @@ class Detection:
     def start(self):
         self.stopped = False
         self.loop_time = time()
+        self.count = 0
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -128,3 +130,8 @@ class Detection:
                 self.lock.release()
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
+                self.count += 1
+                if self.count == 1:
+                    self.avg_fps = self.fps
+                else:
+                    self.avg_fps = (self.avg_fps*self.count+self.fps)/(self.count + 1)
