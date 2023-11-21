@@ -58,6 +58,7 @@ class Brawlbot:
     timeFactor = 1
     last_player_pos = None
     last_closest_enemy = None
+    border_size = 1
     if sharpCorner:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
@@ -104,9 +105,8 @@ class Brawlbot:
         y_direction =  ""
         if self.results:
             if self.results[0]:
-                border_size = 1.5
-                x_border = (self.window_w/self.tile_w)*border_size
-                y_border = (self.window_h/self.tile_h)*border_size
+                x_border = (self.window_w/self.tile_w)*self.border_size
+                y_border = (self.window_h/self.tile_h)*self.border_size
                 # coordinate of the middle of the screen
                 p0 = self.center_window
                 # coordinate of the player
@@ -417,6 +417,7 @@ class Brawlbot:
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
+        t.setDaemon(True)
         t.start()
 
     def stop(self):
@@ -462,7 +463,7 @@ class Brawlbot:
                 if time() < self.timestamp + moveTime:
                     if not self.have_stopped_moving():
                         # wait a short time to allow for the character position to change
-                        sleep(0.15)
+                        sleep(0.4)
                     #if player is stuck
                     else:
                         # cancel moving 

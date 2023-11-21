@@ -3,7 +3,7 @@ from time import time,sleep
 from windowcapture import WindowCapture
 from bot import Brawlbot, BotState
 from screendetect import Screendetect, Detectstate
-from detection_v8 import Detection
+from detection import Detection
 import pydirectinput as py
 import os
 from constants import Constants
@@ -51,8 +51,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    # screendetect.start()
-    # bot.start()
+    screendetect.start()
+    bot.start()
     
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Scaling: {wincap.scaling*100}%")
@@ -85,14 +85,14 @@ def main():
                 print("restarting bot")
                 # reset timestamp and state
                 bot.timestamp = time()
-                bot.state = BotState.INITIALIZING
+                bot.state = BotState.SEARCHING
                 #wait for game to load
-                sleep(7)
+                sleep(4)
                 bot.start()
 
         # display annotated window with FPS
         if Constants.DEBUG:
-            detector.annotate()
+            detector.annotate(bot.border_size,bot.tile_w,bot.tile_h)
             cv.imshow("Brawl Stars Bot",detector.screenshot)
 
         # Press q to exit the script

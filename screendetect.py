@@ -3,7 +3,6 @@ import pyautogui
 from threading import Thread, Lock
 from time import sleep
 from constants import Constants
-from math import floor
 
 """
 IDLE: When state exit,play and load is finished, state is changed to IDLE so 
@@ -28,7 +27,7 @@ class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
-    loadColor = (224,22,22)
+    loadColor = (187, 239, 74)
     defeated_xScale = 0.9677
     defeated_yScale = 0.2285
     def __init__(self,windowSize,offset) -> None:
@@ -44,11 +43,12 @@ class Screendetect:
         self.defeated = (round(self.w*0.9683)+self.offset_x, round(self.h*0.1969)+self.offset_y)
         self.playButton = (round(self.w*0.5903)+self.offset_x,round(self.h*0.9197)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x,round(self.h*0.9187)+self.offset_y)
-        self.loadButton = (round(self.w*0.014)+self.offset_x,round(self.h*0.0631)+self.offset_y)
+        self.loadButton = (round(self.w*0.0855)+self.offset_x,round(self.h*0.1306)+self.offset_y)
     
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
+        t.setDaemon(True)
         t.start()
 
     def stop(self):
@@ -99,10 +99,10 @@ class Screendetect:
                 self.lock.release()
             
             elif self.state == Detectstate.EXIT:
-                # release right click 
+                # release right click
                 py.mouseUp(button = Constants.movement_key)
                 sleep(5)
-                # click the exit button 
+                # click the exit button
                 py.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
                 sleep(0.05)
                 self.lock.acquire()

@@ -31,27 +31,26 @@ class Detection:
         #y2 > y1
         return [(x1+int((x2-x1)/2),y1+int((y2-y1)/2))]
 
-    def annotate(self):
-        border = 22
-        xsplit = 27
-        ysplit = 19
-        xBorder = self.w/xsplit
-        yBorder = self.h/ysplit
+    def annotate(self,border_size,tile_w,tile_h):
+        displacement = 22
+        thickness = 2
+        # bgr
+        red = (0, 0, 255)
+        green = (0, 255, 0)
         x_scale = int(self.w/3)
         y_scale = int(self.h/3)
-        thickness = 2
-        red = (0, 0, 255) # bgr
-        green = (0, 255, 0)
-        size = 3
-        xTop = int(xBorder*((xsplit-size)/2))
-        yTop = int(yBorder*((ysplit-size)/2))+border
-        xBottom = int(xBorder*((xsplit+size)/2))
-        yBottom = int(yBorder*((ysplit+size)/2))+border
+        xBorder = (self.w/tile_w)
+        yBorder = (self.h/tile_h)
+        size = 2*border_size
+        xTop = int(xBorder*((tile_w-size)/2))
+        yTop = int(yBorder*((tile_h-size)/2))+displacement
+        xBottom = int(xBorder*((tile_w+size)/2))
+        yBottom = int(yBorder*((tile_h+size)/2))+displacement
         
         cv.rectangle(self.screenshot, (xTop, yTop), (xBottom, yBottom), (0,255,0), 2)
         cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+22)),
                     green ,thickness=thickness,markerType= cv.MARKER_CROSS,
-                    line_type=cv.LINE_AA, markerSize=50) 
+                    line_type=cv.LINE_AA, markerSize=50)
         #quadrant line
         cv.line(self.screenshot,(x_scale,0),(x_scale,3*y_scale),green,thickness)
         cv.line(self.screenshot,(2*x_scale,0),(2*x_scale,3*y_scale),green,thickness)
@@ -82,6 +81,7 @@ class Detection:
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
+        t.setDaemon(True)
         t.start()
 
     def stop(self):
@@ -101,17 +101,7 @@ class Detection:
                     x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
                     class_id = int(box.cls[0].item())
                     prob = round(box.conf[0].item(), 2)
-                    if class_id == 0:
-                        threshold = Constants.player_threshold
-                    # bush class
-                    elif class_id == 1:
-                        threshold = Constants.bush_threshold
-                    # enemy class
-                    elif class_id == 2:
-                        threshold = Constants.enemy_threshold
-                    # cube box class
-                    elif class_id == 3:
-                        threshold = Constants.cubebox_threshold
+                    threshold = Constants.threshold[class_id]
                     if prob >= threshold:
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
                         if self.classes[class_id] == "Player":

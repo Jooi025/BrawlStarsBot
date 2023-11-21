@@ -2,7 +2,7 @@ class Constants:
     #! Change the speed and range for the brawler you are using
     # go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find brawler's speed 
     speed = 2.4 # units: (tiles per second)
-    range = 1 # 0 for short, 1 for medium and 2 for long range
+    range = 0 # 0 for short, 1 for medium and 2 for long range
     
     #! Change this to suit the current map
     # map's characteristic
@@ -12,20 +12,20 @@ class Constants:
     centerOrder = True
     
     #! Change this to True if you have Nvidia graphics card and TensorRT installed
-    gpu = True
-
+    gpu = False
     #! Do not change these
     # Main contants
-    DEBUG = True
+    DEBUG = False
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants
-    player_threshold = 0.35
-    bush_threshold = 0.35
-    player_threshold = 0.35
-    enemy_threshold = 0.55
-    cubebox_threshold = 0.55
     classes = ["Player","Bush","Enemy","Cubebox"]
+    """
+    Threshold's index correspond with classes's index.
+    e.g. First element of classes is player so the first
+    element of threshold is threshold for player.
+    """
+    threshold = [0.4,0.4,0.55,0.55]
     heightScaleFactor = 0.154
     # interface
     if gpu is None:

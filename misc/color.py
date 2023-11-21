@@ -24,7 +24,7 @@ if find_colour:
 else:
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
-    loadColor = (224,22,22)
+    loadColor = (187, 239, 74)
     w = windowSize[0]
     h = windowSize[1]
     left = wincap.offset_x
@@ -32,7 +32,7 @@ else:
     defeated = (round(w*0.9683)+left, round(h*0.1969)+top)
     playButton = (round(w*0.5903)+left,round(h*0.9197)+top)
     exitButton = (round(w*0.493)+left,round(h*0.9187)+top)
-    loadButton = (round(w*0.014)+left,round(h*0.0631)+top)
+    loadButton = (round(w*0.0855)+left,round(h*0.1306)+top)
     while True:
         if pyautogui.pixelMatchesColor(playButton[0], playButton[1],playColor,tolerance=15):
             print("Play again ")
