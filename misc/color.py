@@ -3,7 +3,7 @@ from time import sleep
 from windowcapture import WindowCapture
 import keyboard
 
-find_colour = False
+find_colour = 0
 wincap = WindowCapture("Bluestacks App Player")
 windowSize = (wincap.w, wincap.h)
 
@@ -14,8 +14,8 @@ if find_colour:
         if keyboard.is_pressed('q'):
             x,y = pyautogui.position()
             print(count)
-            print("xScaleFactor: ",round((x-wincap.border_pixels)/wincap.w,4))
-            print("yScaleFactor: ",round((y-wincap.titlebar_pixels)/wincap.h,4))
+            print("xScaleFactor: ",round((x-wincap.offset_x)/wincap.w,4))
+            print("yScaleFactor: ",round((y-wincap.offset_y)/wincap.h,4))
             print("RGB: ",pyautogui.pixel(x,y))
             print("")
             count+=1
@@ -24,7 +24,7 @@ if find_colour:
 else:
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
-    loadColor = (187, 239, 74)
+    loadColor = (177, 239, 74)
     w = windowSize[0]
     h = windowSize[1]
     left = wincap.offset_x
@@ -32,7 +32,7 @@ else:
     defeated = (round(w*0.9683)+left, round(h*0.1969)+top)
     playButton = (round(w*0.5903)+left,round(h*0.9197)+top)
     exitButton = (round(w*0.493)+left,round(h*0.9187)+top)
-    loadButton = (round(w*0.0855)+left,round(h*0.1306)+top)
+    loadButton = (round(w*0.084)+left,round(h*0.1319)+top)
     while True:
         if pyautogui.pixelMatchesColor(playButton[0], playButton[1],playColor,tolerance=15):
             print("Play again ")

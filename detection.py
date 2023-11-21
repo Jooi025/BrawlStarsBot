@@ -14,6 +14,8 @@ class Detection:
     results = None
     fps = 0
     avg_fps = 0
+    player_topleft = None
+    player_bottomright = None
 
     def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
         """
@@ -133,6 +135,8 @@ class Detection:
                     if prob >= threshold:
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
                         if self.classes[class_id] == "Player":
+                            self.player_topleft = (x1,y1)
+                            self.player_bottomright = (x2,y2)
                             midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
                         if self.classes[class_id] == "Enemy":
                             #standardised enemy height and their label

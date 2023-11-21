@@ -25,7 +25,7 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.45,0.5,0.65,0.65]
+    threshold = [0.4,0.5,0.65,0.65]
     heightScaleFactor = 0.154
     # interface
     if gpu is None:

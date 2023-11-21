@@ -3,6 +3,7 @@ from time import time,sleep
 from threading import Thread, Lock
 from math import *
 import pydirectinput as py
+import pyautogui
 import numpy as np
 import random
 from constants import Constants
@@ -37,8 +38,8 @@ class BotState:
     
 class Brawlbot:
     # In game tile width and height ratio with respect aspect ratio
-    tile_w = 26.20
-    tile_h = 17.72
+    tile_w = 24
+    tile_h = 17
     midpoint_offset = 22
     # Map with sharp corners
     sharpCorner = Constants.sharpCorner
@@ -58,8 +59,12 @@ class Brawlbot:
     timeFactor = 1
     last_player_pos = None
     last_closest_enemy = None
-    border_size = 1
+    border_size = 1.2
     stopped = True
+    topleft = None
+    avg_fps = 0
+
+
     if sharpCorner:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
@@ -214,7 +219,7 @@ class Brawlbot:
             x_scale = self.window_w/3
             y_scale = self.window_h/3
             for x,y in unfilteredResults:
-                if ((x > quadrant[0][0]*x_scale and x <= quadrant[0][1]*x_scale) 
+                if ((x > quadrant[0][0]*x_scale and x <= quadrant[0][1]*x_scale)
                     and (y > quadrant[1][0]*y_scale and y <= quadrant[1][1]*y_scale)):
                     filteredResult.append((x,y))
             filteredResult.sort(key=tile_distance)
@@ -250,6 +255,8 @@ class Brawlbot:
             py.mouseDown(button=Constants.movement_key,x=x, y=y)
             moveTime = tileDistance/self.speed
             moveTime = moveTime * self.timeFactor
+            print(f"Distance: {round(tileDistance,2)} tiles")
+            print(f"Time: {round(moveTime,2)} s")
             return moveTime
     
     # enemy and attack method
@@ -394,9 +401,31 @@ class Brawlbot:
                     pass
                 self.last_closest_enemy = enemyDistance
 
+    def is_player_damaged(self):
+        if self.topleft:
+            width = abs(self.topleft[0] - self.bottomright[0])
+            height = abs(self.topleft[1] - self.bottomright[1])
+            w1 = int(self.topleft[0] + width/3)
+            w2 = int(self.topleft[0] + 2*(width/3))
+            h = int(self.topleft[1] - height/2)
+            try:
+                if (pyautogui.pixelMatchesColor(w1,h,(204, 34, 34),tolerance=20)
+                    or pyautogui.pixelMatchesColor(w2,h,(204, 34, 34),tolerance=20)):
+                    print(f"player is damaged")
+                    return True
+            except OSError:
+                pass
+        return False
+    
     def update_results(self,results):
         self.lock.acquire()
         self.results = results
+        self.lock.release()
+    
+    def update_player(self,topleft,bottomright):
+        self.lock.acquire()
+        self.topleft = topleft
+        self.bottomright =bottomright
         self.lock.release()
 
     def have_stopped_moving(self):
@@ -419,6 +448,8 @@ class Brawlbot:
 
     def start(self):
         self.stopped = False
+        self.loop_time = time()
+        self.count = 0
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -447,6 +478,7 @@ class Brawlbot:
                     self.lock.acquire()
                     self.timestamp = time()
                     self.state = BotState.MOVING
+                    self.moveTime = self.move_to_bush()
                     self.lock.release()
                 #bus is not detected
                 else:
@@ -460,33 +492,29 @@ class Brawlbot:
                         self.lock.release()
 
             elif self.state == BotState.MOVING:
-                # time for player to move to the selected bush 
-                moveTime = self.move_to_bush()
-                # when player is moving check if player is stuck 
-                if time() < self.timestamp + moveTime:
+                # when player is moving check if player is stuck
+                if time() < self.timestamp + self.moveTime:
                     if not self.have_stopped_moving():
                         # wait a short time to allow for the character position to change
                         sleep(0.4)
                     #if player is stuck
                     else:
-                        # cancel moving 
+                        # cancel moving
                         py.mouseUp(button = Constants.movement_key)
                         self.random_movement()
                         self.lock.acquire()
                         # and search for bush again
                         self.state = BotState.SEARCHING
                         self.lock.release()
-
                     if self.is_enemy_in_range():
                         self.lock.acquire()
                         self.state = BotState.ATTACKING
                         self.lock.release()
 
-                # player successfully travel to the selected bush 
+                # player successfully travel to the selected bush
                 else:
                     py.mouseUp(button = Constants.movement_key)
                     print("Hiding")
-                    
                     self.lock.acquire()
                     # change state to hiding
                     self.timestamp = time()
@@ -494,13 +522,7 @@ class Brawlbot:
                     self.lock.release()
                     
             elif self.state == BotState.HIDING:
-                if time() < self.timestamp + self.HIDINGTIME:
-                    #enemy in range 
-                    if self.is_enemy_in_range():
-                        self.lock.acquire()
-                        self.state = BotState.ATTACKING
-                        self.lock.release()
-                else:
+                if self.is_player_damaged():
                     print("Changing state to search")
                     self.lock.acquire()
                     self.state = BotState.SEARCHING
@@ -515,4 +537,10 @@ class Brawlbot:
                     self.state = BotState.SEARCHING
                     self.lock.release()
                     
-            
+            self.fps = (1 / (time() - self.loop_time))
+            self.loop_time = time()
+            self.count += 1
+            if self.count == 1:
+                self.avg_fps = self.fps
+            else:
+                self.avg_fps = (self.avg_fps*self.count+self.fps)/(self.count + 1)

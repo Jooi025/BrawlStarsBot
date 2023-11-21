@@ -27,7 +27,7 @@ class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
-    loadColor = (187, 239, 74)
+    loadColor = (177, 239, 74)
     defeated_xScale = 0.9677
     defeated_yScale = 0.2285
     def __init__(self,windowSize,offset) -> None:
@@ -43,7 +43,7 @@ class Screendetect:
         self.defeated = (round(self.w*0.9683)+self.offset_x, round(self.h*0.1969)+self.offset_y)
         self.playButton = (round(self.w*0.5903)+self.offset_x, round(self.h*0.9197)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
-        self.loadButton = (round(self.w*0.0855)+self.offset_x, round(self.h*0.1306)+self.offset_y)
+        self.loadButton = (round(self.w*0.084)+self.offset_x, round(self.h*0.1319)+self.offset_y)
     
     def start(self):
         self.stopped = False

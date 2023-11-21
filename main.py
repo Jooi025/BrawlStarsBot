@@ -28,6 +28,10 @@ def stop_all_thread(wincap,screendetect,bot,detector):
     bot.stop()
     cv.destroyAllWindows()
 
+def add_two_tuple(tup1,tup2):
+    if not(tup1 is None or tup2 is None):
+        return tuple(map(sum, zip(tup1, tup2)))
+
 def main():
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
@@ -40,7 +44,7 @@ def main():
     # initialize detection class
     detector = Detection(windowSize,Constants.model_file_path,Constants.classes,Constants.heightScaleFactor)
     # initialize screendectect class
-    screendetect = Screendetect(windowSize,(wincap.offset_x,wincap.offset_y))
+    screendetect = Screendetect(windowSize,wincap.offsets)
     # initialize bot class
     bot = Brawlbot(windowSize, wincap.offset_x, wincap.offset_y, Constants.speed, Constants.range)
     
@@ -73,6 +77,8 @@ def main():
             bot.update_results(detector.results)
         elif bot.state == BotState.HIDING:
             bot.update_results(detector.results)
+            bot.update_player(add_two_tuple(detector.player_topleft,wincap.offsets)
+                              ,add_two_tuple(detector.player_bottomright,wincap.offsets))
         elif bot.state == BotState.ATTACKING:
             bot.update_results(detector.results)
 
@@ -82,7 +88,7 @@ def main():
             bot.stop()
         elif screendetect.state ==  Detectstate.LOAD:
             if bot.stopped:
-                print("restarting bot")
+                print("starting bot")
                 #wait for game to load
                 sleep(2)
                 # reset timestamp and state
@@ -113,7 +119,7 @@ def main():
 if __name__ == "__main__":
     while True:
         print("")
-        print(bcolors.HEADER + bcolors.UNDERLINE + 
+        print(bcolors.HEADER + bcolors.UNDERLINE +
               "Start bot at the brawl stars menu and select solo showdown and click PLAY.")
         print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
         print("1. Start Bot")
