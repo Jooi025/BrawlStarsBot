@@ -2,7 +2,7 @@ class Constants:
     #! Change the speed and range for the brawler you are using
     # go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find brawler's speed 
     speed = 2.4 # units: (tiles per second)
-    range = 0 # 0 for short, 1 for medium and 2 for long range
+    range = 1 # 0 for short, 1 for medium and 2 for long range
     
     #! Change this to suit the current map
     # map's characteristic
@@ -25,7 +25,7 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.4,0.4,0.55,0.55]
+    threshold = [0.45,0.5,0.65,0.65]
     heightScaleFactor = 0.154
     # interface
     if gpu is None:
