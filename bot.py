@@ -15,7 +15,7 @@ class BotState:
     SEARCHING = 1
     """
     searching for bush to hide
-    will try to search for the closest bush to the midpoint 
+    will try to search for the closest bush to the midpoint
     """
     
     MOVING = 2
@@ -256,7 +256,6 @@ class Brawlbot:
             moveTime = tileDistance/self.speed
             moveTime = moveTime * self.timeFactor
             print(f"Distance: {round(tileDistance,2)} tiles")
-            print(f"Time: {round(moveTime,2)} s")
             return moveTime
     
     # enemy and attack method

@@ -37,9 +37,8 @@ class Detection:
         return [(x1+int((x2-x1)/2),y1+int((y2-y1)/2))]
 
     def annotate_detection_midpoint(self):
-        thickness = 2
-        # bgr
-        red = (0, 0, 255)
+        thickness = 1
+        red = (0, 0, 255) # bgr
         if self.results:
             for i in range(len(self.results)):
                     #if the list is not empty

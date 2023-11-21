@@ -56,13 +56,12 @@ class Screendetect:
 
     def run(self):
         while not self.stopped:
+            sleep(0.01)
             if self.state == Detectstate.IDLE:
                 sleep(3)
                 self.state = Detectstate.DETECT
             
             elif self.state == Detectstate.DETECT:
-                sleep(0.01)
-                # using try because there
                 try:
                     if pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
                         print("Playing again")
@@ -80,7 +79,7 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
                         self.lock.release()
-                except:
+                except OSError:
                     pass
                         
             elif self.state == Detectstate.PLAY:
@@ -99,7 +98,7 @@ class Screendetect:
                 self.lock.release()
             
             elif self.state == Detectstate.EXIT:
-                # release right click
+                # release movement key
                 py.mouseUp(button = Constants.movement_key)
                 sleep(5)
                 # click the exit button
