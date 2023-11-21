@@ -51,8 +51,8 @@ def main():
     #start thread
     wincap.start()
     detector.start()
-    # screendetect.start()
-    # bot.start()
+    screendetect.start()
+    bot.start()
     
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Window Size: {windowSize}")
