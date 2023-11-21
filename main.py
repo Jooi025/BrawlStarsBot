@@ -28,31 +28,6 @@ def stop_all_thread(wincap,screendetect,bot,detector):
     bot.stop()
     cv.destroyAllWindows()
 
-def annotate_fps(screenshot,windowSize,detector_avg_fps,wincap_avg_fps):
-    scale = (windowSize[0]+windowSize[1])/(1145+644)
-    # make a black solid rectangle at the bottom left corner
-    rect_w = int(180*scale)
-    rect_h = int(60*scale)
-    cv.rectangle(screenshot,(0,windowSize[1]),
-                    (rect_w, windowSize[1] - rect_h), (0, 0, 0), -1)
-    # FPS text
-    fontScale = 0.7*scale
-    spacing = int(10*scale)
-    thickness = 1
-    cv.putText(screenshot,text=f"Detect: {int(detector_avg_fps)}",
-                org=(0+spacing,windowSize[1]-spacing-int(30*scale)),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=fontScale,
-                color=(255,255,255),thickness=thickness)
-    cv.putText(screenshot,text=f"FPS",
-                org=(0+spacing+int(scale*140),windowSize[1]-spacing-int(30*scale)),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=0.5*fontScale,
-                color=(255,255,255),thickness=thickness)
-    cv.putText(screenshot,text=f"Wincap: {int(wincap_avg_fps)}",
-                org=(0+spacing,windowSize[1]-spacing),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=fontScale,
-                color=(255,255,255),thickness=thickness)
-    cv.putText(screenshot,text=f"FPS",
-                org=(0+spacing+int(scale*140),windowSize[1]-spacing),fontFace=cv.FONT_HERSHEY_SIMPLEX,fontScale=0.5*fontScale,
-                color=(255,255,255),thickness=thickness)
-    return screenshot
-
 def main():
     # initialize the WindowCapture class
     wincap = WindowCapture(Constants.window_name)
@@ -118,9 +93,10 @@ def main():
 
         # display annotated window with FPS
         if Constants.DEBUG:
-            detector.annotate(bot.border_size,bot.tile_w,bot.tile_h)
-            annotated_screenshot = annotate_fps(detector.screenshot,windowSize,detector.avg_fps,wincap.avg_fps)
-            cv.imshow("Brawl Stars Bot",annotated_screenshot)
+            detector.annotate_detection_midpoint()
+            detector.annotate_border(bot.border_size,bot.tile_w,bot.tile_h)
+            detector.annotate_fps(wincap.avg_fps)
+            cv.imshow("Brawl Stars Bot",detector.screenshot)
 
         # Press q to exit the script
         key = cv.waitKey(1)

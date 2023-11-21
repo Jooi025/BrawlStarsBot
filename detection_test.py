@@ -1,39 +1,34 @@
 import cv2 as cv
-from time import time
+from time import sleep
 from windowcapture import WindowCapture
+from detection import Detection
 from constants import Constants
-from ultralytics import YOLO
 
-model = YOLO(Constants.model_file_path,task="detect")
-# initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
-#get window dimension
-w, h=wincap.get_dimension()
+# get window dimension
+windowSize = wincap.get_dimension()
+# set target window as foreground
+sleep(0.5)
+wincap.set_window()
 
-#object detection
-classes = Constants.classes
-loop_time = time()
-bgr = (0,255,0)
+# initialize detection class
+detector = Detection(windowSize,Constants.model_file_path,Constants.classes,Constants.heightScaleFactor)
+
+wincap.start()
+detector.start()
+
+print(f"Resolution: {wincap.screen_resolution}")
+print(f"Window Size: {windowSize}")
+print(f"Scaling: {wincap.scaling*100}%")
+
 while(True):
-    # get an updated image of the game
-    screenshot = wincap.get_screenshot()
-    results = model.predict(screenshot, imgsz=Constants.imgsz,
-                            half=Constants.half, verbose=False)
-    result = results[0]
-    for box in result.boxes:
-        x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
-        class_id = int(box.cls[0].item())
-        prob = round(box.conf[0].item(), 2)
-        threshold = Constants.threshold[class_id]
-        if prob >= threshold:
-            cv.rectangle(screenshot, (x1, y1), (x2, y2), bgr, 2)
-            cv.putText(screenshot, f"{result.names[class_id]}: {prob}", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.7, bgr, 2)
-
-    # # debug the loop rate
-    fps=(1 / (time() - loop_time))
-    cv.putText(screenshot,f"FPS:{int(fps)}",(20,h-20),cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
-    cv.imshow("YOLOv8", screenshot)
-    loop_time = time()
+    screenshot = wincap.screenshot
+    if screenshot is None:
+        continue
+    detector.update(screenshot)
+    detector.annotate_detection_midpoint()
+    detector.annotate_fps(wincap.avg_fps)
+    cv.imshow("Detection test",detector.screenshot)
 
     # press 'q' with the output window focused to exit.
     key = cv.waitKey(1)
