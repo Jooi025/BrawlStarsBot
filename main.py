@@ -83,7 +83,10 @@ def main():
             bot.update_results(detector.results)
 
         # check screendetect state
-        if screendetect.state ==  Detectstate.EXIT or screendetect.state ==  Detectstate.PLAY:
+        if (screendetect.state ==  Detectstate.EXIT
+            or screendetect.state ==  Detectstate.PLAY_AGAIN
+            or screendetect.state ==  Detectstate.CONNECTION
+            or screendetect.state ==  Detectstate.PLAY):
             py.mouseUp(button = Constants.movement_key)
             bot.stop()
         elif screendetect.state ==  Detectstate.LOAD:
