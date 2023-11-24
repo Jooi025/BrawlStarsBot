@@ -69,7 +69,7 @@ class Brawlbot:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
 
-    def __init__(self,windowSize,offset_x,offset_y,speed,range) -> None:
+    def __init__(self,windowSize,offsets,speed,range) -> None:
         self.lock = Lock()
         # "brawler" chracteristic
         self.speed = speed
@@ -85,8 +85,8 @@ class Brawlbot:
         self.state = BotState.INITIALIZING
         
         # offset
-        self.offset_x = offset_x
-        self.offset_y = offset_y
+        self.offset_x = offsets[0]
+        self.offset_y = offsets[1]
 
         if self.range == 0:
             self.attackRange = 3.5

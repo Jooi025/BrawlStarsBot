@@ -46,7 +46,7 @@ def main():
     # initialize screendectect class
     screendetect = Screendetect(windowSize,wincap.offsets)
     # initialize bot class
-    bot = Brawlbot(windowSize, wincap.offset_x, wincap.offset_y, Constants.speed, Constants.range)
+    bot = Brawlbot(windowSize, wincap.offsets, Constants.speed, Constants.range)
     
     # move cursor to the middle of bluestacks
     middle_of_window = (int(wincap.w/2+wincap.offset_x),int(wincap.h/2+wincap.offset_y))
