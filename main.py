@@ -4,21 +4,10 @@ from modules.windowcapture import WindowCapture
 from modules.bot import Brawlbot, BotState
 from modules.screendetect import Screendetect, Detectstate
 from modules.detection import Detection
+from modules.print import bcolors
 import pydirectinput as py
 import os
 from constants import Constants
-
-# https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 def stop_all_thread(wincap,screendetect,bot,detector):
     py.mouseUp(button = Constants.movement_key)
