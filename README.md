@@ -9,6 +9,16 @@ Inspired by [OpenCV Object Detection in Games Python Tutorial playlist by "Learn
 The Bluestacks app player is used to emulate Brawl Stars onto the computer. Bluestacks default game control is modified. The bot works well with tanky brawlers and on maps with little obstacles (wall, bush, fence, etc) and a lot of bush.
 A recommended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
 
+## Bot features
+- Fully automated
+   - When player is defeated it will exit the match
+   - Requeue another match
+   - Start the bot when loading in
+- Find the closest bush and hide in it 
+- Attack enemy when they are in range
+- Activate gadget when enemy is closer to the player
+
+  
 ****Demo of the bot:****
 [![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/image/youtube_thumbnail.jpg)](https://youtu.be/TWmNfkQBVYk?si=CXaSBoAV-YknJPLt)
 
@@ -85,7 +95,7 @@ The game control scheme (com.supercell.brawlstars.cfg) as shown can be found at 
  - [x] improve storm direction function 
  - [x] improve the screen detection of "defeated"
  - [x] fix spam printing of "stop bot" 
- - [ ] improve fps for lower performance computer 
+ - [x] improve fps for lower performance computer 
 
 
 
