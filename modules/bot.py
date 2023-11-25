@@ -76,7 +76,7 @@ class Brawlbot:
         # attack range in tiles
         self.attack_range = 0.8*attack_range
         self.gadget_range = 0.8*self.attack_range
-        self.hide_attack_range = 2.5 # enemy can see 2.5 tile into the bush
+        self.hide_attack_range = 3.5 # visible to enemy in the bush
 
         self.timestamp = time()
         self.window_w = windowSize[0]
@@ -359,6 +359,7 @@ class Brawlbot:
                 self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
                 if self.enemyResults:
                     enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
+                    print(f"Closest enemy: {round(enemyDistance,2)} tiles")
                     return enemyDistance
         return None
     

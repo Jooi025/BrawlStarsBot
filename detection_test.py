@@ -33,6 +33,8 @@ while(True):
     # press 'q' with the output window focused to exit.
     key = cv.waitKey(1)
     if key == ord('q'):
+        wincap.stop()
+        detector.stop()
         cv.destroyAllWindows()
         break
 print('Done.')

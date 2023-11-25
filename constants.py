@@ -1,27 +1,35 @@
 class Constants:
     #! Change the speed and range for the brawler you are using
-    # go to https://pixelcrux.com/Brawl_Stars/Brawlers/
-    # to find brawler's speed and attack range
-    # eg. eve's speed (2.4) and attack_range (9.33)
+    """
+    go to https://pixelcrux.com/Brawl_Stars/Brawlers/
+    to find brawler's speed and attack range
+    and use hsf_finder.py to get the brawler's height scale factor
+    eg. eve's speed (2.4), attack_range (9.33) and 
+    height scale factor (0.158)
+    """
     speed = 2.4 # units: (tiles per second)
     attack_range = 9.33 # units: (tiles per second)
-    # use hsf_finder.py to get the brawler's height scale factor
-    heightScaleFactor = 0.154
+    heightScaleFactor = 0.158
     
     #! Change this to suit the current map
     # map's characteristic
     # if map have a lot of walls make sharpCorner True otherwise False
-    sharpCorner = True
+    sharpCorner = False
     # if brawler spawn in the middle of the map make centerOrder False other True
     centerOrder = True
-    
+    """
+    If you have multiple instance of bluestacks or you got 
+    "Bluestacks App Player not found". Please change the window 
+    name to name located on the top left corner of your bluestacks
+    eg. Bluestacks App Player 1, Bluestacks App Player 2, etc
+    """
+    window_name = "Bluestacks App Player"
+
     #! Change this to True if you have Nvidia graphics card and TensorRT installed
-    gpu = True
+    gpu = False
     #! Do not change these
     # Main contants
-    DEBUG = 1
-    # Windowcapture contants
-    window_name = "Bluestacks App Player"
+    DEBUG = False
     # Detector constants
     classes = ["Player","Bush","Enemy","Cubebox"]
     """

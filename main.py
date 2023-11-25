@@ -89,7 +89,7 @@ def main():
             or screendetect.state ==  Detectstate.PLAY):
             py.mouseUp(button = Constants.movement_key)
             bot.stop()
-        elif screendetect.state ==  Detectstate.LOAD:
+        elif screendetect.state ==  Detectstate.LOAD or bot.is_player_damaged():
             if bot.stopped:
                 print("starting bot")
                 #wait for game to load
@@ -122,8 +122,11 @@ def main():
 if __name__ == "__main__":
     while True:
         print("")
-        print(bcolors.HEADER + bcolors.UNDERLINE +
-              "Start bot at the brawl stars menu and select solo showdown and click PLAY.")
+        print(bcolors.HEADER + bcolors.BOLD +
+              "Before, starting bot make sure you have Brawl Stars opened on bluestacks"
+              + "\nand selected solo showndown.")
+        print("Also make sure to change the speed, attack range and height scale factor"
+               +"\nfor you selected brawler at constants.py (instruction there).")
         print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
         print("1. Start Bot")
         print("2. Set shutdown timer")
