@@ -10,7 +10,7 @@ The Bluestacks app player is used to emulate Brawl Stars onto the computer. Blue
 A recommended map to run the bot on is island invasion, using short/medium range and tanky brawlers such as Frank, Sam, Buster, Pearl, Nita, etc.
 
 ****Demo of the bot:****
-[![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/image/youtube_thumbnail.jpg)](https://www.youtube.com/watch?v=kp5izpAKA-Y)
+[![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/image/youtube_thumbnail.jpg)](https://youtu.be/TWmNfkQBVYk?si=CXaSBoAV-YknJPLt)
 
 ## Requirement
 * Windows OS
