@@ -16,6 +16,7 @@ class Detection:
     avg_fps = 0
     player_topleft = None
     player_bottomright = None
+    midpoint_offset = Constants.midpoint_offset
 
     def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
         """
@@ -52,7 +53,6 @@ class Detection:
                                        cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)
 
     def annotate_border(self,border_size,tile_w,tile_h):
-        displacement = 22
         thickness = 2
         # bgr
         green = (0, 255, 0)
@@ -62,12 +62,12 @@ class Detection:
         yBorder = (self.h/tile_h)
         size = 2*border_size
         xTop = int(xBorder*((tile_w-size)/2))
-        yTop = int(yBorder*((tile_h-size)/2))+displacement
+        yTop = int(yBorder*((tile_h-size)/2))+self.midpoint_offset
         xBottom = int(xBorder*((tile_w+size)/2))
-        yBottom = int(yBorder*((tile_h+size)/2))+displacement
+        yBottom = int(yBorder*((tile_h+size)/2))+self.midpoint_offset
         
         cv.rectangle(self.screenshot, (xTop, yTop), (xBottom, yBottom), (0,255,0), 2)
-        cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+22)),
+        cv.drawMarker(self.screenshot, (int(self.w/2),int((self.h/2)+self.midpoint_offset)),
                     green ,thickness=thickness,markerType= cv.MARKER_CROSS,
                     line_type=cv.LINE_AA, markerSize=50)
         #quadrant line

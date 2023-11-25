@@ -48,7 +48,6 @@ class Screendetect:
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
         self.loadButton = (round(self.w*0.084)+self.offset_x, round(self.h*0.1319)+self.offset_y)
         
-        
         self.connection_lost_color = (66, 66, 66)
         self.connection_lost_cord = (round(self.w*0.4912)+self.offset_x,round(self.h*0.5525)+self.offset_y)
         self.reload_button = (round(self.w*0.2824)+self.offset_x,round(self.h*0.5812)+self.offset_y)
@@ -76,7 +75,7 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.PLAY_AGAIN
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=20):
+                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
                         print("Loading in")
                         self.lock.acquire()
                         sleep(3)
@@ -87,11 +86,11 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.connection_lost_cord[0],self.connection_lost_cord[1],self.connection_lost_color,tolerance=1):
-                        print("Connection Lost")
-                        self.lock.acquire()
-                        self.state = Detectstate.CONNECTION
-                        self.lock.release()
+                    # elif pyautogui.pixelMatchesColor(self.connection_lost_cord[0],self.connection_lost_cord[1],self.connection_lost_color,tolerance=1):
+                    #     print("Connection Lost")
+                    #     self.lock.acquire()
+                    #     self.state = Detectstate.CONNECTION
+                    #     self.lock.release()
                     elif pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
                         print("Play")
                         self.lock.acquire()

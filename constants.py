@@ -1,9 +1,12 @@
 class Constants:
     #! Change the speed and range for the brawler you are using
-    # go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find brawler's speed 
+    # go to https://pixelcrux.com/Brawl_Stars/Brawlers/
+    # to find brawler's speed and attack range
+    # eg. eve's speed (2.4) and attack_range (9.33)
     speed = 2.4 # units: (tiles per second)
-    range = 1 # 0 for short, 1 for medium and 2 for long range
-    heightScaleFactor = 0.154 
+    attack_range = 9.33 # units: (tiles per second)
+    # use hsf_finder.py to get the brawler's height scale factor
+    heightScaleFactor = 0.154
     
     #! Change this to suit the current map
     # map's characteristic
@@ -16,7 +19,7 @@ class Constants:
     gpu = True
     #! Do not change these
     # Main contants
-    DEBUG = False
+    DEBUG = 1
     # Windowcapture contants
     window_name = "Bluestacks App Player"
     # Detector constants
@@ -26,7 +29,7 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.4,0.5,0.65,0.65]
+    threshold = [0.43,0.5,0.65,0.65]
     # interface
     if gpu is None:
         # load pytorch interface
@@ -45,3 +48,4 @@ class Constants:
         imgsz = (384,640)
     #bot constant
     movement_key = "middle"
+    midpoint_offset = 12

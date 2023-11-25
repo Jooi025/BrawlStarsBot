@@ -1,9 +1,9 @@
 import cv2 as cv
 from time import time,sleep
-from windowcapture import WindowCapture
-from bot import Brawlbot, BotState
-from screendetect import Screendetect, Detectstate
-from detection import Detection
+from modules.windowcapture import WindowCapture
+from modules.bot import Brawlbot, BotState
+from modules.screendetect import Screendetect, Detectstate
+from modules.detection import Detection
 import pydirectinput as py
 import os
 from constants import Constants
@@ -46,7 +46,7 @@ def main():
     # initialize screendectect class
     screendetect = Screendetect(windowSize,wincap.offsets)
     # initialize bot class
-    bot = Brawlbot(windowSize, wincap.offsets, Constants.speed, Constants.range)
+    bot = Brawlbot(windowSize, wincap.offsets, Constants.speed, Constants.attack_range)
     
     # move cursor to the middle of bluestacks
     middle_of_window = (int(wincap.w/2+wincap.offset_x),int(wincap.h/2+wincap.offset_y))

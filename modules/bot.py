@@ -1,4 +1,3 @@
-import cv2 as cv
 from time import time,sleep
 from threading import Thread, Lock
 from math import *
@@ -40,7 +39,8 @@ class Brawlbot:
     # In game tile width and height ratio with respect aspect ratio
     tile_w = 24
     tile_h = 17
-    midpoint_offset = 22
+    midpoint_offset = Constants.midpoint_offset
+
     # Map with sharp corners
     sharpCorner = Constants.sharpCorner
     # Either go to the closest bush to the player or to the center
@@ -69,11 +69,15 @@ class Brawlbot:
         # time to move increase by 5% if maps have sharps corner
         timeFactor = 1.05
 
-    def __init__(self,windowSize,offsets,speed,range) -> None:
+    def __init__(self,windowSize,offsets,speed,attack_range) -> None:
         self.lock = Lock()
         # "brawler" chracteristic
         self.speed = speed
-        self.range = range # 0:short, 1:medium , 2:long
+        # attack range in tiles
+        self.attack_range = 0.8*attack_range
+        self.gadget_range = 0.8*self.attack_range
+        self.hide_attack_range = 2.5 # enemy can see 2.5 tile into the bush
+
         self.timestamp = time()
         self.window_w = windowSize[0]
         self.window_h = windowSize[1]
@@ -87,13 +91,6 @@ class Brawlbot:
         # offset
         self.offset_x = offsets[0]
         self.offset_y = offsets[1]
-
-        if self.range == 0:
-            self.attackRange = 3.5
-        elif self.range == 1:
-            self.attackRange = 5.5
-        elif self.range == 2:
-            self.attackRange = 8.5
 
     # translate a pixel position on a screenshot image to a pixel position on the screen.
     # pos = (x, y)
@@ -346,11 +343,8 @@ class Brawlbot:
         self.attack()
         sleep(0.25)
         py.keyUp(random_move)
-
-    def is_enemy_in_range(self):
-        """
-        return boolen, notified bot if enemy is close to player
-        """
+    
+    def enemy_distance(self):
         if self.results:
             # player coordinate
             if self.results[0]:
@@ -365,40 +359,33 @@ class Brawlbot:
                 self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
                 if self.enemyResults:
                     enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
-                    # ranges in tiles
-                    gadgetRange = 0.8*self.attackRange
-                    if enemyDistance > gadgetRange and enemyDistance <= self.attackRange:
-                        self.attack()
-                        return True
-                    elif enemyDistance <= gadgetRange:
-                        self.gadget()
-                        self.attack()
-                        return True
+                    return enemyDistance
+        return None
+    
+    def is_enemy_in_range(self):
+        """
+        return boolen, notified bot if enemy is close to player
+        """
+        enemyDistance = self.enemy_distance()
+        if enemyDistance:
+            # ranges in tiles
+            if enemyDistance > self.gadget_range and enemyDistance <= self.attack_range:
+                self.attack()
+                return True
+            elif enemyDistance <= self.gadget_range:
+                self.gadget()
+                self.attack()
+                return True
         return False
 
-    # TODO
-    def alert(self):
-        # player coordinate
-        if self.results[0]:
-            player_pos = self.results[0][0]
-        # if player position in result is empty
-        # assume that player is in the middle of the screen
-        else:
-            player_pos = self.center_window
-        # enemy coordinate
-        if self.results[2]:
-            enemyResults = self.targets_ordered_by_distance(self.results,2)
-            self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
-            if self.enemyResults:
-                enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
-        alertRange = 10
-        if enemyDistance > self.attackRange and enemyDistance <= alertRange:
-            if self.last_closest_enemy is None:
-                self.last_closest_enemy = enemyDistance
-            else:
-                if self.last_closest_enemy < enemyDistance:
-                    pass
-                self.last_closest_enemy = enemyDistance
+    def is_enemy_close(self):
+        enemyDistance = self.enemy_distance()
+        if enemyDistance:
+            if enemyDistance <= self.hide_attack_range:
+                self.gadget()
+                self.attack()
+                return True
+        return False
 
     def is_player_damaged(self):
         if self.topleft:
@@ -526,6 +513,12 @@ class Brawlbot:
                     self.lock.acquire()
                     self.state = BotState.SEARCHING
                     self.lock.release()
+                
+                if self.is_enemy_close():
+                    print("Enemy is nearby")
+                    self.lock.acquire()
+                    self.state = BotState.ATTACKING
+                    self.lock.release()
             
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
@@ -536,6 +529,7 @@ class Brawlbot:
                     self.state = BotState.SEARCHING
                     self.lock.release()
                     
+            
             self.fps = (1 / (time() - self.loop_time))
             self.loop_time = time()
             self.count += 1

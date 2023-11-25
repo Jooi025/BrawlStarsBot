@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import ttk
-from windowcapture import WindowCapture
+from modules.windowcapture import WindowCapture
 from constants import Constants
 import pyautogui
 from time import sleep
@@ -11,9 +11,8 @@ from math import pow
 class Interface(tkinter.Tk):
     def __init__(self,title):
         super().__init__()
-        self.title = title
+        self.title(title)
         self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
-
 
 class HeightScaleFactorFrame(tkinter.Frame):
     line =None
@@ -213,24 +212,27 @@ class InstructionFrame(tkinter.Frame):
 
         title = tkinter.Label(self, text="Brawler's HSF Finder",font=("Arial Bold",15))
         instruction_str =  """Hi, welcome to the height scale factor finder.
-        \n1.Open brawl stars on bluestacks and go to the    training ground.
-        \n2.Take a screenshot.
-        \n3.Draw a line from the middle of the player tag tothe middle of the bottom circle as shown on the   right
-        \n4.Caculate HSF
-        \nYou can zoom into the image with up scroll wheel.
+        \n1.Open brawl stars on bluestacks,select the brawler that you wish use and go to the training ground.
+        \n2.Take a screenshot after proceeding. You can use up    scroll wheel to zoom into the image and assist with         drawing the line.
+        \n3.Draw a line from the middle of the player tag to the      middle of the bottom circle as shown on the right
+        \n4.Caculate HSF and modify it on constants.py
+
                             """
-        instruction = tkinter.Text(self, width=50, height=15)
+        instruction = tkinter.Text(self, width=50, height=15,font=("Arial Bold",13))
         next_button = tkinter.Button(self,text="Proceed",font=("Arial Bold",15),bg="Green",fg="white",command=self.goto_hsf_frame,width=15,height=3)
+        exit_button = tkinter.Button(self,text="Exit",font=("Arial Bold",15),bg="Red",fg="white",command=self.exit,width=15,height=3)
         self.canvas = tkinter.Canvas(self,width=220,height=297,background="white")
         self.message = tkinter.StringVar()
         message_label = tkinter.Label(self,textvariable=self.message,font=("Arial Bold",12),fg="Red")
 
         self.frame_count = 52
-        self.frames = [tkinter.PhotoImage(file='hsf_resize.gif',format = 'gif -index %i' %(i)) for i in range(self.frame_count)]
+        gif_file_path = "control\\hsf_resize.gif"
+        self.frames = [tkinter.PhotoImage(file=gif_file_path,format = 'gif -index %i' %(i)) for i in range(self.frame_count)]
         
         title.grid(row=1,column=0,padx=10,pady=10)
         instruction.grid(row=2,column=0,columnspan=2,padx=10,pady=10)
-        next_button.grid(row=3,column=2,rowspan=2,padx=10,pady=10)
+        next_button.grid(row=3,column=1,padx=10,pady=10)
+        exit_button.grid(row=3,column=0,padx=10,pady=10)
         self.canvas.grid(row=2,column=2,padx=10,pady=10)
         message_label.grid(row=4,column=0,columnspan=2,padx=10,pady=10)
         instruction.insert(tkinter.END, instruction_str)
@@ -261,15 +263,12 @@ class InstructionFrame(tkinter.Frame):
                                     \nto constants.py and change the window 
                                     \nname to the namw located on the top 
                                     \nleft corner of bluestacks.""")
+    
+    def exit(self):
+        self.master.destroy()
 
 if __name__ == '__main__':
-    
     root = Interface("Height Scale Factor Finder")
     instruct = InstructionFrame(root)
     instruct.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
-
-    # wincap = WindowCapture(Constants.window_name)
-    # hsf = HeightScaleFactorWindow(root,wincap)
-    # hsf.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
-
     root.mainloop()

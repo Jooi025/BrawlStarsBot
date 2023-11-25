@@ -1,7 +1,7 @@
 import cv2 as cv
 from time import sleep
-from windowcapture import WindowCapture
-from detection import Detection
+from modules.windowcapture import WindowCapture
+from modules.detection import Detection
 from constants import Constants
 
 wincap = WindowCapture(Constants.window_name)

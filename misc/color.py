@@ -3,7 +3,7 @@ from time import sleep
 from windowcapture import WindowCapture
 import keyboard
 
-find_colour = 1
+find_colour = 0
 wincap = WindowCapture("Bluestacks App Player")
 windowSize = (wincap.w, wincap.h)
 
@@ -40,12 +40,12 @@ else:
     while True:
         if pyautogui.pixelMatchesColor(playButton[0], playButton[1],playColor,tolerance=15):
             print("Play again ")
-        elif pyautogui.pixelMatchesColor(loadButton[0], loadButton[1],loadColor,tolerance=15):
+        elif pyautogui.pixelMatchesColor(loadButton[0], loadButton[1],loadColor,tolerance=25):
             print("Load in")
         elif pyautogui.pixelMatchesColor(defeated[0], defeated[1],defeatedColor,tolerance=15):
             print("Exit")
-        elif pyautogui.pixelMatchesColor(connection_lost_cord[0],connection_lost_cord[1],connection_lost_color,tolerance=1  ):
-            print("Connection Lost")
+        # elif pyautogui.pixelMatchesColor(connection_lost_cord[0],connection_lost_cord[1],connection_lost_color,tolerance=1  ):
+        #     print("Connection Lost")
 
         if keyboard.is_pressed("q"):
             pyautogui.moveTo(exitButton[0],exitButton[1])
