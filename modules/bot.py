@@ -339,9 +339,9 @@ class Brawlbot:
         random_move = random.choice(move_keys)
         py.keyDown(random_move)
         self.attack()
-        sleep(0.25)
+        sleep(0.1)
         self.attack()
-        sleep(0.25)
+        sleep(0.1)
         py.keyUp(random_move)
     
     def enemy_distance(self):
@@ -359,7 +359,7 @@ class Brawlbot:
                 self.enemyResults = [e for e in enemyResults if self.tile_distance(player_pos,e) > self.IGNORE_RADIUS]
                 if self.enemyResults:
                     enemyDistance = self.tile_distance(player_pos,self.enemyResults[0])
-                    print(f"Closest enemy: {round(enemyDistance,2)} tiles")
+                    # print(f"Closest enemy: {round(enemyDistance,2)} tiles")
                     return enemyDistance
         return None
     

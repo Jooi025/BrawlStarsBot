@@ -37,7 +37,7 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.43,0.5,0.65,0.65]
+    threshold = [0.4,0.5,0.65,0.65]
     # interface
     if gpu is None:
         # load pytorch interface
