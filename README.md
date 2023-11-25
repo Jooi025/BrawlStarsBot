@@ -18,6 +18,7 @@ A recommended map to run the bot on is island invasion, using short/medium range
 * Python>= 3.8.0 installed
 
 ## How to install and run the bot?
+Full video tutorial coming soon...
 ### Clone Repo
 1. Clone the repository and install the required library
 ```
@@ -72,10 +73,10 @@ The game control scheme (com.supercell.brawlstars.cfg) as shown can be found at 
 ![Alt text](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/image/side_panel_bluestacks.jpg )
 ### Testing and changing values
  12. Run "detection_test.py" to check if object detection is working
- 13. Change the speed and range in "contants.py" to the brawler's [speed and range](https://pixelcrux.com/Brawl_Stars/Brawlers/). Also modify sharpCorner (True if the map has many walls, otherwise False) and centerOrder ( True if brawler spawns in the middle of the map, otherwise False).
+ 13. Change the speed, attack range and height scale factor in "contants.py" to the brawler's [speed and range](https://pixelcrux.com/Brawl_Stars/Brawlers/)  and to find the height scale factor run "hsf_finder". Also modify sharpCorner (True if the map has many walls, otherwise False) and centerOrder ( True if brawler spawns in the middle of the map, otherwise False).
      
  14. Run "main.py"
- 15. Select "start bot" (enter 1) after loading in the match. **Do not start the bot on the loading screen**
+ 15. Select solo showdown and "start bot" (enter 1)
 
  ## Improvement to be made
  - [ ] bot can attack power cube boxes and collect them
