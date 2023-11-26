@@ -3,16 +3,8 @@ from modules.print import bcolors
 brawler_stats_dict = json.load(open("brawler_stats.json"))
 
 class Constants:
-    #! change the brawler_name, if its not found please manually change the stats it below
-    brawler_name = "bo"
-    try:
-        brawler = brawler_stats_dict[brawler_name.lower()]
-        display_str = f"Using {brawler_name.upper()}'s stats if brawler is not {brawler_name.upper()}, please manually modify at constants.py."
-    except KeyError:
-        brawler = 3*[None]
-        display_str = "Brawler's stats is not found in the JSON, please manually modify at constants.py."
-    print(bcolors.WARNING + display_str +bcolors.ENDC)
-    
+    #! change the brawler name, if its not found please manually change the stats it below
+    brawler_name = " "    
     #! Change the speed and range for the brawler you are using
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/
@@ -39,10 +31,6 @@ class Constants:
     """
     window_name = "Bluestacks App Player"
 
-    speed = brawler[0] or speed # units: (tiles per second)
-    attack_range = brawler[1] or attack_range # units: (tiles per second)
-    heightScaleFactor = brawler[2] or heightScaleFactor
-
     #! Change this to True if you have Nvidia graphics card and TensorRT installed
     gpu = False
 
@@ -56,7 +44,20 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.4,0.5,0.65,0.65]
+    threshold = [0.35,0.45,0.5,0.65]
+
+    try:
+        brawler = brawler_stats_dict[brawler_name.lower()]
+        display_str = f"Using {brawler_name.upper()}'s stats if brawler is not {brawler_name.upper()}, please manually modify at constants.py."
+    except KeyError:
+        brawler = 3*[None]
+        display_str = "Brawler's stats is not found in the JSON. Using speed, attack range and height scale factor in constant.py, please manually modify at constants.py if you havent."
+    print("")
+    print(bcolors.WARNING + display_str +bcolors.ENDC)
+    speed = brawler[0] or speed # units: (tiles per second)
+    attack_range = brawler[1] or attack_range # units: (tiles per second)
+    heightScaleFactor = brawler[2] or heightScaleFactor
+
     # interface
     if gpu is None:
         # load pytorch interface
@@ -76,7 +77,25 @@ class Constants:
     #bot constant
     movement_key = "middle"
     midpoint_offset = 12
+    
+    float_int_dict = {
+        "speed":speed,
+        "attack_range":attack_range,
+        "heightScaleFactor": heightScaleFactor
+    }
+
+    bool_dict = {
+        "sharpCorner": sharpCorner,
+        "centerOrder": centerOrder,
+        "gpu": gpu
+    }
+
+    for key in float_int_dict:
+        assert type(float_int_dict[key]) == float or type(float_int_dict[key]) == int, f"{key.upper()} should be a integer or a float"
+
+    for key in bool_dict:
+        assert type(bool_dict[key]) == bool,f"{key.upper()} should be True or False"
 
 if __name__ == "__main__":
     pass
-    print(Constants.attack_range)
+    # print(Constants.attack_range)
