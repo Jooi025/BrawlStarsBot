@@ -4,7 +4,7 @@ brawler_stats_dict = json.load(open("brawler_stats.json"))
 
 class Constants:
     #! change the brawler name, if its not found please manually change the stats it below
-    brawler_name = " "    
+    brawler_name = "mrp"    
     #! Change the speed and range for the brawler you are using
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/
@@ -47,16 +47,19 @@ class Constants:
     threshold = [0.35,0.45,0.5,0.65]
 
     try:
-        brawler = brawler_stats_dict[brawler_name.lower()]
+        brawler_stats = brawler_stats_dict[brawler_name.lower().strip()]
         display_str = f"Using {brawler_name.upper()}'s stats if brawler is not {brawler_name.upper()}, please manually modify at constants.py."
+        standard_hsf = 0.15
+        if len(brawler_stats) == 2:
+            brawler_stats.append(standard_hsf)
     except KeyError:
-        brawler = 3*[None]
-        display_str = "Brawler's stats is not found in the JSON. Using speed, attack range and height scale factor in constant.py, please manually modify at constants.py if you havent."
+        brawler_stats = 3*[None]
+        display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. Using speed, attack range and height scale factor in constant.py, please manually modify at constants.py if you havent."
     print("")
     print(bcolors.WARNING + display_str +bcolors.ENDC)
-    speed = brawler[0] or speed # units: (tiles per second)
-    attack_range = brawler[1] or attack_range # units: (tiles per second)
-    heightScaleFactor = brawler[2] or heightScaleFactor
+    speed = brawler_stats[0] or speed # units: (tiles per second)
+    attack_range = brawler_stats[1] or attack_range # units: (tiles per second)
+    heightScaleFactor = brawler_stats[2] or heightScaleFactor
 
     # interface
     if gpu is None:
