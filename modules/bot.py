@@ -59,7 +59,7 @@ class Brawlbot:
     timeFactor = 1
     last_player_pos = None
     last_closest_enemy = None
-    border_size = 1.2
+    border_size = 1
     stopped = True
     topleft = None
     avg_fps = 0
@@ -75,7 +75,7 @@ class Brawlbot:
         self.speed = speed
         # attack range in tiles
         self.attack_range = 0.8*attack_range
-        self.gadget_range = 0.8*self.attack_range
+        self.gadget_range = 0.9*self.attack_range
         self.hide_attack_range = 3.5 # visible to enemy in the bush
 
         self.timestamp = time()
@@ -243,7 +243,7 @@ class Brawlbot:
         #get the nearest bush to the player
         if self.bushResult:
             x,y = self.bushResult[0]
-            if not(self.results[0]) or self.centerOrder:
+            if not(self.results[0]):
                 player_pos = self.center_window
             else:
                 player_pos = self.results[0][0]
@@ -257,9 +257,11 @@ class Brawlbot:
     
     # enemy and attack method
     def attack(self):
+        print("attacking enemy")
         py.press("e")
 
     def gadget(self):
+        print("activate gadget")
         py.press("f")
 
     def hold_movement_key(self,key,time):
@@ -342,6 +344,7 @@ class Brawlbot:
         sleep(0.1)
         self.attack()
         sleep(0.1)
+        self.attack()
         py.keyUp(random_move)
     
     def enemy_distance(self):
@@ -462,16 +465,16 @@ class Brawlbot:
                 #if bush is detected
                 if success:
                     print("found bush")
+                    self.moveTime = self.move_to_bush()
                     self.lock.acquire()
                     self.timestamp = time()
                     self.state = BotState.MOVING
-                    self.moveTime = self.move_to_bush()
                     self.lock.release()
-                #bus is not detected
+                #bush is not detected
                 else:
                     print("Cannot find bush")
                     self.storm_random_movement()
-                    self.counter+=1
+                    # self.counter+=1
                 
                 if self.is_enemy_in_range():
                         self.lock.acquire()
@@ -489,10 +492,11 @@ class Brawlbot:
                         # cancel moving
                         py.mouseUp(button = Constants.movement_key)
                         self.random_movement()
-                        self.lock.acquire()
                         # and search for bush again
+                        self.lock.acquire()
                         self.state = BotState.SEARCHING
                         self.lock.release()
+
                     if self.is_enemy_in_range():
                         self.lock.acquire()
                         self.state = BotState.ATTACKING
@@ -523,7 +527,6 @@ class Brawlbot:
             
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
-                    print("attacking enemy")
                     self.enemy_random_movement()
                 else:
                     self.lock.acquire()

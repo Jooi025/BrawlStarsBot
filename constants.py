@@ -4,7 +4,7 @@ brawler_stats_dict = json.load(open("brawler_stats.json"))
 
 class Constants:
     #! change the brawler name, if its not found please manually change the stats it below
-    brawler_name = "mrp"    
+    brawler_name = "rt"
     #! Change the speed and range for the brawler you are using
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/
@@ -20,7 +20,7 @@ class Constants:
     #! Change this to suit the current map
     # map's characteristic
     # if map have a lot of walls make sharpCorner True otherwise False
-    sharpCorner = False
+    sharpCorner = True
     # if brawler spawn in the middle of the map make centerOrder False other True
     centerOrder = True
     """
@@ -48,10 +48,13 @@ class Constants:
 
     try:
         brawler_stats = brawler_stats_dict[brawler_name.lower().strip()]
-        display_str = f"Using {brawler_name.upper()}'s stats if brawler is not {brawler_name.upper()}, please manually modify at constants.py."
+        display_str = f"Using {brawler_name.upper()}'s stats if the selected brawler is not {brawler_name.upper()}, \nplease manually modify at constants.py."
         standard_hsf = 0.15
         if len(brawler_stats) == 2:
             brawler_stats.append(standard_hsf)
+        elif len(brawler_stats) > 3:
+            display_str = "brawler stats has more then 3 element, using stats at constants.py"
+            brawler_stats = 3*[None]
     except KeyError:
         brawler_stats = 3*[None]
         display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. Using speed, attack range and height scale factor in constant.py, please manually modify at constants.py if you havent."
@@ -101,4 +104,5 @@ class Constants:
 
 if __name__ == "__main__":
     pass
-    # print(Constants.attack_range)
+    # print(Constants.brawler_stats)
+    # print(Constants.heightScaleFactor)
