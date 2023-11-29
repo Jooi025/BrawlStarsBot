@@ -43,7 +43,7 @@ cd BrawlStarsBot
 pip install -r requirements.txt
 ```
 ### 2. Importing game control
-[How to import game control](https://github.com/Jooi025/BrawlStarsBot/blob/main/control.md)
+[How to import game control](https://github.com/Jooi025/BrawlStarsBot/blob/main/control/control.md)
 ### 3. Testing and changing values
 1. Run "detection_test.py" to check if object detection is working
 2. Change the brawler_name  in "constants.py" to your selected Brawler's name and run "constant.py".
