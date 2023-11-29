@@ -46,7 +46,7 @@ class Brawlbot:
     # Either go to the closest bush to the player or to the center
     centerOrder = Constants.centerOrder
     MOVEMENT_STOPPED_THRESHOLD = 0.95
-    HIDINGTIME = 10
+    HIDINGTIME = 8
     IGNORE_RADIUS = 0.5
     movement_screenshot = None
     screenshot = None
@@ -106,7 +106,9 @@ class Brawlbot:
         # asign x and y direction
         x_direction = ""
         y_direction =  ""
+        # if there is a detection
         if self.results:
+            # there player detection
             if self.results[0]:
                 x_border = (self.window_w/self.tile_w)*self.border_size
                 y_border = (self.window_h/self.tile_h)*self.border_size
@@ -425,9 +427,15 @@ class Brawlbot:
                 if self.last_player_pos is None:
                     self.last_player_pos = player_pos
                 else:
+                    # last player position is the same as the current
                     if self.last_player_pos == player_pos:
-                        print("have stopped moving or stuck")
-                        return True
+                        self.counter += 1
+                        if self.counter == 2:
+                            print("have stopped moving or stuck")
+                            return True
+                    else:
+                        # reset counter
+                        self.counter = 0
                     self.last_player_pos = player_pos
         return False
         
@@ -486,7 +494,7 @@ class Brawlbot:
                 if time() < self.timestamp + self.moveTime:
                     if not self.have_stopped_moving():
                         # wait a short time to allow for the character position to change
-                        sleep(0.4)
+                        sleep(0.15)
                     #if player is stuck
                     else:
                         # cancel moving
@@ -513,18 +521,31 @@ class Brawlbot:
                     self.lock.release()
                     
             elif self.state == BotState.HIDING:
-                if self.is_player_damaged():
-                    print("Changing state to search")
-                    self.lock.acquire()
-                    self.state = BotState.SEARCHING
-                    self.lock.release()
+                if not(self.centerOrder):
+                    if time() > self.timestamp + self.HIDINGTIME or self.is_player_damaged():
+                        print("Changing state to search")
+                        self.lock.acquire()
+                        self.state = BotState.SEARCHING
+                        self.lock.release()
+                    if self.is_enemy_in_range():
+                        print("Enemy in range")
+                        self.lock.acquire()
+                        self.state = BotState.ATTACKING
+                        self.lock.release()
                 
-                if self.is_enemy_close():
-                    print("Enemy is nearby")
-                    self.lock.acquire()
-                    self.state = BotState.ATTACKING
-                    self.lock.release()
-            
+                else:
+                    if self.is_player_damaged():
+                        print("Changing state to search")
+                        self.lock.acquire()
+                        self.state = BotState.SEARCHING
+                        self.lock.release()
+                    
+                    if self.is_enemy_close():
+                        print("Enemy is nearby")
+                        self.lock.acquire()
+                        self.state = BotState.ATTACKING
+                        self.lock.release()
+                
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
                     self.enemy_random_movement()
@@ -533,7 +554,6 @@ class Brawlbot:
                     self.state = BotState.SEARCHING
                     self.lock.release()
                     
-            
             self.fps = (1 / (time() - self.loop_time))
             self.loop_time = time()
             self.count += 1
