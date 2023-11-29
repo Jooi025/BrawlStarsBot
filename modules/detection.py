@@ -119,8 +119,6 @@ class Detection:
     def run(self):
         while not self.stopped:
             if not self.screenshot is None:
-                red = (0,0,255)
-                thickness = 3
                 # create empty nested list
                 tempList = len(self.classes)*[[]]
                 results = self.model.predict(self.screenshot, imgsz=Constants.imgsz,
@@ -142,15 +140,7 @@ class Detection:
                             height = y2 - y1
                             y1 = y1 + (height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
-                        tempList[class_id] = tempList[class_id] + midpoint  
-                        # draw crosshair
-                        cv.drawMarker(self.screenshot, midpoint[0],
-                                    red ,thickness=thickness,
-                                    markerType= cv.MARKER_CROSS,
-                                    line_type=cv.LINE_AA, markerSize=50) 
-                        # diplay text
-                        cv.putText(self.screenshot, self.classes[class_id], 
-                                    midpoint[0], cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)    
+                        tempList[class_id] = tempList[class_id] + midpoint
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.results = tempList

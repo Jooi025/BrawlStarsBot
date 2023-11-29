@@ -32,7 +32,7 @@ class Constants:
     window_name = "Bluestacks App Player"
 
     #! Change this to True if you have Nvidia graphics card and CUDA installed
-    gpu = False
+    nvidia_gpu = False
     
     #! Do not change these
     # Main contants
@@ -44,7 +44,7 @@ class Constants:
     e.g. First element of classes is player so the first
     element of threshold is threshold for player.
     """
-    threshold = [0.35,0.45,0.5,0.65]
+    threshold = [0.35,0.45,0.55,0.65]
 
     try:
         brawler_stats = brawler_stats_dict[brawler_name.lower().strip()]
@@ -65,12 +65,12 @@ class Constants:
     heightScaleFactor = brawler_stats[2] or heightScaleFactor
 
     # interface
-    if gpu is None:
+    if nvidia_gpu is None:
         # load TensorRT interface
         model_file_path = "yolov8_model/yolov8.engine"
         half = False
         imgsz = 640
-    elif gpu:
+    elif nvidia_gpu:
         # load pytorch interface
         model_file_path = "yolov8_model/yolov8.pt"
         half = False
@@ -93,7 +93,7 @@ class Constants:
     bool_dict = {
         "sharpCorner": sharpCorner,
         "centerOrder": centerOrder,
-        "gpu": gpu
+        "nvidia_gpu": nvidia_gpu
     }
 
     for key in float_int_dict:

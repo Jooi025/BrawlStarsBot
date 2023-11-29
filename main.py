@@ -98,10 +98,14 @@ def main():
         # Press q to exit the script
         key = cv.waitKey(1)
         x_mouse, y_mouse = py.position()
-        if (key == ord('q') or
-            (x_mouse > 0 and x_mouse < wincap.left and y_mouse > 0 and y_mouse < wincap.top)
+        if wincap.screen_resolution[1] == (windowSize[1]+wincap.titlebar_pixels+1):
+            stop_bool = x_mouse > (wincap.offset_x + wincap.w)
+        else:
+            stop_bool = ((x_mouse > 0 and x_mouse < wincap.left and y_mouse > 0 and y_mouse < wincap.top)
             or ( x_mouse > wincap.right and x_mouse < wincap.screen_resolution[0]
-                and y_mouse > wincap.bottom and y_mouse < wincap.screen_resolution[1])):
+                and y_mouse > wincap.bottom and y_mouse < wincap.screen_resolution[1]))
+        
+        if (key == ord('q') or stop_bool):
             #stop all threads
             stop_all_thread(wincap,screendetect,bot,detector)
             break

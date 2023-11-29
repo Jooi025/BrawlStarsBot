@@ -242,9 +242,12 @@ class Brawlbot:
         
 
     def move_to_bush(self):
-        #get the nearest bush to the player
         if self.bushResult:
-            x,y = self.bushResult[0]
+            if len(self.bushResult) > 1:
+                index = 1
+            else:
+                index = 0
+            x,y = self.bushResult[index]
             if not(self.results[0]):
                 player_pos = self.center_window
             else:
@@ -419,7 +422,7 @@ class Brawlbot:
         self.topleft = topleft
         self.bottomright =bottomright
         self.lock.release()
-
+    
     def have_stopped_moving(self):
         if self.results:
             if self.results[0]:
