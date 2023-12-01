@@ -5,7 +5,7 @@ from time import sleep
 from constants import Constants
 
 """
-IDLE: When state exit,play and load is finished, state is changed to IDLE so 
+IDLE: When state exit,play and load is finished, state is changed to IDLE so
 it doesn't spam the terminal with print.
 
 DETECT: Actively check if player is defeated, play again button and loading in.
@@ -15,6 +15,10 @@ EXIT: When brawler is defeated, exit the match and stop the bot.
 PLAY: When play again is showed, press it and stop the bot.
 
 LOAD: When loading into the match, start the bot
+
+CONNECTION: When the connection is lost
+
+PLAY: When the main menu of brawl stars
 """
 class Detectstate:
     IDLE = 0
@@ -53,12 +57,18 @@ class Screendetect:
         self.reload_button = (round(self.w*0.2824)+self.offset_x,round(self.h*0.5812)+self.offset_y)
         
     def start(self):
+        """
+        start screendetect
+        """
         self.stopped = False
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
 
     def stop(self):
+        """
+        stop screendetect
+        """
         self.stopped = True
 
     def run(self):

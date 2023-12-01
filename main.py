@@ -10,6 +10,9 @@ import os
 from constants import Constants
 
 def stop_all_thread(wincap,screendetect,bot,detector):
+    """
+    stop all thread from running
+    """
     py.mouseUp(button = Constants.movement_key)
     wincap.stop()
     detector.stop()
@@ -18,6 +21,9 @@ def stop_all_thread(wincap,screendetect,bot,detector):
     cv.destroyAllWindows()
 
 def add_two_tuple(tup1,tup2):
+    """
+    add two tuples
+    """
     if not(tup1 is None or tup2 is None):
         return tuple(map(sum, zip(tup1, tup2)))
 
@@ -113,14 +119,14 @@ def main():
     stop_all_thread(wincap,screendetect,bot,detector)
 
 if __name__ == "__main__":
-    while True:
-        print("")
-        print(bcolors.HEADER + bcolors.BOLD +
+    print(bcolors.HEADER + bcolors.BOLD +
               "Before starting bot, make sure you have Brawl Stars opened on Bluestacks"
               + "\nand selected solo showdown gamemode.")
-        print("Also make sure to change the speed, attack range and height scale factor"
-               +"\nfor you selected brawler at constants.py (instruction there as well).")
-        print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
+    print("Also make sure to change the speed, attack range and height scale factor"
+            +"\nfor you selected brawler at constants.py (instruction there as well).")
+    print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
+    while True:
+        print("")
         print("1. Start Bot")
         print("2. Set shutdown timer")
         print("3. Cancel shutdown timer")

@@ -76,15 +76,24 @@ class WindowCapture:
     
     # https://stackoverflow.com/a/15503675
     def set_window(self):
+        """
+        forcus the selected window
+        """
         if self.hwnd:
             shell = win32com.client.Dispatch("WScript.Shell")
             shell.SendKeys('%')
             win32gui.SetForegroundWindow(self.hwnd)
 
     def get_dimension(self):
+        """
+        get the width and the height of the select window
+        """
         return self.w,self.h
 
     def get_screenshot(self):
+        """
+        take a screenshot
+        """
         # get the window image data
         wDC = win32gui.GetWindowDC(self.hwnd)
         dcObj = win32ui.CreateDCFromHandle(wDC)
@@ -131,8 +140,10 @@ class WindowCapture:
         win32gui.EnumWindows(winEnumHandler, None)
 
     # threading methods
-
     def start(self):
+        """
+        start windowcapture
+        """
         self.stopped = False
         self.loop_time = time()
         self.count = 0
@@ -141,6 +152,9 @@ class WindowCapture:
         t.start()
 
     def stop(self):
+        """
+        stop windowcapture
+        """
         self.stopped = True
 
     def run(self):

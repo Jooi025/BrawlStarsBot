@@ -35,9 +35,15 @@ class Detection:
     def find_midpoint(self,x1,y1,x2,y2):
         #x2 > x1
         #y2 > y1
+        """
+        find the midpoint between two
+        """
         return [(x1+int((x2-x1)/2),y1+int((y2-y1)/2))]
 
     def annotate_detection_midpoint(self):
+        """
+        annotate detection
+        """
         thickness = 1
         red = (0, 0, 255) # bgr
         if self.results:
@@ -53,6 +59,9 @@ class Detection:
                                        cord, cv.FONT_HERSHEY_SIMPLEX, 0.7, red, 2)
 
     def annotate_border(self,border_size,tile_w,tile_h):
+        """
+        annotate border for debuggin purposes
+        """
         thickness = 2
         # bgr
         green = (0, 255, 0)
@@ -101,11 +110,17 @@ class Detection:
                     color=(255,255,255),thickness=thickness)
     
     def update(self, screenshot):
+        """
+        update screen for detection
+        """
         self.lock.acquire()
         self.screenshot = screenshot
         self.lock.release()
 
     def start(self):
+        """
+        start detection
+        """
         self.stopped = False
         self.loop_time = time()
         self.count = 0
@@ -114,6 +129,9 @@ class Detection:
         t.start()
 
     def stop(self):
+        """
+        stop detection
+        """
         self.stopped = True
 
     def run(self):
