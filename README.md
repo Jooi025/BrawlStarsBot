@@ -26,12 +26,9 @@ A recommended map to run the bot on is island invasion, using short/medium range
 * Windows OS
 * [Bluestacks 5](https://www.bluestacks.com/download.html) to run brawl star
 * Python>= 3.8.0 installed (I used version 3.11.6)
-## Some common errors
-- If Brawl Stars is stuck on the loading screen, return to Bluestacks' home screen, hold down left click on the Brawl Stars' icon and select "App Info". Click "force stop" and select "Storage" and click "Clear cache". Now, try to open Brawl Stars again.
-- After starting bot in main.py, the terminal displays "Play" multiple times, and the mouse doesn't move and click Play in the Brawl Stars' main menu. Close Pycharm or your IDE, and reopen it with administration permission. 
 
 ## How to install and run the bot?
-Full video tutorial coming soon...
+## [Tutorial and common error fix playlist](https://youtube.com/playlist?list=PLD9X_geub8rmkcpJSWzvoqmB9VZk-9TfO&si=7vrCV9s1kLviRaTL)
 ### 1. Clone Repo
 1. Clone the repository 
 ```
