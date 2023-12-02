@@ -1,9 +1,9 @@
 import pyautogui
 from time import sleep
-from modules.windowcapture import WindowCapture
+from windowcapture import WindowCapture
 import keyboard
 
-find_colour = 0
+find_colour = 1
 wincap = WindowCapture("Bluestacks App Player")
 windowSize = (wincap.w, wincap.h)
 
@@ -13,6 +13,7 @@ if find_colour:
     while 1:
         if keyboard.is_pressed('q'):
             x,y = pyautogui.position()
+            print(x,y)
             print(count)
             print("xScaleFactor: ",round((x-wincap.offset_x)/wincap.w,4))
             print("yScaleFactor: ",round((y-wincap.offset_y)/wincap.h,4))
