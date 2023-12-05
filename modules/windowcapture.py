@@ -45,7 +45,6 @@ class WindowCapture:
             self.hwnd = win32gui.FindWindow(None, window_name)
             if not self.hwnd:
                 raise Exception(f"{window_name} not found. \nPlease open {window_name} or change the window_name at constants.py")
-
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
         self.w = window_rect[2] - window_rect[0]
@@ -95,7 +94,7 @@ class WindowCapture:
         take a screenshot
         """
         # get the window image data
-        wDC = win32gui.GetWindowDC(self.hwnd)
+        wDC = win32gui.GetWindowDC(None)
         dcObj = win32ui.CreateDCFromHandle(wDC)
         cDC = dcObj.CreateCompatibleDC()
         dataBitMap = win32ui.CreateBitmap()
