@@ -46,6 +46,9 @@ class WindowCapture:
             if not self.hwnd:
                 raise Exception(f"{window_name} not found. \nPlease open {window_name} or change the window_name at constants.py")
 
+        shell = win32com.client.Dispatch("WScript.Shell")
+        shell.SendKeys('%')
+
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
         self.w = window_rect[2] - window_rect[0]

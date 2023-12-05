@@ -5,6 +5,7 @@ from constants import Constants
 
 # initialize the WindowCapture class
 wincap = WindowCapture(Constants.window_name)
+wincap.set_window()
 
 while(True):
     # get an updated image of the game
