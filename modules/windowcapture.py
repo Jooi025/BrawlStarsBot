@@ -136,7 +136,7 @@ class WindowCapture:
     def list_window_names():
         def winEnumHandler(hwnd, ctx):
             if win32gui.IsWindowVisible(hwnd):
-                print(hex(hwnd), win32gui.GetWindowText(hwnd))
+                print(hex(hwnd), f"\"{win32gui.GetWindowText(hwnd)}\"")
         win32gui.EnumWindows(winEnumHandler, None)
 
     # threading methods

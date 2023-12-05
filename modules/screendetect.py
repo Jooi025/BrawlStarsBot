@@ -46,7 +46,8 @@ class Screendetect:
         self.h = windowSize[1]
         self.offset_x = offset[0]
         self.offset_y = offset[1]
-        self.defeated = (round(self.w*0.9683)+self.offset_x, round(self.h*0.1969)+self.offset_y)
+        self.defeated1 = (round(self.w*0.9656)+self.offset_x, round(self.h*0.152)+self.offset_y)
+        self.defeated2 = (round(self.w*0.993)+self.offset_x, round(self.h*0.2046)+self.offset_y)
         self.playAgainButton = (round(self.w*0.5903)+self.offset_x, round(self.h*0.9197)+self.offset_y)
         self.playButton = (round(self.w*0.9419)+self.offset_x, round(self.h*0.8949)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
@@ -91,7 +92,10 @@ class Screendetect:
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.defeated[0], self.defeated[1],self.defeatedColor,tolerance=15):
+                    elif (pyautogui.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
+                                                     self.defeatedColor,tolerance=15)
+                        or pyautogui.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
+                                                     self.defeatedColor,tolerance=15)):
                         print("Exiting match")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT

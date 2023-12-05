@@ -596,27 +596,24 @@ class Brawlbot:
 
             elif self.state == BotState.MOVING:
                 # when player is moving check if player is stuck
-                if time() < self.timestamp + self.moveTime:
-                    if not self.have_stopped_moving():
-                        # wait a short time to allow for the character position to change
-                        sleep(0.15)
-                    #if player is stuck
-                    else:
-                        # cancel moving
-                        py.mouseUp(button = Constants.movement_key)
-                        self.stuck_random_movement()
-                        # and search for bush again
-                        self.lock.acquire()
-                        self.state = BotState.SEARCHING
-                        self.lock.release()
-
-                    if self.is_enemy_in_range():
-                        self.lock.acquire()
-                        self.state = BotState.ATTACKING
-                        self.lock.release()
-
-                # player successfully travel to the selected bush
+                if self.have_stopped_moving():
+                    # cancel moving
+                    py.mouseUp(button = Constants.movement_key)
+                    self.stuck_random_movement()
+                    # and search for bush again
+                    self.lock.acquire()
+                    self.state = BotState.SEARCHING
+                    self.lock.release()
+                #if player is stuck
                 else:
+                    sleep(0.15)
+
+                if self.is_enemy_in_range():
+                    self.lock.acquire()
+                    self.state = BotState.ATTACKING
+                    self.lock.release()
+                # player successfully travel to the selected bush
+                if time() > self.timestamp + self.moveTime:
                     py.mouseUp(button = Constants.movement_key)
                     print("Hiding")
                     self.lock.acquire()
@@ -626,6 +623,12 @@ class Brawlbot:
                     self.lock.release()
                     
             elif self.state == BotState.HIDING:
+                if time() > self.timestamp + self.HIDINGTIME or self.is_player_damaged():
+                    print("Changing state to search")
+                    self.lock.acquire()
+                    self.state = BotState.SEARCHING
+                    self.lock.release()
+
                 if self.centerOrder:
                     if self.is_enemy_close():
                         print("Enemy is nearby")
@@ -638,13 +641,6 @@ class Brawlbot:
                         self.lock.acquire()
                         self.state = BotState.ATTACKING
                         self.lock.release()
-
-                if time() > self.timestamp + self.HIDINGTIME or self.is_player_damaged():
-                    print("Changing state to search")
-                    self.lock.acquire()
-                    self.state = BotState.SEARCHING
-                    self.lock.release()
-                    
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
                     self.enemy_random_movement()
