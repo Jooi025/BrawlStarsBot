@@ -1,0 +1,21 @@
+
+# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: ../ml/train_data # dataset root dir
+train: images/train # train images (relative to 'path')
+val: images/val  # val images (relative to 'path') 
+test: ../ml/test_data # test images (optional)
+
+# Classes
+names:
+  0: Player
+  1: Bush
+  2: Wall
+  3: New Wall
+  4: Storm 
+  5: Fence
+  6: Barrell
+  7: Box
+  8: Inside Bush
+  9: River
