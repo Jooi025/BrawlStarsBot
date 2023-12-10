@@ -4,6 +4,7 @@ from threading import Thread, Lock
 from ctypes import windll
 import tkinter
 from time import time
+from constants import Constants
 
 class WindowCapture:
 
@@ -73,6 +74,13 @@ class WindowCapture:
         self.offset_x = window_rect[0] + self.cropped_x
         self.offset_y = window_rect[1] + self.cropped_y
         self.offsets = (self.offset_x,self.offset_y)
+
+        if Constants.focused_window:
+            self.window = self.hwnd
+            self.cropped = (self.cropped_x,self.cropped_y)
+        else:
+            self.window = None
+            self.cropped = (self.offset_x,self.offset_y)
     
     # https://stackoverflow.com/a/15503675
     def set_window(self):
@@ -95,13 +103,13 @@ class WindowCapture:
         take a screenshot
         """
         # get the window image data
-        wDC = win32gui.GetWindowDC(self.hwnd)
+        wDC = win32gui.GetWindowDC(self.window)
         dcObj = win32ui.CreateDCFromHandle(wDC)
         cDC = dcObj.CreateCompatibleDC()
         dataBitMap = win32ui.CreateBitmap()
         dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
         cDC.SelectObject(dataBitMap)
-        cDC.BitBlt((0, 0), (self.w, self.h), dcObj, (self.cropped_x, self.cropped_y), win32con.SRCCOPY)
+        cDC.BitBlt((0, 0), (self.w, self.h), dcObj, self.cropped, win32con.SRCCOPY)
 
         # convert the raw data into a format opencv can read
         #dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')

@@ -5,6 +5,7 @@ brawler_stats_dict = json.load(open("brawler_stats.json"))
 class Constants:
     #! change the brawler name, if its not found please manually change the stats it below
     brawler_name = " "
+    
     #! Change the speed and range for the brawler you are using
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/
@@ -30,6 +31,8 @@ class Constants:
     eg. Bluestacks App Player 1, Bluestacks App Player 2, etc
     """
     window_name = "Bluestacks App Player"
+    # Make this False if detection_test is outputing a blank screen, otherwise True.
+    focused_window = True
 
     #! Change this to True if you have Nvidia graphics card and CUDA installed
     nvidia_gpu = False
