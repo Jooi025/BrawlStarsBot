@@ -1,6 +1,6 @@
 import pyautogui
 from time import sleep
-from windowcapture import WindowCapture
+from modules.windowcapture import WindowCapture
 import keyboard
 
 find_colour = 1

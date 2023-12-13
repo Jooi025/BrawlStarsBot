@@ -28,6 +28,7 @@ class Detectstate:
     LOAD = 4
     CONNECTION = 5
     PLAY = 6
+    PROCEED = 7 
     
 class Screendetect:
     #RGB value
@@ -36,6 +37,7 @@ class Screendetect:
     loadColor = (177, 239, 74)
     defeated_xScale = 0.9677
     defeated_yScale = 0.2285
+    proceedColor = (33, 108, 239)
     def __init__(self,windowSize,offset) -> None:
         """
         Constructor for the Screendectect class
@@ -52,7 +54,7 @@ class Screendetect:
         self.playButton = (round(self.w*0.9419)+self.offset_x, round(self.h*0.8949)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
         self.loadButton = (round(self.w*0.084)+self.offset_x, round(self.h*0.1319)+self.offset_y)
-        
+        self.proceedButton = (round(self.w*0.8078)+self.offset_x, round(self.h*0.9202)+self.offset_y)
         self.connection_lost_color = (66, 66, 66)
         self.connection_lost_cord = (round(self.w*0.4912)+self.offset_x,round(self.h*0.5525)+self.offset_y)
         self.reload_button = (round(self.w*0.2824)+self.offset_x,round(self.h*0.5812)+self.offset_y)
@@ -110,6 +112,11 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
+                    elif pyautogui.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=15):
+                        print("Proceed")
+                        self.lock.acquire()
+                        self.state = Detectstate.PROCEED
+                        self.lock.release()
                 
                 except OSError:
                     pass
@@ -153,6 +160,16 @@ class Screendetect:
                 sleep(0.05)
                 py.click(x = self.playButton[0], y = self.playButton[1],button="left")
                 sleep(0.05)
+                self.lock.acquire()
+                self.state = Detectstate.IDLE
+                self.lock.release()
+            elif self.state == Detectstate.PROCEED:
+                sleep(0.5)
+                py.click(x = self.proceedButton[0], y = self.proceedButton[1],button="left")
+                sleep(4)
+                print("playagain")
+                py.click(x = self.playAgainButton[0], y = self.playAgainButton[1],button="left")
+                sleep(0.5)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
                 self.lock.release()
