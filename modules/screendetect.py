@@ -112,7 +112,7 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=15):
+                    elif pyautogui.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=25):
                         print("Proceed")
                         self.lock.acquire()
                         self.state = Detectstate.PROCEED
