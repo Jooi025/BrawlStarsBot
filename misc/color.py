@@ -3,7 +3,7 @@ from time import sleep
 from modules.windowcapture import WindowCapture
 import keyboard
 
-find_colour = 0
+find_colour = 1
 wincap = WindowCapture("Bluestacks App Player")
 windowSize = (wincap.w, wincap.h)
 

@@ -38,6 +38,7 @@ class Screendetect:
     defeated_xScale = 0.9677
     defeated_yScale = 0.2285
     proceedColor = (35, 115, 255)
+    connection_lost_color = (66, 66, 66)
     def __init__(self,windowSize,offset) -> None:
         """
         Constructor for the Screendectect class
@@ -55,10 +56,13 @@ class Screendetect:
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
         self.loadButton = (round(self.w*0.084)+self.offset_x, round(self.h*0.1319)+self.offset_y)
         self.proceedButton = (round(self.w*0.8093)+self.offset_x, round(self.h*0.9165)+self.offset_y)
-        self.connection_lost_color = (66, 66, 66)
+
         self.connection_lost_cord = (round(self.w*0.4912)+self.offset_x,round(self.h*0.5525)+self.offset_y)
         self.reload_button = (round(self.w*0.2824)+self.offset_x,round(self.h*0.5812)+self.offset_y)
-        
+
+    def update_bot_stop(self,bot_stopped):
+        self.bot_stopped = bot_stopped
+    
     def start(self):
         """
         start screendetect
@@ -97,7 +101,7 @@ class Screendetect:
                     elif (pyautogui.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
                                                      self.defeatedColor,tolerance=15)
                         or pyautogui.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
-                                                     self.defeatedColor,tolerance=15)):
+                                                     self.defeatedColor,tolerance=15)) and not(self.bot_stopped):
                         print("Exiting match")
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
@@ -166,9 +170,6 @@ class Screendetect:
             elif self.state == Detectstate.PROCEED:
                 sleep(0.5)
                 py.click(x = self.proceedButton[0], y = self.proceedButton[1],button="left")
-                sleep(6)
-                print("playagain")
-                py.click(x = self.playAgainButton[0], y = self.playAgainButton[1],button="left")
                 sleep(0.5)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE

@@ -62,6 +62,7 @@ def main():
             continue
         # update screenshot for dectector
         detector.update(screenshot)
+        screendetect.update_bot_stop(bot.stopped)
         # check bot state
         if bot.state == BotState.INITIALIZING:
             bot.update_results(detector.results)
