@@ -2,7 +2,6 @@ from time import time,sleep
 from threading import Thread, Lock
 from math import *
 import pyautogui as py
-import pyautogui
 import numpy as np
 import random
 from constants import Constants
@@ -487,8 +486,8 @@ class Brawlbot:
             w2 = int(self.topleft[0] + 2*(width/3))
             h = int(self.topleft[1] - height/2)
             try:
-                if (pyautogui.pixelMatchesColor(w1,h,(204, 34, 34),tolerance=20)
-                    or pyautogui.pixelMatchesColor(w2,h,(204, 34, 34),tolerance=20)):
+                if (py.pixelMatchesColor(w1,h,(204, 34, 34),tolerance=20)
+                    or py.pixelMatchesColor(w2,h,(204, 34, 34),tolerance=20)):
                     print(f"player is damaged")
                     return True
             except OSError:

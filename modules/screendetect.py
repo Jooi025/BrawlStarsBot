@@ -1,5 +1,4 @@
-import pydirectinput as py
-import pyautogui
+import pyautogui as py
 from threading import Thread, Lock
 from time import sleep
 from constants import Constants
@@ -87,20 +86,20 @@ class Screendetect:
             
             elif self.state == Detectstate.DETECT:
                 try:
-                    if pyautogui.pixelMatchesColor(self.playAgainButton[0], self.playAgainButton[1],self.playColor,tolerance=15):
+                    if py.pixelMatchesColor(self.playAgainButton[0], self.playAgainButton[1],self.playColor,tolerance=15):
                         print("Playing again")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY_AGAIN
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
+                    elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
                         print("Loading in")
                         self.lock.acquire()
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
-                    elif (pyautogui.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
+                    elif (py.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
                                                      self.defeatedColor,tolerance=15)
-                        or pyautogui.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
+                        or py.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
                                                      self.defeatedColor,tolerance=15)) and not(self.bot_stopped):
                         print("Exiting match")
                         self.lock.acquire()
@@ -111,12 +110,12 @@ class Screendetect:
                     #     self.lock.acquire()
                     #     self.state = Detectstate.CONNECTION
                     #     self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
+                    elif py.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
                         print("Play")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif pyautogui.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=25):
+                    elif py.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=25):
                         print("Proceed")
                         self.lock.acquire()
                         self.state = Detectstate.PROCEED
@@ -167,10 +166,14 @@ class Screendetect:
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
                 self.lock.release()
+            
             elif self.state == Detectstate.PROCEED:
                 sleep(0.5)
                 py.click(x = self.proceedButton[0], y = self.proceedButton[1],button="left")
-                sleep(0.5)
+                sleep(5.5)
+                py.press("e",presses=5)
+                sleep(4)
+                py.press("e")
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
                 self.lock.release()

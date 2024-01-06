@@ -5,7 +5,7 @@ from modules.bot import Brawlbot, BotState
 from modules.screendetect import Screendetect, Detectstate
 from modules.detection import Detection
 from modules.print import bcolors
-import pydirectinput as py
+import pyautogui as py
 import os
 from constants import Constants
 
