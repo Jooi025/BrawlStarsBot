@@ -42,7 +42,7 @@ class HeightScaleFactorFrame(tkinter.Frame):
         zoom_combobox = ttk.Combobox(self,textvariable=self.zoom)
         zoom_combobox['values'] =  self.zoom_list
         zoom_combobox.state(["readonly"])
-        zoom_combobox.current(2)
+        zoom_combobox.current(1)
 
         # buttons
         button_width = 14
@@ -127,14 +127,14 @@ class HeightScaleFactorFrame(tkinter.Frame):
                              self.wincap.h+self.wincap.offset_y)
         
         screenshot =  ImageGrab.grab(screenshot_region)
-
+        zoom_size = int(self.zoom.get())
         midpoint = (int(self.wincap.offset_x+self.wincap.w/2), int((self.wincap.h/2)- self.wincap.offset_y))
-        topleft = self.subtract_tuple(midpoint,(self.max_width/2,self.max_height/2))
-        bottomright = self.add_tuple(midpoint,(self.max_width/2,self.max_height/2))
+        topleft = self.subtract_tuple(midpoint,tuple([(4-zoom_size)*x for x in(self.max_width/2,self.max_height/2)]))
+        bottomright = self.add_tuple(midpoint,tuple([(4-zoom_size)*x for x in(self.max_width/2,self.max_height/2)]))
         screenshot_cropped = screenshot.crop(topleft+bottomright)
         width, height = screenshot_cropped.size
 
-        zoom_size = int(self.zoom.get())
+        
         self.img = screenshot_cropped_resize = screenshot_cropped.resize((int(zoom_size*width),int(zoom_size*height)))
         
         # for w in range(0,width):

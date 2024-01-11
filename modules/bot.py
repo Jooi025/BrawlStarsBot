@@ -28,7 +28,7 @@ class Brawlbot:
 
     # Map with sharp corners
     sharpCorner = Constants.sharpCorner
-    # Either go to the closest bush to the player or to the center
+    # Either go to the closest bush to the player or the center
     centerOrder = Constants.centerOrder
     IGNORE_RADIUS = 0.5
     movement_screenshot = None
@@ -47,6 +47,7 @@ class Brawlbot:
     avg_fps = 0
     enemy_move_key = None
     timeFactor = 1
+    
     # time to move increase by 5% if maps have sharps corner
     if sharpCorner: timeFactor = 1.05
 
@@ -55,11 +56,11 @@ class Brawlbot:
         
         # "brawler" chracteristic
         self.speed = speed
-        # short range 
+        # short range
         if attack_range >0 and attack_range <=4:
             range_multiplier = 1
             hide_multiplier = 1.3
-        # medium range 
+        # medium range
         elif attack_range > 4 and attack_range <=7:
             range_multiplier = 0.85
             hide_multiplier = 1
@@ -69,7 +70,7 @@ class Brawlbot:
             hide_multiplier = 0.8
         
         # attack range in tiles
-        self.alert_range = attack_range + 2 
+        self.alert_range = attack_range + 2
         self.attack_range = range_multiplier*attack_range
         self.gadget_range = 0.9*self.attack_range
         self.hide_attack_range = 3.5 # visible to enemy in the bush

@@ -22,7 +22,7 @@ class Constants:
     # map's characteristic
     # if map have a lot of walls make sharpCorner True otherwise False
     sharpCorner = False
-    # if brawler spawn in the middle of the map make centerOrder False other True
+    # if brawler spawn in the middle of the map make centerOrder False otherwise True
     centerOrder = True
     """
     If you have multiple instance of bluestacks or you got
