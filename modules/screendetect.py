@@ -27,17 +27,18 @@ class Detectstate:
     LOAD = 4
     CONNECTION = 5
     PLAY = 6
-    PROCEED = 7 
+    PROCEED = 7
+    STARDROP = 8
     
 class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
     loadColor = (177, 239, 74)
-    defeated_xScale = 0.9677
-    defeated_yScale = 0.2285
     proceedColor = (35, 115, 255)
     connection_lost_color = (66, 66, 66)
+    starDropColor = (222, 72, 227)
+
     def __init__(self,windowSize,offset) -> None:
         """
         Constructor for the Screendectect class
@@ -48,8 +49,14 @@ class Screendetect:
         self.h = windowSize[1]
         self.offset_x = offset[0]
         self.offset_y = offset[1]
+
+        # Coordinate
         self.defeated1 = (round(self.w*0.9656)+self.offset_x, round(self.h*0.152)+self.offset_y)
         self.defeated2 = (round(self.w*0.993)+self.offset_x, round(self.h*0.2046)+self.offset_y)
+
+        self.starDrop1 = (round(self.w*0.488)+ self.offset_x, round(self.h*0.9303) + self.offset_y)
+        self.starDrop2 = (round(self.w*0.5228)+ self.offset_x, round(self.h*0.9296) + self.offset_y)
+
         self.playAgainButton = (round(self.w*0.5903)+self.offset_x, round(self.h*0.9197)+self.offset_y)
         self.playButton = (round(self.w*0.9419)+self.offset_x, round(self.h*0.8949)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
@@ -91,12 +98,14 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.PLAY_AGAIN
                         self.lock.release()
+                    
                     elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
                         print("Loading in")
                         self.lock.acquire()
                         sleep(3)
                         self.state = Detectstate.LOAD
                         self.lock.release()
+                    
                     elif (py.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
                                                      self.defeatedColor,tolerance=15)
                         or py.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
@@ -105,17 +114,27 @@ class Screendetect:
                         self.lock.acquire()
                         self.state = Detectstate.EXIT
                         self.lock.release()
+                    
                     # elif pyautogui.pixelMatchesColor(self.connection_lost_cord[0],self.connection_lost_cord[1],self.connection_lost_color,tolerance=1):
                     #     print("Connection Lost")
                     #     self.lock.acquire()
                     #     self.state = Detectstate.CONNECTION
                     #     self.lock.release()
-                    elif py.pixelMatchesColor(self.playButton[0], self.playButton[1],self.playColor,tolerance=15):
+                    
+                    elif (py.pixelMatchesColor(self.starDrop1[0], self.starDrop1[1], self.starDropColor,tolerance=15)
+                    or py.pixelMatchesColor(self.starDrop2[0], self.starDrop2[1], self.starDropColor,tolerance=15)):
+                        print("Collecting Star Drop")
+                        self.lock.acquire()
+                        self.state = Detectstate.STARDROP
+                        self.lock.release()
+                        
+                    elif py.pixelMatchesColor(self.playButton[0], self.playButton[1], self.playColor, tolerance=15):
                         print("Play")
                         self.lock.acquire()
                         self.state = Detectstate.PLAY
                         self.lock.release()
-                    elif py.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1],self.proceedColor,tolerance=25):
+
+                    elif py.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1], self.proceedColor, tolerance=25):
                         print("Proceed")
                         self.lock.acquire()
                         self.state = Detectstate.PROCEED
@@ -127,7 +146,7 @@ class Screendetect:
             elif self.state == Detectstate.PLAY_AGAIN:
                 # click the play button
                 sleep(0.05)
-                py.click(x = self.playAgainButton[0], y = self.playAgainButton[1],button="left")
+                py.click(x=self.playAgainButton[0], y=self.playAgainButton[1], button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
@@ -144,7 +163,7 @@ class Screendetect:
                 py.mouseUp(button = Constants.movement_key)
                 sleep(5)
                 # click the exit button
-                py.click(x = self.exitButton[0], y = self.exitButton[1],button="left")
+                py.click(x=self.exitButton[0], y=self.exitButton[1], button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
@@ -152,7 +171,7 @@ class Screendetect:
             
             elif self.state == Detectstate.CONNECTION:
                 sleep(20)
-                py.click(x = self.reload_button[0], y = self.reload_button[1],button="left")
+                py.click(x=self.reload_button[0], y=self.reload_button[1], button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
@@ -161,7 +180,7 @@ class Screendetect:
             elif self.state == Detectstate.PLAY:
                 # click the play button
                 sleep(0.05)
-                py.click(x = self.playButton[0], y = self.playButton[1],button="left")
+                py.click(x=self.playButton[0], y=self.playButton[1], button="left")
                 sleep(0.05)
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
@@ -169,10 +188,15 @@ class Screendetect:
             
             elif self.state == Detectstate.PROCEED:
                 sleep(0.5)
-                py.click(x = self.proceedButton[0], y = self.proceedButton[1],button="left")
-                sleep(5.5)
+                py.click(x=self.proceedButton[0], y=self.proceedButton[1], button="left", clicks=2)
+                sleep(0.5)
+                self.lock.acquire()
+                self.state = Detectstate.IDLE
+                self.lock.release()
+            
+            elif self.state == Detectstate.STARDROP:
                 py.press("e",presses=5)
-                sleep(4)
+                sleep(6)
                 py.press("e")
                 self.lock.acquire()
                 self.state = Detectstate.IDLE
