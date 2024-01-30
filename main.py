@@ -121,12 +121,15 @@ def main():
     stop_all_thread(wincap,screendetect,bot,detector)
 
 if __name__ == "__main__":
+    print(" ")
     print(bcolors.HEADER + bcolors.BOLD +
-              "Before starting bot, make sure you have Brawl Stars opened on Bluestacks"
-              + "\nand selected solo showdown gamemode.")
-    print("Also make sure to change the speed, attack range and height scale factor"
+              "Before starting the bot, make sure you have Brawl Stars open \non Bluestacks and selected solo showdown gamemode.")
+    print("")
+    print("Also make sure to change the speed, attack_range and HeightScaleFactor"
             +"\nfor you selected brawler at constants.py (instruction there as well).")
-    print("To exit bot hover cursor to the top left or bottom right corner." + bcolors.ENDC)
+    print("To exit bot hover cursor to the top left or bottom right corner.")
+    print("")
+    print(bcolors.UNDERLINE + "IMPORTANT - make sure to disable ads on bluestack and close the right sidebar" + bcolors.ENDC)
     while True:
         print("")
         print("1. Start Bot")
@@ -154,5 +157,5 @@ if __name__ == "__main__":
             print("Shutdown timer cancelled")
         # exit
         elif user_input =="4" or user_input == "exit":
-            print("Exitting")
+            print("Exitting...")
             break

@@ -1,3 +1,8 @@
+"""
+The screendetect module uses pyautogui to matches pixels' color and take specific action depending on the matches.
+e.g. play again button - When play again button is detect by pyautogui.pixelMatchesColor() it will click the play again button.
+"""
+
 import pyautogui as py
 from threading import Thread, Lock
 from time import sleep
@@ -18,6 +23,10 @@ LOAD: When loading into the match, start the bot
 CONNECTION: When the connection is lost
 
 PLAY: When the main menu of brawl stars
+
+PROCEED: When the match is finished, it will click the proceed button
+
+STARDROP: Whenever there is a star drop in the main menu, it will collect the star drop
 """
 class Detectstate:
     IDLE = 0
