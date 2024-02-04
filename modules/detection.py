@@ -150,13 +150,15 @@ class Detection:
                     if prob >= threshold:
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
                         if self.classes[class_id] == "Player":
+                            # Constantly update player name tag position to check if
+                            # player is damaged in bot module while in hiding state
                             self.player_topleft = (x1,y1)
                             self.player_bottomright = (x2,y2)
                             midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
                         if self.classes[class_id] == "Enemy":
                             #standardised enemy height and their label
-                            height = y2 - y1
-                            y1 = y1 + (height+0.2*self.h)
+                            enemy_height = y2 - y1
+                            y1 = y1 + (enemy_height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
                         tempList[class_id] = tempList[class_id] + midpoint
                 # lock the thread while updating the results

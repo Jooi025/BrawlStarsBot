@@ -33,7 +33,7 @@ class WindowCapture:
         root = tkinter.Tk()
         dpi = root.winfo_fpixels('1i')
         deafault_dpi = 96
-        self.scaling = dpi/deafault_dpi
+        self.scaling = int(dpi/deafault_dpi)
         # close tkinter
         root.destroy()
         # create a thread lock object

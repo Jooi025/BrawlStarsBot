@@ -56,6 +56,10 @@ def main():
     print(f"Window Size: {windowSize}")
     print(f"Scaling: {wincap.scaling*100}%")
 
+    aspect_ratio = windowSize[0]/windowSize[1]
+    if aspect_ratio > 1.79:
+        print(bcolors.WARNING + "Please make sure to disable ads on bluestack and close the right sidebar for the bot to work as intended." + bcolors.ENDC)
+
     while True:
         screenshot = wincap.screenshot
         if screenshot is None:

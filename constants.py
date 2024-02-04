@@ -27,7 +27,7 @@ class Constants:
     If the map have a lots of walls make sharpCorner True otherwise make it False
     If the brawler spawn in the middle of the map make centerOrder False otherwise make it True
     """
-    sharpCorner = False
+    sharpCorner = True
     centerOrder = True
     
     #! Window Capture
@@ -72,6 +72,8 @@ class Constants:
     except KeyError:
         brawler_stats = 3*[None]
         display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constant.py.\nPlease manually modify at constants.py if you have not."
+    print("")
+    print(bcolors.BOLD + bcolors.OKGREEN + "Original Creator: https://github.com/Jooi025/BrawlStarsBot" + bcolors.ENDC)
     print("")
     print(bcolors.WARNING + display_str + bcolors.ENDC)
     speed = brawler_stats[0] or speed # units: (tiles per second)
