@@ -43,7 +43,7 @@ class Screendetect:
     #RGB value
     defeatedColor = (62,0,0)
     playColor = (224, 186, 8)
-    loadColor = (177, 239, 74)
+    loadColor = (0, 1, 0)
     proceedColor = (35, 115, 255)
     connection_lost_color = (66, 66, 66)
     starDropColor = (222, 72, 227)
@@ -69,7 +69,7 @@ class Screendetect:
         self.playAgainButton = (round(self.w*0.5903)+self.offset_x, round(self.h*0.9197)+self.offset_y)
         self.playButton = (round(self.w*0.9419)+self.offset_x, round(self.h*0.8949)+self.offset_y)
         self.exitButton = (round(self.w*0.493)+self.offset_x, round(self.h*0.9187)+self.offset_y)
-        self.loadButton = (round(self.w*0.084)+self.offset_x, round(self.h*0.1319)+self.offset_y)
+        self.loadButton = (round(self.w*0.8057)+self.offset_x, round(self.h*0.9675)+self.offset_y)
         self.proceedButton = (round(self.w*0.8093)+self.offset_x, round(self.h*0.9165)+self.offset_y)
 
         self.connection_lost_cord = (round(self.w*0.4912)+self.offset_x,round(self.h*0.5525)+self.offset_y)
