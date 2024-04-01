@@ -39,7 +39,7 @@ class Constants:
     """
     window_name = "Bluestacks App Player"
     # Make this False if detection_test is outputting a blank screen, otherwise True.
-    focused_window = True
+    focused_window = False
 
     #! Change this to True if you have Nvidia graphics card and CUDA installed
     nvidia_gpu = False
