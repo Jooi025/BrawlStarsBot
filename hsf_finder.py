@@ -143,7 +143,7 @@ class HeightScaleFactorFrame(ctk.CTkFrame):
         self.canvas.bind('<ButtonPress-3>', self.draw_single_line)
         self.canvas.bind("<MouseWheel>",self.zoom_with_scroll)
         zoom_combobox.bind('<<ComboboxSelected>>', self.reset_all)
-    
+       
     def zoom_with_scroll(self,event):
         # scroll up
         if event.delta > 0:
@@ -165,7 +165,7 @@ class HeightScaleFactorFrame(ctk.CTkFrame):
 
             # convert the screenshot to a tkinter format
             screenshot = ImageTk.PhotoImage(self.img)
-            image1 = ctk.CTkLabel(self, image=screenshot)
+            image1 = tkinter.Label(self, image=screenshot)
             image1.image = screenshot
             # put image on the canvas
             self.canvas.create_image(int(self.canvas_width/2),int(self.canvas_height/2),
@@ -194,22 +194,7 @@ class HeightScaleFactorFrame(ctk.CTkFrame):
         screenshot_cropped = screenshot.crop(topleft+bottomright)
         width, height = screenshot_cropped.size
 
-        
-        self.img = screenshot_cropped_resize = screenshot_cropped.resize((int(zoom_size*width),int(zoom_size*height)))
-        
-        # for w in range(0,width):
-        #     for h in range(0,height):
-        #         # Get the RGB value
-        #         RGB = screenshot_cropped.getpixel((w,h))
-        #         if RGB == (72, 227, 53):
-        #             print("True")
-        #             self.is_brawler_present = True
-        #             break
-        # if (self.is_brawler_present):
-        #     self.message.set(" ")
-        # else:
-        #     self.message.set("Cannot find brawler")
-        
+        self.img = screenshot_cropped_resize = screenshot_cropped.resize((int(zoom_size*width),int(zoom_size*height))) 
         # convert the screenshot to a tkinter format
         screenshot = ImageTk.PhotoImage(screenshot_cropped_resize)
         image1 = tkinter.Label(self, image=screenshot)
