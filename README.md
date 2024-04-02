@@ -40,7 +40,7 @@ git clone https://github.com/Jooi025/BrawlStarsBot.git
 cd BrawlStarsBot
 pip install -r requirements.txt
 ```
-
+[Writing instruction](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/textInstruction.md)
 ### Update Repo 
 ```
 cd BrawlStarsBot
