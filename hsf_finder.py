@@ -1,26 +1,91 @@
 import tkinter
-from tkinter import ttk
-from modules.windowcapture import WindowCapture
+import customtkinter as ctk
+from PIL import Image
 from constants import Constants
 import pyautogui
 from time import sleep
 from PIL import ImageTk,ImageGrab
 import numpy as np
 from math import pow
+from modules.windowcapture import WindowCapture
 
-class Interface(tkinter.Tk):
+class Interface(ctk.CTk):
     def __init__(self,title):
         super().__init__()
         self.title(title)
+        ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme("dark-blue")
         self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
+        self.attributes('-fullscreen',True)
 
-class HeightScaleFactorFrame(tkinter.Frame):
+class InstructionFrame(ctk.CTkFrame):
+    count = 0
+    def __init__(self,master):
+        super().__init__(master,fg_color="transparent")
+        self.master = master
+        instruction_str =  """1. Open brawl stars on bluestacks, select the brawler that you wish use and go to the training ground.
+        \n2. Take a screenshot after proceeding. You can use up scroll wheel to zoom into the image and assist with drawing the line.
+        \n3. Draw a line from the middle of the player tag to the middle of the bottom circle as shown on the right
+        \n4. Calculate HSF and modify it on constants.py"""
+        title = ctk.CTkLabel(self,text="HSF Finder",font=("Arial Bold",25))
+        instruction_textbox = ctk.CTkTextbox(self,font=("Arial",17),width=400,height=250)
+        proceed_button = ctk.CTkButton(self,text="Proceed",height=50,font=("Arial Bold",20),command=self.goto_hsf_frame,fg_color="#00C04B",hover_color="#008631")
+        exit_button = ctk.CTkButton(self,text="Exit",height=50,font=("Arial Bold",20),command=self.exit,fg_color="#FF474C",hover_color="#AA2F33")
+        gif_file_path = "control\\hsf_resize.gif"   
+        im = Image.open(gif_file_path)        
+        self.frame_count = im.n_frames
+        self.frames = [tkinter.PhotoImage(file=gif_file_path,format = 'gif -index %i' %(i)) for i in range(self.frame_count)]
+        self.canvas = tkinter.Canvas(self,width=im.size[0],height=im.size[1])
+        
+        self.message = tkinter.StringVar()
+        message_label = ctk.CTkLabel(self,textvariable=self.message,font=("Arial Bold", 12))
+
+        title.grid(row=1,column=0,padx=10,pady=10,sticky="W")
+        instruction_textbox.grid(row=2,column=0,padx=10,columnspan=2)
+        instruction_textbox.insert(ctk.END, instruction_str)
+        instruction_textbox.configure(state="disabled")
+        exit_button.grid(row=3,column=0,padx=10,pady=15)
+        proceed_button.grid(row=3,column=1,padx=10,pady=15)
+        self.canvas.grid(row=2,column=2,padx=10,pady=10)
+        self.after(0, self.update, 0)
+
+        message_label.grid(row=4,column=0,columnspan=2,padx=10,pady=10)
+    
+    def update(self,index):
+        frame = self.frames[index]
+        index += 1
+        if index == self.frame_count:
+            index = 0
+        self.canvas.create_image(0, 0, image=frame, anchor="nw")
+        self.after(100, self.update, index)
+    
+    def goto_hsf_frame(self):
+        try:
+            wincap = WindowCapture(Constants.window_name)
+            self.place_forget()
+            hsf = HeightScaleFactorFrame(root,self,wincap)
+            hsf.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+        except Exception:
+            self.count +=1
+            if self.count <= 1:
+                self.message.set("Please open bluestacks and try again!")
+            else:
+                self.message.set("""Please open bluestacks and try again!
+                                    \nIf you have bluestacks open please go 
+                                    \nto constants.py and change the window 
+                                    \nname to the name located on the top 
+                                    \nleft corner of bluestacks.""")
+    
+    def exit(self):
+        self.master.destroy()
+
+class HeightScaleFactorFrame(ctk.CTkFrame):
     line =None
     counter = 0
     zoom_counter = 0
     is_brawler_present = False
     def __init__(self,master,instruction_frame,wincap):
-        super().__init__(master)
+        super().__init__(master,fg_color="transparent")
         self.master = master
         self.instruction_frame = instruction_frame
         self.wincap = wincap
@@ -29,53 +94,48 @@ class HeightScaleFactorFrame(tkinter.Frame):
         self.scale = (1222+687)/(self.wincap.w + self.wincap.h)
         self.max_width = int(0.2*self.wincap.w)*self.scale
         self.max_height = int(0.4*self.wincap.h)*self.scale
-        self.zoom_list = [1,2,3]
         self.zoom_increment = 0.1
         # canvas
-        self.canvas_width = self.zoom_list[-1]*self.max_width
-        self.canvas_height = self.zoom_list[-1]*self.max_height
+        self.canvas_width = 3*self.max_width
+        self.canvas_height = 3*self.max_height
         self.canvas = tkinter.Canvas(self,width= self.canvas_width,
                                      height=self.canvas_height,bg="white")
         # combobox
-        combobox_label = tkinter.Label(self,text="Zoom")
-        self.zoom = tkinter.StringVar()
-        zoom_combobox = ttk.Combobox(self,textvariable=self.zoom)
-        zoom_combobox['values'] =  self.zoom_list
-        zoom_combobox.state(["readonly"])
-        zoom_combobox.current(1)
+        combobox_label = ctk.CTkLabel(self,text="Zoom")
+        self.zoom = ctk.StringVar()
+        zoom_combobox = ctk.CTkComboBox(self,values=["1 (zoom level)","2 (zoom level)","3 (zoom level)"],variable=self.zoom,state="readonly")
+        zoom_combobox.set("2 (zoom level)")
 
         # buttons
-        button_width = 14
-        button_height = 3
-        screenshot_button = tkinter.Button(self,text="Take screenshot",width=button_width,
-                                           height=button_height,command=self.take_screenshot)
-        reset_button = tkinter.Button(self,text="Reset line",width=button_width,
-                                      height=button_height,command=self.delete_line)
-        confirm_button = tkinter.Button(self,text="Caculate HSF",width=button_width,
-                                        height=button_height,command=self.caculate_hsf)
-        back_button = tkinter.Button(self,text="Return to instruction",
-                                        height=button_height,padx=10,command=self.goback)
+        button_height = 50
+        screenshot_button = ctk.CTkButton(self,text="Take screenshot",height=button_height,font=("Arial Bold",15),
+                                          command=self.take_screenshot)
+        reset_button = ctk.CTkButton(self,text="Reset line",height=button_height,font=("Arial Bold",15),
+                                     command=self.delete_line)
+        confirm_button = ctk.CTkButton(self,text="Caculate HSF",height=button_height,font=("Arial Bold",15),
+                                       command=self.caculate_hsf)
+        back_button = ctk.CTkButton(self,text="Return to instruction",height=button_height,font=("Arial Bold",15),
+                                       command=self.goback)
         # message
-        hsf_label = tkinter.Label(self,text="HSF:",font=("Arial Bold", 15))
+        hsf_label = ctk.CTkLabel(self,text="HeightScaleFactor: ",font=("Arial Bold", 20))
         self.hsf = tkinter.StringVar()
-        hsf_out_label = tkinter.Label(self,textvariable=self.hsf,font=("Arial", 13))
+        hsf_out_label = ctk.CTkLabel(self,textvariable=self.hsf,font=("Arial", 20))
         self.message = tkinter.StringVar()
-        message_label = tkinter.Label(self,textvariable=self.message,font=("Arial Bold", 12),fg="#FF0000")
-        screenshot_button_column = 2
+        message_label = ctk.CTkLabel(self,textvariable=self.message,font=("Arial Bold", 12),text_color="red")
         
         # first row
-        message_label.grid(row=1, column=0,columnspan=10, pady=5, padx=10)
+        message_label.grid(row=1, column=0,columnspan=10, pady=5, padx=10,sticky="W")
         # second row
         button_row = 2
-        reset_button.grid(row=button_row, column=screenshot_button_column-1, pady=5, padx=10)
-        screenshot_button.grid(row=button_row, column=screenshot_button_column, pady=5, padx=10)
-        confirm_button.grid(row=button_row, column=screenshot_button_column+1, pady=5, padx=10)
+        reset_button.grid(row=button_row, column=0, pady=5, padx=10,sticky="W")
+        screenshot_button.grid(row=button_row, column=1, pady=5, padx=10,sticky="W")
+        confirm_button.grid(row=button_row, column=2, pady=5, padx=10,sticky="W")
         back_button.grid(row=button_row, column=10, pady=5, padx=10,sticky="E")
         
-        combobox_label.grid(row=button_row+1, column=1,columnspan=2, pady=5, padx=20, sticky="WS")
-        zoom_combobox.grid(row=button_row+2, column=1, pady=5,sticky="N")
-        hsf_label.grid(row=button_row+1, column=2,rowspan=2, pady=5,sticky="E")
-        hsf_out_label.grid(row=button_row+1, column=3,columnspan=3,rowspan=2,pady=5,sticky="W")
+        # combobox_label.grid(row=button_row+1, column=1,columnspan=2, pady=5, padx=20, sticky="WS")
+        zoom_combobox.grid(row=button_row+2, column=10,columnspan=2, pady=5,sticky="N")
+        hsf_label.grid(row=button_row+1, column=0,rowspan=2, pady=5,sticky="E")
+        hsf_out_label.grid(row=button_row+1, column=1,rowspan=2,pady=5,sticky="W")
         self.canvas.grid(row=button_row+3, column=0, columnspan=11, pady=5)
         self.canvas.old_coords = None
         
@@ -105,7 +165,7 @@ class HeightScaleFactorFrame(tkinter.Frame):
 
             # convert the screenshot to a tkinter format
             screenshot = ImageTk.PhotoImage(self.img)
-            image1 = tkinter.Label(self, image=screenshot)
+            image1 = ctk.CTkLabel(self, image=screenshot)
             image1.image = screenshot
             # put image on the canvas
             self.canvas.create_image(int(self.canvas_width/2),int(self.canvas_height/2),
@@ -127,7 +187,7 @@ class HeightScaleFactorFrame(tkinter.Frame):
                              self.wincap.h+self.wincap.offset_y)
         
         screenshot =  ImageGrab.grab(screenshot_region)
-        zoom_size = int(self.zoom.get())
+        zoom_size = int(float(self.zoom.get().replace(" (zoom level)","")))
         midpoint = (int(self.wincap.offset_x+self.wincap.w/2), int((self.wincap.h/2)- self.wincap.offset_y))
         topleft = self.subtract_tuple(midpoint,tuple([(4-zoom_size)*x for x in(self.max_width/2,self.max_height/2)]))
         bottomright = self.add_tuple(midpoint,tuple([(4-zoom_size)*x for x in(self.max_width/2,self.max_height/2)]))
@@ -176,7 +236,7 @@ class HeightScaleFactorFrame(tkinter.Frame):
     
     def caculate_hsf(self):
         if self.line:
-            hsf = abs(self.y-self.y1)/(self.windowSize[1]*int(self.zoom.get())*pow(1+self.zoom_increment,self.zoom_counter))
+            hsf = abs(self.y-self.y1)/(self.windowSize[1]*int(self.zoom.get().replace(" (zoom level)",""))*pow(1+self.zoom_increment,self.zoom_counter))
             hsf = round(hsf,3)
             self.hsf.set(hsf)
             self.message.set(" ")
@@ -204,71 +264,8 @@ class HeightScaleFactorFrame(tkinter.Frame):
         self.place_forget()
         self.instruction_frame.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
-class InstructionFrame(tkinter.Frame):
-    count = 0
-    def __init__(self,master):
-        super().__init__(master)
-        self.master = master
-
-        title = tkinter.Label(self, text="Brawler's HSF Finder",font=("Arial Bold",15))
-        instruction_str =  """Hi, welcome to the height scale factor finder.
-        \n1.Open brawl stars on bluestacks,select the brawler that you wish use and go to the training ground.
-        \n2.Take a screenshot after proceeding. You can use up    scroll wheel to zoom into the image and assist with         drawing the line.
-        \n3.Draw a line from the middle of the player tag to the      middle of the bottom circle as shown on the right
-        \n4.Caculate HSF and modify it on constants.py
-
-                            """
-        instruction = tkinter.Text(self, width=50, height=15,font=("Arial Bold",13))
-        next_button = tkinter.Button(self,text="Proceed",font=("Arial Bold",15),bg="Green",fg="white",command=self.goto_hsf_frame,width=15,height=3)
-        exit_button = tkinter.Button(self,text="Exit",font=("Arial Bold",15),bg="Red",fg="white",command=self.exit,width=15,height=3)
-        self.canvas = tkinter.Canvas(self,width=220,height=297,background="white")
-        self.message = tkinter.StringVar()
-        message_label = tkinter.Label(self,textvariable=self.message,font=("Arial Bold",12),fg="Red")
-
-        self.frame_count = 52
-        gif_file_path = "control\\hsf_resize.gif"
-        self.frames = [tkinter.PhotoImage(file=gif_file_path,format = 'gif -index %i' %(i)) for i in range(self.frame_count)]
-        
-        title.grid(row=1,column=0,padx=10,pady=10)
-        instruction.grid(row=2,column=0,columnspan=2,padx=10,pady=10)
-        next_button.grid(row=3,column=1,padx=10,pady=10)
-        exit_button.grid(row=3,column=0,padx=10,pady=10)
-        self.canvas.grid(row=2,column=2,padx=10,pady=10)
-        message_label.grid(row=4,column=0,columnspan=2,padx=10,pady=10)
-        instruction.insert(tkinter.END, instruction_str)
-        instruction["state"] = tkinter.DISABLED
-        self.after(0, self.update, 0)
-    
-    def update(self,index):
-        frame = self.frames[index]
-        index += 1
-        if index == self.frame_count:
-            index = 0
-        self.canvas.create_image(0, 0, image=frame, anchor="nw")
-        self.after(100, self.update, index)
-        
-    def goto_hsf_frame(self):
-        try:
-            wincap = WindowCapture(Constants.window_name)
-            self.place_forget()
-            hsf = HeightScaleFactorFrame(root,self,wincap)
-            hsf.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
-        except Exception:
-            self.count +=1
-            if self.count <= 1:
-                self.message.set("Please open bluestacks and try again!")
-            else:
-                self.message.set("""Please open bluestacks and try again!
-                                    \nIf you have bluestacks open please go 
-                                    \nto constants.py and change the window 
-                                    \nname to the namw located on the top 
-                                    \nleft corner of bluestacks.""")
-    
-    def exit(self):
-        self.master.destroy()
-
 if __name__ == '__main__':
     root = Interface("Height Scale Factor Finder")
     instruct = InstructionFrame(root)
-    instruct.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+    instruct.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
     root.mainloop()
