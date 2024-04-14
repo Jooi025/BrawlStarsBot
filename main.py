@@ -92,9 +92,9 @@ def main():
             bot.stop()
         elif screendetect.state ==  Detectstate.LOAD:
             if bot.stopped:
-                print("starting bot")
                 #wait for game to load
-                sleep(2)
+                sleep(4)
+                print("starting bot")
                 # reset timestamp and state
                 bot.timestamp = time()
                 bot.state = BotState.INITIALIZING
