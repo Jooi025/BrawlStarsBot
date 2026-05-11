@@ -71,6 +71,7 @@ class Brawlbot:
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
         self.enemy_history = deque(maxlen=2)
+        # Deterministic fallback order reduces erratic movement and makes behavior reproducible.
         self.fallback_directions = ("w", "a", "s", "d")
         self.fallback_index = 0
         self.last_attack_time = 0
@@ -402,6 +403,7 @@ class Brawlbot:
     def attack(self):
         """
         Press the attack key
+        :return: True when an attack key press is executed, False when blocked by cooldown.
         """
         now = time()
         if now - self.last_attack_time < self.attack_cooldown_seconds:
@@ -415,6 +417,7 @@ class Brawlbot:
     def gadget(self):
         """
         Press the gadget key
+        :return: True when gadget key press is executed, False when blocked by cooldown.
         """
         now = time()
         if now - self.last_gadget_time < self.gadget_cooldown_seconds:

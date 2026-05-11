@@ -54,6 +54,7 @@ class Screendetect:
         """
         self.state = Detectstate.DETECT
         self.lock = Lock()
+        # Start safe by assuming the bot is stopped until main loop updates this flag.
         self.bot_stopped = True
         self.w = windowSize[0]
         self.h = windowSize[1]
