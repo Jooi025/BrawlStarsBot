@@ -1,6 +1,19 @@
 import json
+import re
+from pathlib import Path
 from modules.print import bcolors
-brawler_stats_dict = json.load(open("brawler_stats.json"))
+
+REPO_ROOT = Path(__file__).resolve().parent
+with open(REPO_ROOT / "brawler_stats.json", encoding="utf-8") as stats_file:
+    brawler_stats_dict = json.load(stats_file)
+
+
+def normalize_brawler_name(name):
+    """
+    Normalize user-provided brawler names for robust lookup.
+    e.g. "Mr. P", "MrP", "mr p" -> "mrp"
+    """
+    return re.sub(r"[^a-z0-9]+", "", name.lower().strip())
 
 class Constants:
     #! Brawler's stats
@@ -61,7 +74,7 @@ class Constants:
     threshold = [0.37,0.47,0.57,0.65]
 
     try:
-        brawler_stats = brawler_stats_dict[brawler_name.lower().strip()]
+        brawler_stats = brawler_stats_dict[normalize_brawler_name(brawler_name)]
         display_str = f"Using {brawler_name.upper()}'s stats if your selected brawler is not {brawler_name.upper()},\nplease manually modify at constants.py."
         standard_hsf = 0.15
         if len(brawler_stats) == 2:
@@ -71,7 +84,7 @@ class Constants:
             brawler_stats = 3*[None]
     except KeyError:
         brawler_stats = 3*[None]
-        display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constant.py.\nPlease manually modify at constants.py if you have not."
+        display_str = f"{brawler_name.upper()}'s stats are not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constants.py.\nPlease manually modify at constants.py if you have not."
     print("")
     print(bcolors.BOLD + bcolors.OKGREEN + "Original Creator: https://github.com/Jooi025/BrawlStarsBot" + bcolors.ENDC)
     print("")

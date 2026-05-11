@@ -63,6 +63,7 @@ def main():
     while True:
         screenshot = wincap.screenshot
         if screenshot is None:
+            sleep(0.001)
             continue
         # update screenshot for dectector
         detector.update(screenshot)

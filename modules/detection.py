@@ -1,5 +1,5 @@
 from threading import Thread, Lock
-from time import time
+from time import time, sleep
 import cv2 as cv
 from constants import Constants
 from ultralytics import YOLO
@@ -113,9 +113,8 @@ class Detection:
         """
         update screen for detection
         """
-        self.lock.acquire()
-        self.screenshot = screenshot
-        self.lock.release()
+        with self.lock:
+            self.screenshot = screenshot
 
     def start(self):
         """
@@ -124,8 +123,7 @@ class Detection:
         self.stopped = False
         self.loop_time = time()
         self.count = 0
-        t = Thread(target=self.run)
-        t.setDaemon(True)
+        t = Thread(target=self.run, daemon=True)
         t.start()
 
     def stop(self):
@@ -136,11 +134,18 @@ class Detection:
 
     def run(self):
         while not self.stopped:
-            if not self.screenshot is None:
+            with self.lock:
+                screenshot = self.screenshot
+            if screenshot is not None:
                 # create empty nested list
-                tempList = len(self.classes)*[[]]
-                results = self.model.predict(self.screenshot, imgsz=Constants.imgsz,
-                                             half=Constants.half, verbose=False)
+                tempList = [[] for _ in range(len(self.classes))]
+                results = self.model.predict(
+                    screenshot,
+                    imgsz=Constants.imgsz,
+                    half=Constants.half,
+                    conf=min(Constants.threshold),
+                    verbose=False
+                )
                 result = results[0]
                 for box in result.boxes:
                     x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
@@ -160,11 +165,10 @@ class Detection:
                             enemy_height = y2 - y1
                             y1 = y1 + (enemy_height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
-                        tempList[class_id] = tempList[class_id] + midpoint
+                        tempList[class_id].extend(midpoint)
                 # lock the thread while updating the results
-                self.lock.acquire()
-                self.results = tempList
-                self.lock.release()
+                with self.lock:
+                    self.results = tempList
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
                 self.count += 1
@@ -172,3 +176,5 @@ class Detection:
                     self.avg_fps = self.fps
                 else:
                     self.avg_fps = (self.avg_fps*self.count+self.fps)/(self.count + 1)
+            else:
+                sleep(0.001)
