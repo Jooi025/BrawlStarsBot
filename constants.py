@@ -59,6 +59,8 @@ class Constants:
             "prediction_seconds": 0.35,
             "teammate_support_range": 6,
             "team_aggression_distance_multiplier": 0.9,
+            "search_priority": ["Bush", "Cubebox", "Enemy"],
+            "objective_move_cap_seconds": 2.6,
         },
         "team_3v3": {
             "hide_in_bush": False,
@@ -67,6 +69,8 @@ class Constants:
             "prediction_seconds": 0.35,
             "teammate_support_range": 6,
             "team_aggression_distance_multiplier": 0.9,
+            "search_priority": ["Enemy", "Bush", "Cubebox"],
+            "objective_move_cap_seconds": 1.4,
         },
         "team_5v5": {
             "hide_in_bush": False,
@@ -75,6 +79,8 @@ class Constants:
             "prediction_seconds": 0.4,
             "teammate_support_range": 7,
             "team_aggression_distance_multiplier": 0.88,
+            "search_priority": ["Enemy", "Bush", "Cubebox"],
+            "objective_move_cap_seconds": 1.2,
         },
     }
 
@@ -109,7 +115,7 @@ class Constants:
 
     #! Do not change these
     # Detector constants
-    classes = ["Player","Bush","Enemy","Cubebox"]
+    classes = ["Player", "Bush", "Enemy", "Cubebox", "Teammate"]
     class_threshold = {
         "Player": 0.37,
         "Bush": 0.47,
