@@ -111,13 +111,15 @@ class Constants:
         "Cubebox": 0.65,
         "Teammate": 0.57,
     }
+    # Backward-compatible index-based thresholds for any existing code paths.
     threshold = [class_threshold.get(class_name, 0.5) for class_name in classes]
 
-    game_mode = game_mode.lower().strip()
-    if game_mode not in game_mode_profiles:
+    normalized_game_mode = game_mode.lower().strip()
+    if normalized_game_mode not in game_mode_profiles:
         print(bcolors.WARNING + f"Unknown game_mode '{game_mode}', defaulting to solo_showdown." + bcolors.ENDC)
-        game_mode = "solo_showdown"
-    selected_game_mode = game_mode_profiles[game_mode]
+        normalized_game_mode = "solo_showdown"
+    game_mode = normalized_game_mode
+    selected_game_mode = game_mode_profiles[normalized_game_mode]
     centerOrder = selected_game_mode["centerOrder"]
 
     try:

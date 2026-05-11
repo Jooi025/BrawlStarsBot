@@ -129,13 +129,16 @@ class Brawlbot:
         if not teammate_detections:
             return False
         player_pos = self._player_position()
-        closest_teammate = min(self.tile_distance(player_pos, teammate) for teammate in teammate_detections)
+        distances = [self.tile_distance(player_pos, teammate) for teammate in teammate_detections]
+        if not distances:
+            return False
+        closest_teammate = min(distances)
         return closest_teammate <= self.teammate_support_range
 
     def _update_enemy_history(self, enemy_pos):
         now = time()
         self.enemy_history.append((now, enemy_pos))
-        if len(self.enemy_history) > 2:
+        if len(self.enemy_history) >= 3:
             self.enemy_history = self.enemy_history[-2:]
 
     def _predict_enemy_position(self):
