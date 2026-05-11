@@ -61,7 +61,7 @@ def main():
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Window Size: {windowSize}")
     print(f"Scaling: {wincap.scaling*100}%")
-    print(f"Mode: {Constants.game_mode}")
+    print(f"Mode: {Constants.active_game_mode}")
     if Constants.rank_push_enabled:
         print(f"Rank push: current={Constants.current_rank}, target={Constants.target_rank}")
 

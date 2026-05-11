@@ -59,7 +59,7 @@ class Brawlbot:
         self.bush_index = self.class_index.get("Bush")
         self.enemy_index = self.class_index.get("Enemy")
         self.teammate_index = self.class_index.get("Teammate")
-        self.game_mode = Constants.game_mode
+        self.game_mode = Constants.active_game_mode
         self.mode_profile = Constants.selected_game_mode
         self.team_mode = self.game_mode in ("team_3v3", "team_5v5")
         self.centerOrder = self.mode_profile["centerOrder"]
@@ -500,6 +500,7 @@ class Brawlbot:
             predicted_enemy = self._predict_enemy_position()
             if predicted_enemy:
                 predicted_distance = self.tile_distance(self._player_position(), predicted_enemy)
+                # Prefer the closest threat estimate to avoid delayed reactions.
                 enemyDistance = min(enemyDistance, predicted_distance)
             effective_attack_range = self.attack_range * self.aggression
             effective_gadget_range = self.gadget_range * self.aggression
