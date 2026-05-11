@@ -181,7 +181,7 @@ class Detection:
                 # lock the thread while updating the results
                 with self.lock:
                     self.results = tempList
-                self.processed_frame_id = frame_id
+                    self.processed_frame_id = frame_id
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
                 self.count += 1

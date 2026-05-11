@@ -72,7 +72,7 @@ class Brawlbot:
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
         self.enemy_history = deque(maxlen=2)
-        self.fallback_direction_index = 0
+        self.fallback_index = 0
         self.last_attack_time = 0
         self.last_gadget_time = 0
         self.last_enemy_seen_timestamp = 0
@@ -163,8 +163,8 @@ class Brawlbot:
         return (predicted_x, predicted_y)
 
     def _next_fallback_direction(self):
-        key = self.fallback_directions[self.fallback_direction_index]
-        self.fallback_direction_index = (self.fallback_direction_index + 1) % len(self.fallback_directions)
+        key = self.fallback_directions[self.fallback_index]
+        self.fallback_index = (self.fallback_index + 1) % len(self.fallback_directions)
         return key
 
     def _normalize_move_key(self, move_keys):
