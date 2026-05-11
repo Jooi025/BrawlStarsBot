@@ -68,7 +68,7 @@ class Brawlbot:
         self.hide_in_bush = self.mode_profile["hide_in_bush"]
         self.teammate_support_range = self.mode_profile["teammate_support_range"]
         self.team_aggression_distance_multiplier = self.mode_profile["team_aggression_distance_multiplier"]
-        self.search_priority = tuple(self.mode_profile.get("search_priority", ("Bush", "Cubebox", "Enemy")))
+        self.search_priority = self.mode_profile.get("search_priority", ["Bush", "Cubebox", "Enemy"])
         self.objective_move_cap_seconds = self.mode_profile.get("objective_move_cap_seconds")
         self.rank_push_enabled = Constants.rank_push_enabled
         self.current_rank = Constants.current_rank
@@ -353,18 +353,6 @@ class Brawlbot:
             unfilteredResults.sort(key=tile_distance)
             return unfilteredResults
     
-    def ordered_enemy_by_distance(self,index):
-        # our character is always in the center of the screen
-        # if player position in result is empty 
-        # assume that player is in the middle of the screen
-        player_position = self._player_position()
-        def tile_distance(position):
-            return sqrt(((position[0] - player_position[0])/(self.window_w/self.tile_w))**2 
-                        + ((position[1] - player_position[1])/(self.window_h/self.tile_h))**2)
-        sortedResults = self._safe_results(index)
-        sortedResults.sort(key=tile_distance)
-        return sortedResults
-
     def ordered_results_by_distance(self, index):
         """
         Sort detections for any class by distance from the player.
@@ -565,7 +553,7 @@ class Brawlbot:
             player_pos = self._player_position()
             # enemy coordinate
             if self._safe_results(self.enemy_index):
-                self.enemyResults = self.ordered_enemy_by_distance(self.enemy_index)
+                self.enemyResults = self.ordered_results_by_distance(self.enemy_index)
                 if self.enemyResults:
                     closest_enemy = self.enemyResults[0]
                     self._update_enemy_history(closest_enemy)

@@ -115,7 +115,7 @@ class Constants:
 
     #! Do not change these
     # Detector constants
-    classes = ["Player","Bush","Enemy","Cubebox","Teammate"]
+    classes = ["Player", "Bush", "Enemy", "Cubebox", "Teammate"]
     class_threshold = {
         "Player": 0.37,
         "Bush": 0.47,

@@ -55,12 +55,12 @@ git pull
  - Improved runtime performance by reducing busy-wait CPU loops in capture/detection threads.
  - Improved detection throughput by using faster list handling and model confidence pre-filtering.
  - Improved brawler lookup robustness (`Mr. P`, `mr p`, `mrp` now resolve to same key format).
-  - Expanded `brawler_stats.json` with newer and missing brawlers for current roster coverage.
-  - Added configurable mode profiles for solo and team modes (`3v3`, `5v5`) with different bot behavior.
-  - Added class-name based detection mapping so custom models can be extended more safely.
+ - Expanded `brawler_stats.json` with newer and missing brawlers for current roster coverage.
+ - Added configurable mode profiles for solo and team modes (`3v3`, `5v5`) with different bot behavior.
+ - Added class-name based detection mapping so custom models can be extended more safely.
  - Added short-horizon enemy movement prediction and optional teammate-support aggression.
  - Improved non-solo behavior with profile-based objective priorities and faster reposition loops.
-  - Added manual rank-push context fields for current/target rank visibility.
+ - Added manual rank-push context fields for current/target rank visibility.
 
  ## Improvement to be made
  - [ ] bot can attack power cube boxes and collect them
