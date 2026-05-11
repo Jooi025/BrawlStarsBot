@@ -112,6 +112,7 @@ class Constants:
         "Teammate": 0.57,
     }
     # Backward-compatible index-based thresholds for any existing code paths.
+    # This list intentionally follows only the `classes` array order.
     threshold = [class_threshold.get(class_name, 0.5) for class_name in classes]
 
     normalized_game_mode = game_mode.lower().strip()

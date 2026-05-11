@@ -94,6 +94,7 @@ class Brawlbot:
         self.gadget_range = 0.9*self.attack_range
         self.hide_attack_range = 3.5 # visible to enemy in the bush
         self.HIDINGTIME = hide_multiplier * 23
+        # Team modes require faster regrouping and less passive bush time.
         if self.team_mode:
             self.HIDINGTIME = min(self.HIDINGTIME, 6)
         
@@ -138,7 +139,7 @@ class Brawlbot:
     def _update_enemy_history(self, enemy_pos):
         now = time()
         self.enemy_history.append((now, enemy_pos))
-        if len(self.enemy_history) >= 3:
+        if len(self.enemy_history) > 2:
             self.enemy_history = self.enemy_history[-2:]
 
     def _predict_enemy_position(self):
@@ -494,6 +495,7 @@ class Brawlbot:
         enemyDistance = self.enemy_distance()
         if enemyDistance:
             if self.team_mode and self._teammate_in_support_range():
+                # Slightly increase aggression in team fights with nearby support.
                 enemyDistance = enemyDistance * 0.9
             predicted_enemy = self._predict_enemy_position()
             if predicted_enemy:
