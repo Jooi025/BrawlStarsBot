@@ -25,10 +25,13 @@ class Constants:
     
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find your
-    brawler's speed and attack range and use hsf_finder.py
-    to get the brawler's height scale factor
-    
-    eg. eve's speed (2.4), attack_range (9.33) and heightScaleFactor (0.158)
+    brawler's speed and attack range.
+
+    heightScaleFactor is no longer required — player position is now
+    estimated automatically from the detection bounding box.
+    It is kept here for backward compatibility but ignored by the detector.
+
+    eg. eve's speed (2.4) and attack_range (9.33)
     """
     speed = 2.4 # units: (tiles per second)
     attack_range = 9.33 # units: (tiles)

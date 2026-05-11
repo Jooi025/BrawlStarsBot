@@ -34,7 +34,8 @@ class Detection:
         self.windowSize = windowSize
         self.w = windowSize[0]
         self.h = windowSize[1]
-        self.height = heightScaleFactor * self.h
+        # heightScaleFactor is no longer used; player position is now estimated
+        # automatically from the detection bounding box (see run method).
 
     def find_midpoint(self,x1,y1,x2,y2):
         #x2 > x1
@@ -171,7 +172,10 @@ class Detection:
                             # player is damaged in bot module while in hiding state
                             self.player_topleft = (x1,y1)
                             self.player_bottomright = (x2,y2)
-                            midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
+                            # Auto-estimate brawler ground position from the bottom of the
+                            # detection bounding box, eliminating the need for manual
+                            # HeightScaleFactor (HSF) calibration.
+                            midpoint = [(midpoint[0][0], y2)]
                         if class_name == "Enemy":
                             #standardised enemy height and their label
                             enemy_height = y2 - y1

@@ -61,11 +61,14 @@ git pull
  - Added short-horizon enemy movement prediction and optional teammate-support aggression.
  - Improved non-solo behavior with profile-based objective priorities and faster reposition loops.
  - Added manual rank-push context fields for current/target rank visibility.
+ - Added cubebox attack: bot now attacks power cube boxes in range during search and movement phases.
+ - Player position is now estimated automatically from the detection bounding box — `heightScaleFactor` and `hsf_finder.py` are no longer required.
+ - Removed `pandas` and `seaborn` from `requirements.txt`; both were unused by the bot and prevented installation on Python 3.14.
 
  ## Improvement to be made
- - [ ] bot can attack power cube boxes and collect them
+ - [x] bot can attack power cube boxes and collect them
  - [x] improve detection of enemy (less false detect)
- - [ ] change player detection and don't need to measure HSF 
+ - [x] change player detection and don't need to measure HSF 
  - [x] improve storm direction function 
  - [x] improve the screen detection of "defeated"
  - [x] fix spam printing of "stop bot" 

@@ -20,7 +20,6 @@ opencv-python==4.8.1.78
 openvino==2026.1.0
 openvino-telemetry==2025.2.0
 packaging==23.2
-pandas==2.1.3
 Pillow==12.2.0
 psutil==5.9.6
 py-cpuinfo==9.0.0
@@ -39,7 +38,6 @@ pywin32==306
 PyYAML==6.0.1
 requests==2.31.0
 scipy==1.17.1
-seaborn==0.13.0
 six==1.16.0
 sympy==1.12
 thop==0.1.1.post2209072238
