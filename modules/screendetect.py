@@ -5,7 +5,7 @@ e.g. play again button - When play again button is detect by pyautogui.pixelMatc
 
 import pyautogui as py
 from threading import Thread, Lock
-from time import sleep
+from time import sleep, time
 from constants import Constants
 
 """
@@ -54,10 +54,20 @@ class Screendetect:
         """
         self.state = Detectstate.DETECT
         self.lock = Lock()
+        self.bot_stopped = True
         self.w = windowSize[0]
         self.h = windowSize[1]
         self.offset_x = offset[0]
         self.offset_y = offset[1]
+        self.last_action_time = {}
+        self.action_cooldowns = {
+            Detectstate.PLAY_AGAIN: 1.0,
+            Detectstate.LOAD: 1.0,
+            Detectstate.EXIT: 2.0,
+            Detectstate.PLAY: 1.0,
+            Detectstate.PROCEED: 1.0,
+            Detectstate.STARDROP: 5.0,
+        }
 
         # Coordinate
         self.defeated1 = (round(self.w*0.9656)+self.offset_x, round(self.h*0.152)+self.offset_y)
@@ -81,6 +91,21 @@ class Screendetect:
     def set_state(self, state):
         with self.lock:
             self.state = state
+
+    def _state_ready(self, state):
+        now = time()
+        last = self.last_action_time.get(state, 0)
+        cooldown = self.action_cooldowns.get(state, 0)
+        if now - last < cooldown:
+            return False
+        self.last_action_time[state] = now
+        return True
+
+    def _pixel_match(self, coordinate, color, tolerance):
+        try:
+            return py.pixelMatchesColor(coordinate[0], coordinate[1], color, tolerance=tolerance)
+        except OSError:
+            return False
     
     def start(self):
         """
@@ -100,48 +125,41 @@ class Screendetect:
         while not self.stopped:
             sleep(0.01)
             if self.state == Detectstate.IDLE:
-                sleep(3)
+                sleep(0.5)
                 self.state = Detectstate.DETECT
             
             elif self.state == Detectstate.DETECT:
-                try:
-                    if py.pixelMatchesColor(self.playAgainButton[0], self.playAgainButton[1],self.playColor,tolerance=15):
+                if self._pixel_match(self.playAgainButton, self.playColor, tolerance=15):
+                    if self._state_ready(Detectstate.PLAY_AGAIN):
                         print("Playing again")
                         self.set_state(Detectstate.PLAY_AGAIN)
-                    
-                    elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
+
+                elif self._pixel_match(self.loadButton, self.loadColor, tolerance=30):
+                    if self._state_ready(Detectstate.LOAD):
                         print("Loading in")
-                        sleep(3)
                         self.set_state(Detectstate.LOAD)
-                    
-                    elif (py.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
-                                                     self.defeatedColor,tolerance=15)
-                        or py.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
-                                                     self.defeatedColor,tolerance=15)) and not(self.bot_stopped):
+
+                elif (self._pixel_match(self.defeated1, self.defeatedColor, tolerance=15)
+                    or self._pixel_match(self.defeated2, self.defeatedColor, tolerance=15)) and not(self.bot_stopped):
+                    if self._state_ready(Detectstate.EXIT):
                         print("Exiting match")
                         self.set_state(Detectstate.EXIT)
-                    
-                    # elif pyautogui.pixelMatchesColor(self.connection_lost_cord[0],self.connection_lost_cord[1],self.connection_lost_color,tolerance=1):
-                    #     print("Connection Lost")
-                    #     self.lock.acquire()
-                    #     self.state = Detectstate.CONNECTION
-                    #     self.lock.release()
-                    
-                    elif (py.pixelMatchesColor(self.starDrop1[0], self.starDrop1[1], self.starDropColor,tolerance=15)
-                    or py.pixelMatchesColor(self.starDrop2[0], self.starDrop2[1], self.starDropColor,tolerance=15)):
+
+                elif (self._pixel_match(self.starDrop1, self.starDropColor, tolerance=15)
+                    or self._pixel_match(self.starDrop2, self.starDropColor, tolerance=15)):
+                    if self._state_ready(Detectstate.STARDROP):
                         print("Collecting Star Drop")
                         self.set_state(Detectstate.STARDROP)
-                        
-                    elif py.pixelMatchesColor(self.playButton[0], self.playButton[1], self.playColor, tolerance=15):
+
+                elif self._pixel_match(self.playButton, self.playColor, tolerance=15):
+                    if self._state_ready(Detectstate.PLAY):
                         print("Play")
                         self.set_state(Detectstate.PLAY)
 
-                    elif py.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1], self.proceedColor, tolerance=25):
+                elif self._pixel_match(self.proceedButton, self.proceedColor, tolerance=25):
+                    if self._state_ready(Detectstate.PROCEED):
                         print("Proceed")
                         self.set_state(Detectstate.PROCEED)
-                
-                except OSError:
-                    pass
                         
             elif self.state == Detectstate.PLAY_AGAIN:
                 # click the play button
