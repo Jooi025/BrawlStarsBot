@@ -4,7 +4,6 @@ from math import *
 from collections import deque
 import pyautogui as py
 import numpy as np
-import random
 from constants import Constants
 """
 INITIALIZING: Initialize the bot
@@ -72,6 +71,15 @@ class Brawlbot:
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
         self.enemy_history = deque(maxlen=2)
+        # Deterministic fallback order reduces erratic movement and makes behavior reproducible.
+        self.fallback_directions = ("w", "a", "s", "d")
+        self.fallback_index = 0
+        self.last_attack_time = 0
+        self.last_gadget_time = 0
+        self.last_enemy_seen_timestamp = None
+        self.attack_cooldown_seconds = 0.25
+        self.gadget_cooldown_seconds = 2.0
+        self.enemy_lost_grace_seconds = 0.45
         if self.rank_push_enabled:
             print(f"Rank push enabled: current={self.current_rank}, target={self.target_rank}")
 
@@ -154,6 +162,30 @@ class Brawlbot:
         predicted_x = p1[0] + vx * self.enemy_prediction_seconds
         predicted_y = p1[1] + vy * self.enemy_prediction_seconds
         return (predicted_x, predicted_y)
+
+    def _next_fallback_direction(self):
+        """
+        Return the next fallback movement key using a deterministic direction cycle.
+        """
+        key = self.fallback_directions[self.fallback_index]
+        self.fallback_index = (self.fallback_index + 1) % len(self.fallback_directions)
+        return key
+
+    def _normalize_move_key(self, move_keys):
+        """
+        Normalize movement input into a single key string.
+        Accepts a single key or list of keys and falls back to a deterministic
+        direction cycle when no valid key is available.
+        """
+        if isinstance(move_keys, str) and move_keys:
+            if move_keys in self.fallback_directions:
+                return move_keys
+            return self._next_fallback_direction()
+        if isinstance(move_keys, list):
+            filtered = [key for key in move_keys if key in self.fallback_directions]
+            if filtered:
+                return filtered[0]
+        return self._next_fallback_direction()
 
     # translate a pixel position on a screenshot image to a pixel position on the screen.
     # pos = (x, y)
@@ -376,18 +408,30 @@ class Brawlbot:
     def attack(self):
         """
         Press the attack key
+        :return: True when an attack key press is executed, False when blocked by cooldown.
         """
+        now = time()
+        if now - self.last_attack_time < self.attack_cooldown_seconds:
+            return False
         print("attacking enemy")
         attack_key = "e"
         py.press(attack_key)
+        self.last_attack_time = now
+        return True
 
     def gadget(self):
         """
         Press the gadget key
+        :return: True when gadget key press is executed, False when blocked by cooldown.
         """
+        now = time()
+        if now - self.last_gadget_time < self.gadget_cooldown_seconds:
+            return False
         print("activate gadget")
         gadget_key = "f"
         py.press(gadget_key)
+        self.last_gadget_time = now
+        return True
 
     def hold_movement_key(self,key,time):
         """
@@ -401,25 +445,20 @@ class Brawlbot:
 
     def storm_random_movement(self):
         """
-        get movement keys and pick a random key to hold for one second
+        Get storm-escape movement keys and hold a deterministic fallback key for one second.
         """
-        if self.storm_movement_key():
-            move_keys = self.storm_movement_key()
-        else:
-            move_keys = ["w", "a", "s", "d"]
-        random_move = random.choice(move_keys)
+        move_keys = self.storm_movement_key()
+        move_key = self._normalize_move_key(move_keys)
         hold_time = 1
-        self.hold_movement_key(random_move,hold_time)
+        self.hold_movement_key(move_key,hold_time)
     
     def stuck_random_movement(self):
         """
-        get movement keys and pick a random key to hold for one second
+        Get unstuck movement keys and hold a deterministic fallback key for one second.
         """
         move_keys = self.get_movement_key(self.bush_index)
-        if not(move_keys):
-            move_keys = ["w", "a", "s", "d"]
-            move_keys = random.choice(move_keys)
-        with py.hold(move_keys):
+        move_key = self._normalize_move_key(move_keys)
+        with py.hold(move_key):
             sleep(1)
 
     def get_movement_key(self,index):
@@ -455,18 +494,16 @@ class Brawlbot:
                 return [x_key,y_key]
         return []
     
-    def enemy_random_movement(self):
+    def enemy_fallback_movement(self):
         """
         Move player away from the enemy and attack
         """
         if not(self.enemy_move_key):
             move_keys = self.get_movement_key(self.enemy_index)
-            if not(move_keys):
-                move_keys = ["w", "a", "s", "d"]
-                move_keys = random.choice(move_keys)
+            move_key = self._normalize_move_key(move_keys)
         else:
-            move_keys = self.enemy_move_key
-        with py.hold(move_keys):
+            move_key = self._normalize_move_key(self.enemy_move_key)
+        with py.hold(move_key):
             py.press("e",presses=2,interval=0.4)
 
     def enemy_distance(self):
@@ -482,6 +519,7 @@ class Brawlbot:
                 if self.enemyResults:
                     closest_enemy = self.enemyResults[0]
                     self._update_enemy_history(closest_enemy)
+                    self.last_enemy_seen_timestamp = time()
                     enemyDistance = self.tile_distance(player_pos, closest_enemy)
                     # print(f"Closest enemy: {round(enemyDistance,2)} tiles")
                     return enemyDistance
@@ -705,11 +743,15 @@ class Brawlbot:
                         self.lock.release()
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
-                    self.enemy_random_movement()
+                    self.enemy_fallback_movement()
                 else:
-                    self.lock.acquire()
-                    self.state = BotState.SEARCHING
-                    self.lock.release()
+                    if (self.last_enemy_seen_timestamp is not None
+                        and time() - self.last_enemy_seen_timestamp <= self.enemy_lost_grace_seconds):
+                        self.enemy_fallback_movement()
+                    else:
+                        self.lock.acquire()
+                        self.state = BotState.SEARCHING
+                        self.lock.release()
                     
             self.fps = (1 / (time() - self.loop_time))
             self.loop_time = time()

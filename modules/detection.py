@@ -17,6 +17,8 @@ class Detection:
     player_topleft = None
     player_bottomright = None
     midpoint_offset = Constants.midpoint_offset
+    frame_id = 0
+    processed_frame_id = -1
 
     def __init__(self, windowSize, model_file_path, classes, heightScaleFactor, class_thresholds):
         """
@@ -117,6 +119,7 @@ class Detection:
         """
         with self.lock:
             self.screenshot = screenshot
+            self.frame_id += 1
 
     def start(self):
         """
@@ -138,7 +141,8 @@ class Detection:
         while not self.stopped:
             with self.lock:
                 screenshot = self.screenshot
-            if screenshot is not None:
+                frame_id = self.frame_id
+            if screenshot is not None and frame_id != self.processed_frame_id:
                 # create empty nested list
                 tempList = [[] for _ in range(len(self.classes))]
                 results = self.model.predict(
@@ -177,6 +181,7 @@ class Detection:
                 # lock the thread while updating the results
                 with self.lock:
                     self.results = tempList
+                    self.processed_frame_id = frame_id
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
                 self.count += 1
