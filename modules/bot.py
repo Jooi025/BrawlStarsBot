@@ -178,9 +178,11 @@ class Brawlbot:
         direction cycle when no valid key is available.
         """
         if isinstance(move_keys, str) and move_keys:
-            return move_keys
+            if move_keys in self.fallback_directions:
+                return move_keys
+            return self._next_fallback_direction()
         if isinstance(move_keys, list):
-            filtered = [key for key in move_keys if key]
+            filtered = [key for key in move_keys if key in self.fallback_directions]
             if filtered:
                 return filtered[0]
         return self._next_fallback_direction()
@@ -492,7 +494,7 @@ class Brawlbot:
                 return [x_key,y_key]
         return []
     
-    def enemy_random_movement(self):
+    def enemy_fallback_movement(self):
         """
         Move player away from the enemy and attack
         """
@@ -741,11 +743,11 @@ class Brawlbot:
                         self.lock.release()
             elif self.state == BotState.ATTACKING:
                 if self.is_enemy_in_range():
-                    self.enemy_random_movement()
+                    self.enemy_fallback_movement()
                 else:
                     if (self.last_enemy_seen_timestamp is not None
                         and time() - self.last_enemy_seen_timestamp <= self.enemy_lost_grace_seconds):
-                        self.enemy_random_movement()
+                        self.enemy_fallback_movement()
                     else:
                         self.lock.acquire()
                         self.state = BotState.SEARCHING

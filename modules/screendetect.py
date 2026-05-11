@@ -126,8 +126,8 @@ class Screendetect:
         while not self.stopped:
             sleep(0.01)
             if self.state == Detectstate.IDLE:
-                # Keep a short pause to avoid spam while remaining responsive to UI changes.
-                sleep(0.5)
+                # Balance responsiveness and CPU usage while waiting for next detect cycle.
+                sleep(1.0)
                 self.state = Detectstate.DETECT
             
             elif self.state == Detectstate.DETECT:
