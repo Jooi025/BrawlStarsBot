@@ -47,7 +47,6 @@ class Brawlbot:
     avg_fps = 0
     enemy_move_key = None
     timeFactor = 1
-    fallback_directions = ("w", "a", "s", "d")
     
     # time to move increase by 5% if maps have sharps corner
     if sharpCorner: timeFactor = 1.05
@@ -72,6 +71,7 @@ class Brawlbot:
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
         self.enemy_history = deque(maxlen=2)
+        self.fallback_directions = ("w", "a", "s", "d")
         self.fallback_index = 0
         self.last_attack_time = 0
         self.last_gadget_time = 0
@@ -168,6 +168,11 @@ class Brawlbot:
         return key
 
     def _normalize_move_key(self, move_keys):
+        """
+        Normalize movement input into a single key string.
+        Accepts a single key or list of keys and falls back to a deterministic
+        direction cycle when no valid key is available.
+        """
         if isinstance(move_keys, str) and move_keys:
             return move_keys
         if isinstance(move_keys, list):
@@ -434,10 +439,7 @@ class Brawlbot:
         """
         get movement keys and pick a random key to hold for one second
         """
-        if self.storm_movement_key():
-            move_keys = self.storm_movement_key()
-        else:
-            move_keys = []
+        move_keys = self.storm_movement_key()
         random_move = self._normalize_move_key(move_keys)
         hold_time = 1
         self.hold_movement_key(random_move,hold_time)
