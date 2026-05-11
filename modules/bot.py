@@ -603,8 +603,8 @@ class Brawlbot:
         if not cubebox_detections:
             return False
         player_pos = self._player_position()
-        closest = min(cubebox_detections, key=lambda pos: self.tile_distance(player_pos, pos))
-        dist = self.tile_distance(player_pos, closest)
+        distances = [(self.tile_distance(player_pos, pos), pos) for pos in cubebox_detections]
+        dist, _ = min(distances, key=lambda d: d[0])
         if dist <= self.attack_range:
             print("Attacking cubebox")
             self.attack()
