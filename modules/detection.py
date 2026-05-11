@@ -138,7 +138,7 @@ class Detection:
                 screenshot = self.screenshot
             if screenshot is not None:
                 # create empty nested list
-                temp_list = [[] for _ in self.classes]
+                temp_list = [[] for _ in range(len(self.classes))]
                 results = self.model.predict(
                     screenshot,
                     imgsz=Constants.imgsz,
