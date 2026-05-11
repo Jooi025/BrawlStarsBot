@@ -1,6 +1,7 @@
 from time import time,sleep
 from threading import Thread, Lock
 from math import *
+from collections import deque
 import pyautogui as py
 import numpy as np
 import random
@@ -65,11 +66,12 @@ class Brawlbot:
         self.enemy_prediction_seconds = self.mode_profile["prediction_seconds"]
         self.aggression = self.mode_profile["aggression"]
         self.hide_in_bush = self.mode_profile["hide_in_bush"]
+        self.teammate_support_range = self.mode_profile["teammate_support_range"]
+        self.team_aggression_distance_multiplier = self.mode_profile["team_aggression_distance_multiplier"]
         self.rank_push_enabled = Constants.rank_push_enabled
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
-        self.enemy_history = []
-        self.teammate_support_range = 6
+        self.enemy_history = deque(maxlen=2)
         if self.rank_push_enabled:
             print(f"Rank push enabled: current={self.current_rank}, target={self.target_rank}")
 
@@ -139,8 +141,6 @@ class Brawlbot:
     def _update_enemy_history(self, enemy_pos):
         now = time()
         self.enemy_history.append((now, enemy_pos))
-        if len(self.enemy_history) > 2:
-            self.enemy_history = self.enemy_history[-2:]
 
     def _predict_enemy_position(self):
         if len(self.enemy_history) < 2:
@@ -496,7 +496,7 @@ class Brawlbot:
         if enemyDistance:
             if self.team_mode and self._teammate_in_support_range():
                 # Slightly increase aggression in team fights with nearby support.
-                enemyDistance = enemyDistance * 0.9
+                enemyDistance = enemyDistance * self.team_aggression_distance_multiplier
             predicted_enemy = self._predict_enemy_position()
             if predicted_enemy:
                 predicted_distance = self.tile_distance(self._player_position(), predicted_enemy)

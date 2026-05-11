@@ -57,18 +57,24 @@ class Constants:
             "centerOrder": True,
             "aggression": 1.0,
             "prediction_seconds": 0.35,
+            "teammate_support_range": 6,
+            "team_aggression_distance_multiplier": 0.9,
         },
         "team_3v3": {
             "hide_in_bush": False,
             "centerOrder": False,
             "aggression": 1.15,
             "prediction_seconds": 0.35,
+            "teammate_support_range": 6,
+            "team_aggression_distance_multiplier": 0.9,
         },
         "team_5v5": {
             "hide_in_bush": False,
             "centerOrder": False,
             "aggression": 1.2,
             "prediction_seconds": 0.4,
+            "teammate_support_range": 7,
+            "team_aggression_distance_multiplier": 0.88,
         },
     }
 
@@ -111,9 +117,10 @@ class Constants:
         "Cubebox": 0.65,
         "Teammate": 0.57,
     }
+    default_class_threshold = min(class_threshold.values())
     # Backward-compatible index-based thresholds for any existing code paths.
     # This list intentionally follows only the `classes` array order.
-    threshold = [class_threshold.get(class_name, 0.5) for class_name in classes]
+    threshold = [class_threshold.get(class_name, default_class_threshold) for class_name in classes]
 
     normalized_game_mode = game_mode.lower().strip()
     if normalized_game_mode not in game_mode_profiles:
