@@ -138,7 +138,7 @@ class Detection:
                 screenshot = self.screenshot
             if screenshot is not None:
                 # create empty nested list
-                temp_list = [[] for _ in range(len(self.classes))]
+                tempList = [[] for _ in range(len(self.classes))]
                 results = self.model.predict(
                     screenshot,
                     imgsz=Constants.imgsz,
@@ -165,10 +165,10 @@ class Detection:
                             enemy_height = y2 - y1
                             y1 = y1 + (enemy_height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
-                        temp_list[class_id].extend(midpoint)
+                        tempList[class_id].extend(midpoint)
                 # lock the thread while updating the results
                 with self.lock:
-                    self.results = temp_list
+                    self.results = tempList
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
                 self.count += 1
