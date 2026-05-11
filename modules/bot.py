@@ -164,6 +164,9 @@ class Brawlbot:
         return (predicted_x, predicted_y)
 
     def _next_fallback_direction(self):
+        """
+        Return the next fallback movement key using a deterministic direction cycle.
+        """
         key = self.fallback_directions[self.fallback_index]
         self.fallback_index = (self.fallback_index + 1) % len(self.fallback_directions)
         return key
@@ -440,7 +443,7 @@ class Brawlbot:
 
     def storm_random_movement(self):
         """
-        get movement keys and pick a random key to hold for one second
+        Get storm-escape movement keys and hold a deterministic fallback key for one second.
         """
         move_keys = self.storm_movement_key()
         random_move = self._normalize_move_key(move_keys)
@@ -449,7 +452,7 @@ class Brawlbot:
     
     def stuck_random_movement(self):
         """
-        get movement keys and pick a random key to hold for one second
+        Get unstuck movement keys and hold a deterministic fallback key for one second.
         """
         move_keys = self.get_movement_key(self.bush_index)
         move_keys = self._normalize_move_key(move_keys)
