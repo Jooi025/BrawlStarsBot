@@ -19,6 +19,7 @@ A recommended map to run the bot on is island invasion, using short/medium range
 - Enemy movement prediction (short-term) to react earlier in fights
 - Optional teammate-aware behavior (when your model includes a `Teammate` class)
 - Configurable game mode profiles: `solo_showdown`, `team_3v3`, `team_5v5`
+- Mode-aware objective search priorities (bush, cubebox, enemy) with capped reposition times for team modes
 - Rank push context fields (`current_rank` / `target_rank`) for session tracking output
 - Activate gadget when the enemy is closer to the player
 - Custom Bluestack game control for the bot
@@ -57,7 +58,8 @@ git pull
   - Expanded `brawler_stats.json` with newer and missing brawlers for current roster coverage.
   - Added configurable mode profiles for solo and team modes (`3v3`, `5v5`) with different bot behavior.
   - Added class-name based detection mapping so custom models can be extended more safely.
-  - Added short-horizon enemy movement prediction and optional teammate-support aggression.
+ - Added short-horizon enemy movement prediction and optional teammate-support aggression.
+ - Improved non-solo behavior with profile-based objective priorities and faster reposition loops.
   - Added manual rank-push context fields for current/target rank visibility.
 
  ## Improvement to be made
@@ -68,4 +70,3 @@ git pull
  - [x] improve the screen detection of "defeated"
  - [x] fix spam printing of "stop bot" 
  - [x] improve fps for lower performance computer 
-

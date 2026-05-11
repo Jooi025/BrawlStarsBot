@@ -7,9 +7,9 @@ import numpy as np
 from constants import Constants
 """
 INITIALIZING: Initialize the bot
-SEARCHING: Find the nearby bush to player
-MOVING: Move to the selected bush
-HIDING: Stop movement and hide in the bush
+SEARCHING: Find the next objective based on mode profile (bush, cube box, enemy)
+MOVING: Move to the selected objective
+HIDING: Stop movement and hide in the bush (solo-focused profiles)
 ATTACKING: Player will attack and activate gadget when enemy is nearby
 
 """
@@ -57,6 +57,7 @@ class Brawlbot:
         self.player_index = self.class_index.get("Player")
         self.bush_index = self.class_index.get("Bush")
         self.enemy_index = self.class_index.get("Enemy")
+        self.cubebox_index = self.class_index.get("Cubebox")
         self.teammate_index = self.class_index.get("Teammate")
         self.game_mode = Constants.active_game_mode
         self.mode_profile = Constants.selected_game_mode
@@ -67,6 +68,8 @@ class Brawlbot:
         self.hide_in_bush = self.mode_profile["hide_in_bush"]
         self.teammate_support_range = self.mode_profile["teammate_support_range"]
         self.team_aggression_distance_multiplier = self.mode_profile["team_aggression_distance_multiplier"]
+        self.search_priority = tuple(self.mode_profile.get("search_priority", ("Bush", "Cubebox", "Enemy")))
+        self.objective_move_cap_seconds = self.mode_profile.get("objective_move_cap_seconds")
         self.rank_push_enabled = Constants.rank_push_enabled
         self.current_rank = Constants.current_rank
         self.target_rank = Constants.target_rank
@@ -361,6 +364,18 @@ class Brawlbot:
         sortedResults = self._safe_results(index)
         sortedResults.sort(key=tile_distance)
         return sortedResults
+
+    def ordered_results_by_distance(self, index):
+        """
+        Sort detections for any class by distance from the player.
+        """
+        player_position = self._player_position()
+        def tile_distance(position):
+            return sqrt(((position[0] - player_position[0])/(self.window_w/self.tile_w))**2
+                        + ((position[1] - player_position[1])/(self.window_h/self.tile_h))**2)
+        sorted_results = list(self._safe_results(index))
+        sorted_results.sort(key=tile_distance)
+        return sorted_results
         
     def tile_distance(self,player_position,position):
         """
@@ -403,6 +418,41 @@ class Brawlbot:
             moveTime = moveTime * self.timeFactor
             print(f"Distance: {round(tileDistance,2)} tiles")
             return moveTime
+
+    def move_to_target(self, target_position, max_move_time=None):
+        """
+        Move toward a target detection position.
+        """
+        if target_position is None:
+            return None
+        x, y = target_position
+        player_pos = self._player_position()
+        tileDistance = self.tile_distance(player_pos, (x, y))
+        x, y = self.get_screen_position((x, y))
+        py.mouseDown(button=Constants.movement_key, x=x, y=y)
+        moveTime = (tileDistance / self.speed) * self.timeFactor
+        if max_move_time is not None:
+            moveTime = min(moveTime, max_move_time)
+        print(f"Distance: {round(tileDistance,2)} tiles")
+        return moveTime
+
+    def acquire_objective(self):
+        """
+        Select a movement objective by profile priority.
+        """
+        for class_name in self.search_priority:
+            class_index = self.class_index.get(class_name)
+            if class_index is None:
+                continue
+            ordered = self.ordered_results_by_distance(class_index)
+            if ordered:
+                move_time = self.move_to_target(
+                    ordered[0],
+                    max_move_time=self.objective_move_cap_seconds
+                )
+                if move_time is not None:
+                    return class_name, move_time
+        return None, None
     
     # enemy and attack method
     def attack(self):
@@ -669,25 +719,23 @@ class Brawlbot:
                     self.lock.release()
 
             elif self.state == BotState.SEARCHING:
-                success = self.find_bush()
-                #if bush is detected
-                if success:
-                    print("found bush")
-                    self.moveTime = self.move_to_bush()
+                if self.is_enemy_in_range():
+                    self.lock.acquire()
+                    self.state = BotState.ATTACKING
+                    self.lock.release()
+                    continue
+
+                objective, move_time = self.acquire_objective()
+                if objective and move_time is not None:
+                    print(f"Moving to {objective.lower()}")
+                    self.moveTime = move_time
                     self.lock.acquire()
                     self.timestamp = time()
                     self.state = BotState.MOVING
                     self.lock.release()
-                #bush is not detected
                 else:
-                    print("Cannot find bush")
+                    print("Cannot find objective")
                     self.storm_random_movement()
-                    # self.counter+=1
-                
-                if self.is_enemy_in_range():
-                        self.lock.acquire()
-                        self.state = BotState.ATTACKING
-                        self.lock.release()
 
             elif self.state == BotState.MOVING:
                 # when player is moving check if player is stuck
@@ -710,11 +758,14 @@ class Brawlbot:
                 # player successfully travel to the selected bush
                 if time() > self.timestamp + self.moveTime:
                     py.mouseUp(button = Constants.movement_key)
-                    print("Hiding")
                     self.lock.acquire()
-                    # change state to hiding
                     self.timestamp = time()
-                    self.state = BotState.HIDING
+                    if self.hide_in_bush:
+                        print("Hiding")
+                        self.state = BotState.HIDING
+                    else:
+                        print("Reposition complete")
+                        self.state = BotState.SEARCHING
                     self.lock.release()
                     
             elif self.state == BotState.HIDING:
