@@ -77,14 +77,17 @@ class Screendetect:
 
     def update_bot_stop(self,bot_stopped):
         self.bot_stopped = bot_stopped
+
+    def set_state(self, state):
+        with self.lock:
+            self.state = state
     
     def start(self):
         """
         start screendetect
         """
         self.stopped = False
-        t = Thread(target=self.run)
-        t.setDaemon(True)
+        t = Thread(target=self.run, daemon=True)
         t.start()
 
     def stop(self):
@@ -104,25 +107,19 @@ class Screendetect:
                 try:
                     if py.pixelMatchesColor(self.playAgainButton[0], self.playAgainButton[1],self.playColor,tolerance=15):
                         print("Playing again")
-                        self.lock.acquire()
-                        self.state = Detectstate.PLAY_AGAIN
-                        self.lock.release()
+                        self.set_state(Detectstate.PLAY_AGAIN)
                     
                     elif py.pixelMatchesColor(self.loadButton[0], self.loadButton[1],self.loadColor,tolerance=30):
                         print("Loading in")
-                        self.lock.acquire()
                         sleep(3)
-                        self.state = Detectstate.LOAD
-                        self.lock.release()
+                        self.set_state(Detectstate.LOAD)
                     
                     elif (py.pixelMatchesColor(self.defeated1[0], self.defeated1[1],
                                                      self.defeatedColor,tolerance=15)
                         or py.pixelMatchesColor(self.defeated2[0], self.defeated2[1],
                                                      self.defeatedColor,tolerance=15)) and not(self.bot_stopped):
                         print("Exiting match")
-                        self.lock.acquire()
-                        self.state = Detectstate.EXIT
-                        self.lock.release()
+                        self.set_state(Detectstate.EXIT)
                     
                     # elif pyautogui.pixelMatchesColor(self.connection_lost_cord[0],self.connection_lost_cord[1],self.connection_lost_color,tolerance=1):
                     #     print("Connection Lost")
@@ -133,21 +130,15 @@ class Screendetect:
                     elif (py.pixelMatchesColor(self.starDrop1[0], self.starDrop1[1], self.starDropColor,tolerance=15)
                     or py.pixelMatchesColor(self.starDrop2[0], self.starDrop2[1], self.starDropColor,tolerance=15)):
                         print("Collecting Star Drop")
-                        self.lock.acquire()
-                        self.state = Detectstate.STARDROP
-                        self.lock.release()
+                        self.set_state(Detectstate.STARDROP)
                         
                     elif py.pixelMatchesColor(self.playButton[0], self.playButton[1], self.playColor, tolerance=15):
                         print("Play")
-                        self.lock.acquire()
-                        self.state = Detectstate.PLAY
-                        self.lock.release()
+                        self.set_state(Detectstate.PLAY)
 
                     elif py.pixelMatchesColor(self.proceedButton[0], self.proceedButton[1], self.proceedColor, tolerance=25):
                         print("Proceed")
-                        self.lock.acquire()
-                        self.state = Detectstate.PROCEED
-                        self.lock.release()
+                        self.set_state(Detectstate.PROCEED)
                 
                 except OSError:
                     pass
@@ -157,15 +148,11 @@ class Screendetect:
                 sleep(0.05)
                 py.click(x=self.playAgainButton[0], y=self.playAgainButton[1], button="left")
                 sleep(0.05)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.LOAD:
                 sleep(0.1)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.EXIT:
                 # release movement key
@@ -174,39 +161,29 @@ class Screendetect:
                 # click the exit button
                 py.click(x=self.exitButton[0], y=self.exitButton[1], button="left")
                 sleep(0.05)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.CONNECTION:
                 sleep(20)
                 py.click(x=self.reload_button[0], y=self.reload_button[1], button="left")
                 sleep(0.05)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.PLAY:
                 # click the play button
                 sleep(0.05)
                 py.click(x=self.playButton[0], y=self.playButton[1], button="left")
                 sleep(0.05)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.PROCEED:
                 sleep(0.5)
                 py.click(x=self.proceedButton[0], y=self.proceedButton[1], button="left", clicks=2)
                 sleep(0.5)
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)
             
             elif self.state == Detectstate.STARDROP:
                 py.press("e",presses=5)
                 sleep(6)
                 py.press("e")
-                self.lock.acquire()
-                self.state = Detectstate.IDLE
-                self.lock.release()
+                self.set_state(Detectstate.IDLE)

@@ -114,7 +114,7 @@ class WindowCapture:
         # convert the raw data into a format opencv can read
         #dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')
         signedIntsArray = dataBitMap.GetBitmapBits(True)
-        img = np.fromstring(signedIntsArray, dtype='uint8')
+        img = np.frombuffer(signedIntsArray, dtype=np.uint8)
         img.shape = (self.h, self.w, 4)
 
         # free resources
@@ -155,8 +155,7 @@ class WindowCapture:
         self.stopped = False
         self.loop_time = time()
         self.count = 0
-        t = Thread(target=self.run)
-        t.setDaemon(True)
+        t = Thread(target=self.run, daemon=True)
         t.start()
 
     def stop(self):
@@ -170,9 +169,8 @@ class WindowCapture:
             # get an updated image of the game
             screenshot = self.get_screenshot()
             # lock the thread while updating the results
-            self.lock.acquire()
-            self.screenshot = screenshot
-            self.lock.release()
+            with self.lock:
+                self.screenshot = screenshot
             
             self.fps = (1 / (time() - self.loop_time))
             self.loop_time = time()

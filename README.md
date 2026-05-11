@@ -46,6 +46,12 @@ pip install -r requirements.txt
 cd BrawlStarsBot
 git pull
 ```
+ ## Recent updates
+ - Improved runtime performance by reducing busy-wait CPU loops in capture/detection threads.
+ - Improved detection throughput by using faster list handling and model confidence pre-filtering.
+ - Improved brawler lookup robustness (`Mr. P`, `mr p`, `mrp` now resolve to same key format).
+ - Expanded `brawler_stats.json` with newer and missing brawlers for current roster coverage.
+
  ## Improvement to be made
  - [ ] bot can attack power cube boxes and collect them
  - [x] improve detection of enemy (less false detect)
@@ -54,6 +60,5 @@ git pull
  - [x] improve the screen detection of "defeated"
  - [x] fix spam printing of "stop bot" 
  - [x] improve fps for lower performance computer 
-
 
 
