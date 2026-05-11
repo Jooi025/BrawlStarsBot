@@ -26,7 +26,7 @@ A recommended map to run the bot on is island invasion, using short/medium range
 
   
 ## Demo of the bot
-[![Watch the video](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/image/youtube_thumbnail.jpg)](https://youtu.be/TWmNfkQBVYk?si=CXaSBoAV-YknJPLt)
+[![Watch the video](https://github.com/bebabinlarsson-blip/BrawlStarsBotPrompt/blob/main/misc/image/youtube_thumbnail.jpg)](https://youtu.be/TWmNfkQBVYk?si=CXaSBoAV-YknJPLt)
 
 ## Requirement
 * Windows OS
@@ -38,17 +38,17 @@ A recommended map to run the bot on is island invasion, using short/medium range
 ### Clone Repo
 1. Clone the repository 
 ```
-git clone https://github.com/Jooi025/BrawlStarsBot.git
+git clone https://github.com/bebabinlarsson-blip/BrawlStarsBotPrompt.git
 ```
 2. Install the required library
 ```
-cd BrawlStarsBot
+cd BrawlStarsBotPrompt
 pip install -r requirements.txt
 ```
-[Writing instruction](https://github.com/Jooi025/BrawlStarsBot/blob/main/misc/textInstruction.md)
+[Writing instruction](https://github.com/bebabinlarsson-blip/BrawlStarsBotPrompt/blob/main/misc/textInstruction.md)
 ### Update Repo 
 ```
-cd BrawlStarsBot
+cd BrawlStarsBotPrompt
 git pull
 ```
  ## Recent updates
