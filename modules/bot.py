@@ -594,6 +594,23 @@ class Brawlbot:
                 return True
         return False
 
+    def is_cubebox_in_range(self):
+        """
+        Check if a power cubebox is within attack range and attack it to collect it.
+        :return (boolean): True if a cubebox is in range and was attacked.
+        """
+        cubebox_detections = self._safe_results(self.cubebox_index)
+        if not cubebox_detections:
+            return False
+        player_pos = self._player_position()
+        closest = min(cubebox_detections, key=lambda pos: self.tile_distance(player_pos, pos))
+        dist = self.tile_distance(player_pos, closest)
+        if dist <= self.attack_range:
+            print("Attacking cubebox")
+            self.attack()
+            return True
+        return False
+
     def is_enemy_close(self):
         """
         Check if enemy is visible in the bush
@@ -713,6 +730,8 @@ class Brawlbot:
                     self.lock.release()
                     continue
 
+                self.is_cubebox_in_range()
+
                 objective, move_time = self.acquire_objective()
                 if objective and move_time is not None:
                     print(f"Moving to {objective.lower()}")
@@ -743,6 +762,8 @@ class Brawlbot:
                     self.lock.acquire()
                     self.state = BotState.ATTACKING
                     self.lock.release()
+                # attack cubeboxes in range while moving toward objective
+                self.is_cubebox_in_range()
                 # player successfully travel to the selected bush
                 if time() > self.timestamp + self.moveTime:
                     py.mouseUp(button = Constants.movement_key)
