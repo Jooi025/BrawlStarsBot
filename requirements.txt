@@ -21,7 +21,7 @@ openvino==2023.2.0
 openvino-telemetry==2023.2.1
 packaging==23.2
 pandas==2.1.3
-Pillow==10.3.0
+Pillow==12.2.0
 psutil==5.9.6
 py-cpuinfo==9.0.0
 PyAutoGUI==0.9.54
