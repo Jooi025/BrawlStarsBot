@@ -76,7 +76,7 @@ class Brawlbot:
         self.fallback_index = 0
         self.last_attack_time = 0
         self.last_gadget_time = 0
-        self.last_enemy_seen_timestamp = 0
+        self.last_enemy_seen_timestamp = None
         self.attack_cooldown_seconds = 0.25
         self.gadget_cooldown_seconds = 2.0
         self.enemy_lost_grace_seconds = 0.45
@@ -446,17 +446,17 @@ class Brawlbot:
         Get storm-escape movement keys and hold a deterministic fallback key for one second.
         """
         move_keys = self.storm_movement_key()
-        random_move = self._normalize_move_key(move_keys)
+        move_key = self._normalize_move_key(move_keys)
         hold_time = 1
-        self.hold_movement_key(random_move,hold_time)
+        self.hold_movement_key(move_key,hold_time)
     
     def stuck_random_movement(self):
         """
         Get unstuck movement keys and hold a deterministic fallback key for one second.
         """
         move_keys = self.get_movement_key(self.bush_index)
-        move_keys = self._normalize_move_key(move_keys)
-        with py.hold(move_keys):
+        move_key = self._normalize_move_key(move_keys)
+        with py.hold(move_key):
             sleep(1)
 
     def get_movement_key(self,index):
@@ -498,10 +498,10 @@ class Brawlbot:
         """
         if not(self.enemy_move_key):
             move_keys = self.get_movement_key(self.enemy_index)
-            move_keys = self._normalize_move_key(move_keys)
+            move_key = self._normalize_move_key(move_keys)
         else:
-            move_keys = self._normalize_move_key(self.enemy_move_key)
-        with py.hold(move_keys):
+            move_key = self._normalize_move_key(self.enemy_move_key)
+        with py.hold(move_key):
             py.press("e",presses=2,interval=0.4)
 
     def enemy_distance(self):
@@ -743,7 +743,8 @@ class Brawlbot:
                 if self.is_enemy_in_range():
                     self.enemy_random_movement()
                 else:
-                    if time() - self.last_enemy_seen_timestamp <= self.enemy_lost_grace_seconds:
+                    if (self.last_enemy_seen_timestamp is not None
+                        and time() - self.last_enemy_seen_timestamp <= self.enemy_lost_grace_seconds):
                         self.enemy_random_movement()
                     else:
                         self.lock.acquire()
