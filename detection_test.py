@@ -12,7 +12,7 @@ sleep(0.5)
 wincap.set_window()
 
 # initialize detection class
-detector = Detection(windowSize,Constants.model_file_path,Constants.classes,Constants.heightScaleFactor)
+detector = Detection(windowSize,Constants.model_file_path,Constants.classes,Constants.heightScaleFactor,Constants.class_threshold)
 
 wincap.start()
 detector.start()

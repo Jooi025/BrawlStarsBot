@@ -42,6 +42,44 @@ class Constants:
     """
     sharpCorner = True
     centerOrder = True
+
+    #! Gameplay mode profile
+    """
+    Supported:
+    - solo_showdown
+    - team_3v3
+    - team_5v5
+    """
+    game_mode = "solo_showdown"
+    game_mode_profiles = {
+        "solo_showdown": {
+            "hide_in_bush": True,
+            "centerOrder": True,
+            "aggression": 1.0,
+            "prediction_seconds": 0.35,
+        },
+        "team_3v3": {
+            "hide_in_bush": False,
+            "centerOrder": False,
+            "aggression": 1.15,
+            "prediction_seconds": 0.35,
+        },
+        "team_5v5": {
+            "hide_in_bush": False,
+            "centerOrder": False,
+            "aggression": 1.2,
+            "prediction_seconds": 0.4,
+        },
+    }
+
+    #! Rank pushing context (manual)
+    """
+    This is used for rank push context/output.
+    Current and target rank are intentionally manual values.
+    """
+    rank_push_enabled = False
+    current_rank = None
+    target_rank = None
     
     #! Window Capture
     """
@@ -66,12 +104,21 @@ class Constants:
     #! Do not change these
     # Detector constants
     classes = ["Player","Bush","Enemy","Cubebox"]
-    """
-    Threshold's index correspond with classes's index.
-    e.g. First element of classes is player so the first
-    element of threshold is threshold for player.
-    """
-    threshold = [0.37,0.47,0.57,0.65]
+    class_threshold = {
+        "Player": 0.37,
+        "Bush": 0.47,
+        "Enemy": 0.57,
+        "Cubebox": 0.65,
+        "Teammate": 0.57,
+    }
+    threshold = [class_threshold.get(class_name, 0.5) for class_name in classes]
+
+    game_mode = game_mode.lower().strip()
+    if game_mode not in game_mode_profiles:
+        print(bcolors.WARNING + f"Unknown game_mode '{game_mode}', defaulting to solo_showdown." + bcolors.ENDC)
+        game_mode = "solo_showdown"
+    selected_game_mode = game_mode_profiles[game_mode]
+    centerOrder = selected_game_mode["centerOrder"]
 
     try:
         brawler_stats = brawler_stats_dict[normalize_brawler_name(brawler_name)]

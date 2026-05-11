@@ -18,7 +18,7 @@ class Detection:
     player_bottomright = None
     midpoint_offset = Constants.midpoint_offset
 
-    def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
+    def __init__(self, windowSize, model_file_path, classes, heightScaleFactor, class_thresholds):
         """
         Constructor for the Detection class
         """
@@ -27,6 +27,8 @@ class Detection:
         # load the trained model
         self.model = YOLO(model_file_path,task="detect")
         self.classes = classes
+        self.class_to_index = {name: i for i, name in enumerate(classes)}
+        self.class_thresholds = class_thresholds
         self.windowSize = windowSize
         self.w = windowSize[0]
         self.h = windowSize[1]
@@ -151,21 +153,27 @@ class Detection:
                     x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
                     class_id = int(box.cls[0].item())
                     prob = round(box.conf[0].item(), 2)
-                    threshold = Constants.threshold[class_id]
+                    class_name = result.names.get(class_id)
+                    if class_name is None:
+                        continue
+                    if class_name not in self.class_to_index:
+                        continue
+                    threshold = self.class_thresholds.get(class_name, min(Constants.threshold))
                     if prob >= threshold:
+                        target_index = self.class_to_index[class_name]
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
-                        if self.classes[class_id] == "Player":
+                        if class_name == "Player":
                             # Constantly update player name tag position to check if
                             # player is damaged in bot module while in hiding state
                             self.player_topleft = (x1,y1)
                             self.player_bottomright = (x2,y2)
                             midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
-                        if self.classes[class_id] == "Enemy":
+                        if class_name == "Enemy":
                             #standardised enemy height and their label
                             enemy_height = y2 - y1
                             y1 = y1 + (enemy_height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
-                        tempList[class_id].extend(midpoint)
+                        tempList[target_index].extend(midpoint)
                 # lock the thread while updating the results
                 with self.lock:
                     self.results = tempList
