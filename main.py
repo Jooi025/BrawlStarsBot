@@ -37,7 +37,13 @@ def main():
     wincap.set_window()
 
     # initialize detection class
-    detector = Detection(windowSize,Constants.model_file_path,Constants.classes,Constants.heightScaleFactor)
+    detector = Detection(
+        windowSize,
+        Constants.model_file_path,
+        Constants.classes,
+        Constants.heightScaleFactor,
+        Constants.class_threshold
+    )
     # initialize screendectect class
     screendetect = Screendetect(windowSize,wincap.offsets)
     # initialize bot class
@@ -55,6 +61,9 @@ def main():
     print(f"Resolution: {wincap.screen_resolution}")
     print(f"Window Size: {windowSize}")
     print(f"Scaling: {wincap.scaling*100}%")
+    print(f"Mode: {Constants.active_game_mode}")
+    if Constants.rank_push_enabled:
+        print(f"Rank push: current={Constants.current_rank}, target={Constants.target_rank}")
 
     aspect_ratio = windowSize[0]/windowSize[1]
     if aspect_ratio > 1.79:
@@ -128,7 +137,7 @@ def main():
 if __name__ == "__main__":
     print(" ")
     print(bcolors.HEADER + bcolors.BOLD +
-              "Before starting the bot, make sure you have Brawl Stars open \non Bluestacks and selected solo showdown gamemode.")
+              "Before starting the bot, make sure you have Brawl Stars open \non Bluestacks and selected your intended game mode.")
     print("")
     print("Also make sure to change the speed, attack_range and HeightScaleFactor"
             +"\nfor you selected brawler at constants.py (instruction there as well).")

@@ -8,4 +8,4 @@
 
 4. Run "main.py"
 
-5. Select solo showdown and "start bot" (enter 1)
+5. Select your configured mode in-game (matching `game_mode` in `constants.py`) and "start bot" (enter 1)
