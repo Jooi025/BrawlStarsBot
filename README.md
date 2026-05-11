@@ -31,7 +31,7 @@ A recommended map to run the bot on is island invasion, using short/medium range
 ## Requirement
 * Windows OS
 * [Bluestacks 5](https://www.bluestacks.com/download.html) to run Brawl Star and for custom control
-* Python version 3.11.6
+* Python version 3.11.6 or newer (3.14 supported)
 
 ## How to install and run the bot?
 ### [Watch the tutorial and common error fix playlist](https://youtube.com/playlist?list=PLD9X_geub8rmkcpJSWzvoqmB9VZk-9TfO&si=7vrCV9s1kLviRaTL)
