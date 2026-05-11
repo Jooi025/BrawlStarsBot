@@ -21,7 +21,7 @@ openvino==2023.2.0
 openvino-telemetry==2023.2.1
 packaging==23.2
 pandas==2.1.3
-Pillow==10.1.0
+Pillow==10.3.0
 psutil==5.9.6
 py-cpuinfo==9.0.0
 PyAutoGUI==0.9.54
@@ -43,10 +43,10 @@ seaborn==0.13.0
 six==1.16.0
 sympy==1.12
 thop==0.1.1.post2209072238
-torch==2.1.1
-torchvision==0.16.1
+torch==2.6.0
+torchvision==0.21.0
 tqdm==4.66.1
 typing_extensions==4.8.0
 tzdata==2023.3
 ultralytics==8.0.217
-urllib3==2.1.0
+urllib3==2.6.3
