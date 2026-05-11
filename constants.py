@@ -84,7 +84,7 @@ class Constants:
             brawler_stats = 3*[None]
     except KeyError:
         brawler_stats = 3*[None]
-        display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constants.py.\nPlease manually modify at constants.py if you have not."
+        display_str = f"{brawler_name.upper()}'s stats are not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constants.py.\nPlease manually modify at constants.py if you have not."
     print("")
     print(bcolors.BOLD + bcolors.OKGREEN + "Original Creator: https://github.com/Jooi025/BrawlStarsBot" + bcolors.ENDC)
     print("")
