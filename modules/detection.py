@@ -1,5 +1,5 @@
 from threading import Thread, Lock
-from time import time
+from time import time, sleep
 import cv2 as cv
 from constants import Constants
 from ultralytics import YOLO
@@ -17,8 +17,10 @@ class Detection:
     player_topleft = None
     player_bottomright = None
     midpoint_offset = Constants.midpoint_offset
+    frame_id = 0
+    processed_frame_id = -1
 
-    def __init__(self, windowSize, model_file_path, classes, heightScaleFactor):
+    def __init__(self, windowSize, model_file_path, classes, heightScaleFactor, class_thresholds):
         """
         Constructor for the Detection class
         """
@@ -27,10 +29,13 @@ class Detection:
         # load the trained model
         self.model = YOLO(model_file_path,task="detect")
         self.classes = classes
+        self.class_to_index = {name: i for i, name in enumerate(classes)}
+        self.class_thresholds = class_thresholds
         self.windowSize = windowSize
         self.w = windowSize[0]
         self.h = windowSize[1]
-        self.height = heightScaleFactor * self.h
+        # heightScaleFactor is no longer used; player position is now estimated
+        # automatically from the detection bounding box (see run method).
 
     def find_midpoint(self,x1,y1,x2,y2):
         #x2 > x1
@@ -113,9 +118,9 @@ class Detection:
         """
         update screen for detection
         """
-        self.lock.acquire()
-        self.screenshot = screenshot
-        self.lock.release()
+        with self.lock:
+            self.screenshot = screenshot
+            self.frame_id += 1
 
     def start(self):
         """
@@ -124,8 +129,7 @@ class Detection:
         self.stopped = False
         self.loop_time = time()
         self.count = 0
-        t = Thread(target=self.run)
-        t.setDaemon(True)
+        t = Thread(target=self.run, daemon=True)
         t.start()
 
     def stop(self):
@@ -136,35 +140,52 @@ class Detection:
 
     def run(self):
         while not self.stopped:
-            if not self.screenshot is None:
+            with self.lock:
+                screenshot = self.screenshot
+                frame_id = self.frame_id
+            if screenshot is not None and frame_id != self.processed_frame_id:
                 # create empty nested list
-                tempList = len(self.classes)*[[]]
-                results = self.model.predict(self.screenshot, imgsz=Constants.imgsz,
-                                             half=Constants.half, verbose=False)
+                tempList = [[] for _ in range(len(self.classes))]
+                results = self.model.predict(
+                    screenshot,
+                    imgsz=Constants.imgsz,
+                    half=Constants.half,
+                    conf=min(Constants.threshold),
+                    verbose=False
+                )
                 result = results[0]
                 for box in result.boxes:
                     x1, y1, x2, y2 = [round(x) for x in box.xyxy[0].tolist()]
                     class_id = int(box.cls[0].item())
                     prob = round(box.conf[0].item(), 2)
-                    threshold = Constants.threshold[class_id]
+                    class_name = result.names.get(class_id)
+                    if class_name is None:
+                        continue
+                    if class_name not in self.class_to_index:
+                        continue
+                    threshold = self.class_thresholds.get(class_name, min(Constants.threshold))
                     if prob >= threshold:
+                        target_index = self.class_to_index[class_name]
                         midpoint = self.find_midpoint(x1,y1,x2,y2)
-                        if self.classes[class_id] == "Player":
+                        if class_name == "Player":
                             # Constantly update player name tag position to check if
                             # player is damaged in bot module while in hiding state
                             self.player_topleft = (x1,y1)
                             self.player_bottomright = (x2,y2)
-                            midpoint =  [( midpoint[0][0], int(midpoint[0][1] + self.height))]
-                        if self.classes[class_id] == "Enemy":
+                            # Auto-estimate brawler ground position from the bottom of the
+                            # detection bounding box, eliminating the need for manual
+                            # HeightScaleFactor (HSF) calibration.
+                            midpoint = [(midpoint[0][0], y2)]
+                        if class_name == "Enemy":
                             #standardised enemy height and their label
                             enemy_height = y2 - y1
                             y1 = y1 + (enemy_height+0.2*self.h)
                             midpoint = [( midpoint[0][0], int(midpoint[0][1] + 0.05*self.h))]
-                        tempList[class_id] = tempList[class_id] + midpoint
+                        tempList[target_index].extend(midpoint)
                 # lock the thread while updating the results
-                self.lock.acquire()
-                self.results = tempList
-                self.lock.release()
+                with self.lock:
+                    self.results = tempList
+                    self.processed_frame_id = frame_id
                 self.fps = (1 / (time() - self.loop_time))
                 self.loop_time = time()
                 self.count += 1
@@ -172,3 +193,5 @@ class Detection:
                     self.avg_fps = self.fps
                 else:
                     self.avg_fps = (self.avg_fps*self.count+self.fps)/(self.count + 1)
+            else:
+                sleep(0.001)

@@ -1,6 +1,19 @@
 import json
+import re
+from pathlib import Path
 from modules.print import bcolors
-brawler_stats_dict = json.load(open("brawler_stats.json"))
+
+REPO_ROOT = Path(__file__).resolve().parent
+with open(REPO_ROOT / "brawler_stats.json", encoding="utf-8") as stats_file:
+    brawler_stats_dict = json.load(stats_file)
+
+
+def normalize_brawler_name(name):
+    """
+    Normalize user-provided brawler names for robust lookup.
+    e.g. "Mr. P", "MrP", "mr p" -> "mrp"
+    """
+    return re.sub(r"[^a-z0-9]+", "", name.lower().strip())
 
 class Constants:
     #! Brawler's stats
@@ -12,10 +25,13 @@ class Constants:
     
     """
     go to https://pixelcrux.com/Brawl_Stars/Brawlers/ to find your
-    brawler's speed and attack range and use hsf_finder.py
-    to get the brawler's height scale factor
-    
-    eg. eve's speed (2.4), attack_range (9.33) and heightScaleFactor (0.158)
+    brawler's speed and attack range.
+
+    heightScaleFactor is no longer required — player position is now
+    estimated automatically from the detection bounding box.
+    It is kept here for backward compatibility but ignored by the detector.
+
+    eg. eve's speed (2.4) and attack_range (9.33)
     """
     speed = 2.4 # units: (tiles per second)
     attack_range = 9.33 # units: (tiles)
@@ -29,6 +45,56 @@ class Constants:
     """
     sharpCorner = True
     centerOrder = True
+
+    #! Gameplay mode profile
+    """
+    Supported:
+    - solo_showdown
+    - team_3v3
+    - team_5v5
+    """
+    game_mode = "solo_showdown"
+    game_mode_profiles = {
+        "solo_showdown": {
+            "hide_in_bush": True,
+            "centerOrder": True,
+            "aggression": 1.0,
+            "prediction_seconds": 0.35,
+            "teammate_support_range": 6,
+            "team_aggression_distance_multiplier": 0.9,
+            "search_priority": ["Bush", "Cubebox", "Enemy"],
+            "objective_move_cap_seconds": 2.6,
+        },
+        "team_3v3": {
+            "hide_in_bush": False,
+            "centerOrder": False,
+            "aggression": 1.15,
+            "prediction_seconds": 0.35,
+            "teammate_support_range": 6,
+            "team_aggression_distance_multiplier": 0.9,
+            "search_priority": ["Enemy", "Bush", "Cubebox"],
+            "objective_move_cap_seconds": 1.4,
+        },
+        "team_5v5": {
+            "hide_in_bush": False,
+            "centerOrder": False,
+            "aggression": 1.2,
+            "prediction_seconds": 0.4,
+            "teammate_support_range": 7,
+            "team_aggression_distance_multiplier": 0.88,
+            "search_priority": ["Enemy", "Bush", "Cubebox"],
+            "objective_move_cap_seconds": 1.2,
+        },
+    }
+
+    #! Rank pushing context (manual)
+    """
+    This is used for rank push context/output.
+    Current and target rank are intentionally manual values.
+    """
+    rank_push_enabled = False
+    current_rank = None
+    target_rank = None
     
     #! Window Capture
     """
@@ -52,16 +118,29 @@ class Constants:
 
     #! Do not change these
     # Detector constants
-    classes = ["Player","Bush","Enemy","Cubebox"]
-    """
-    Threshold's index correspond with classes's index.
-    e.g. First element of classes is player so the first
-    element of threshold is threshold for player.
-    """
-    threshold = [0.37,0.47,0.57,0.65]
+    classes = ["Player", "Bush", "Enemy", "Cubebox", "Teammate"]
+    class_threshold = {
+        "Player": 0.37,
+        "Bush": 0.47,
+        "Enemy": 0.57,
+        "Cubebox": 0.65,
+        "Teammate": 0.57,
+    }
+    default_class_threshold = min(class_threshold.values())
+    # Backward-compatible index-based thresholds for any existing code paths.
+    # This list intentionally follows only the `classes` array order.
+    threshold = [class_threshold.get(class_name, default_class_threshold) for class_name in classes]
+
+    normalized_game_mode = game_mode.lower().strip()
+    if normalized_game_mode not in game_mode_profiles:
+        print(bcolors.WARNING + f"Unknown game_mode '{game_mode}', defaulting to solo_showdown." + bcolors.ENDC)
+        normalized_game_mode = "solo_showdown"
+    active_game_mode = normalized_game_mode
+    selected_game_mode = game_mode_profiles[active_game_mode]
+    centerOrder = selected_game_mode["centerOrder"]
 
     try:
-        brawler_stats = brawler_stats_dict[brawler_name.lower().strip()]
+        brawler_stats = brawler_stats_dict[normalize_brawler_name(brawler_name)]
         display_str = f"Using {brawler_name.upper()}'s stats if your selected brawler is not {brawler_name.upper()},\nplease manually modify at constants.py."
         standard_hsf = 0.15
         if len(brawler_stats) == 2:
@@ -71,7 +150,7 @@ class Constants:
             brawler_stats = 3*[None]
     except KeyError:
         brawler_stats = 3*[None]
-        display_str = f"{brawler_name.upper()}'s stats is not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constant.py.\nPlease manually modify at constants.py if you have not."
+        display_str = f"{brawler_name.upper()}'s stats are not found in the JSON. \nUsing speed, attack_range and heightScaleFactor in constants.py.\nPlease manually modify at constants.py if you have not."
     print("")
     print(bcolors.BOLD + bcolors.OKGREEN + "Original Creator: https://github.com/Jooi025/BrawlStarsBot" + bcolors.ENDC)
     print("")
